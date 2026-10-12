@@ -10,12 +10,22 @@ abstract final class NotificationChannels {
   static const String preReminder = 'pre_reminder';
   static const String drawableIcon = 'ic_stat_saathi';
 
+  /// Channels from earlier versions. They are deleted on start so they do not
+  /// linger in the system settings. (`azan_makkah` and `azan_madina` played
+  /// placeholder tones.)
+  static const List<String> legacyChannelIds = ['azan_makkah', 'azan_madina'];
+
   static String nameFor(AzanSound sound) => switch (sound) {
         AzanSound.beep => 'Azan (beep)',
-        AzanSound.makkah => 'Azan (Makkah)',
-        AzanSound.madina => 'Azan (Madina)',
+        AzanSound.full => 'Azan (full)',
+        AzanSound.short => 'Azan (short)',
         AzanSound.silent => 'Azan (silent)',
       };
+
+  /// iOS plays notification sounds for at most 30 seconds, so the full azan
+  /// uses the short clip there.
+  static String _iosSoundFile(AzanSound sound) =>
+      '${sound == AzanSound.full ? AzanSound.short.channelId : sound.channelId}.caf';
 
   /// Every channel the app uses.
   static List<AndroidNotificationChannel> all() => [
@@ -62,7 +72,7 @@ abstract final class NotificationChannels {
         presentBanner: true,
         presentList: true,
         presentSound: sound == null ? true : !sound.isSilent,
-        sound: (sound == null || sound.isSilent) ? null : '${sound.channelId}.caf',
+        sound: (sound == null || sound.isSilent) ? null : _iosSoundFile(sound),
         interruptionLevel: InterruptionLevel.timeSensitive,
       ),
     );

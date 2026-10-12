@@ -555,23 +555,35 @@ abstract class AppLocalizations {
   /// **'Beep'**
   String get soundBeep;
 
-  /// No description provided for @soundMakkah.
+  /// No description provided for @soundFull.
   ///
   /// In en, this message translates to:
-  /// **'Makkah'**
-  String get soundMakkah;
+  /// **'Azan (full)'**
+  String get soundFull;
 
-  /// No description provided for @soundMadina.
+  /// No description provided for @soundShort.
   ///
   /// In en, this message translates to:
-  /// **'Madina'**
-  String get soundMadina;
+  /// **'Azan (short)'**
+  String get soundShort;
 
   /// No description provided for @soundSilent.
   ///
   /// In en, this message translates to:
   /// **'Silent'**
   String get soundSilent;
+
+  /// No description provided for @audioCredits.
+  ///
+  /// In en, this message translates to:
+  /// **'Audio credits'**
+  String get audioCredits;
+
+  /// No description provided for @audioCreditsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Azan recording: “The Adhan - Muslim Call to Prayer - Aaqib Azeez”, shared on Wikimedia Commons by Atcovi under CC BY-SA 4.0. The short version is a trimmed copy with a fade-out. Source: commons.wikimedia.org (File:The Adhan - Muslim Call to Prayer - Aaqib Azeez.mp3). License: creativecommons.org/licenses/by-sa/4.0'**
+  String get audioCreditsBody;
 
   /// No description provided for @previewSound.
   ///

@@ -27,8 +27,8 @@ String prayerLabel(AppLocalizations l10n, PrayerName prayer, {bool jumma = false
 
 String soundLabel(AppLocalizations l10n, AzanSound sound) => switch (sound) {
       AzanSound.beep => l10n.soundBeep,
-      AzanSound.makkah => l10n.soundMakkah,
-      AzanSound.madina => l10n.soundMadina,
+      AzanSound.full => l10n.soundFull,
+      AzanSound.short => l10n.soundShort,
       AzanSound.silent => l10n.soundSilent,
     };
 

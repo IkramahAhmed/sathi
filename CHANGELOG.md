@@ -30,6 +30,10 @@ First release.
 - Local storage with Drift for the prayed log and the settings history.
 
 ### Notes
-- The azan sounds are placeholder tones; see the README to add real recordings.
+- Real azan audio: one CC BY-SA 4.0 recording, as a full version (Android) and a
+  short version under 30 seconds (also used on iOS). See `AZAN_AUDIO_LICENSE.md`.
+  The sound options are Beep, Azan (full), Azan (short) and Silent.
+- Settings saved with the earlier placeholder sound names are migrated; the old
+  notification channels are deleted on start.
 - `flutter_qiblah` and `flutter_compass_v2` are vendored with a Gradle fix.
 - `permission_handler` is pinned to 12.0.3.

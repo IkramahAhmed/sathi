@@ -7,6 +7,10 @@ import '../../domain/entities/prayer_settings.dart';
 part 'prayer_settings_dto.freezed.dart';
 part 'prayer_settings_dto.g.dart';
 
+AzanSound _soundFromJson(Object? value) => AzanSound.fromStored(value as String?);
+
+String _soundToJson(AzanSound sound) => sound.name;
+
 /// Serializable form of [PrayerSettings]. Unknown or missing fields fall back
 /// to the defaults so old stored settings keep loading after upgrades.
 @freezed
@@ -25,7 +29,9 @@ abstract class PrayerSettingsDto with _$PrayerSettingsDto {
     @Default(<PrayerName, int>{}) Map<PrayerName, int> adjustmentsMin,
     @Default(<PrayerName, bool>{}) Map<PrayerName, bool> azanEnabled,
     @Default(<PrayerName, int>{}) Map<PrayerName, int> preReminderMin,
-    @Default(AzanSound.beep) AzanSound sound,
+    @JsonKey(fromJson: _soundFromJson, toJson: _soundToJson)
+    @Default(AzanSound.beep)
+    AzanSound sound,
     @Default(0) int hijriAdjustDays,
     @Default(true) bool followMeLocation,
     @Default(false) bool methodIsManual,

@@ -36,6 +36,9 @@ class LocalNotificationScheduler implements NotificationScheduler {
 
     final android = plugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
     if (android != null) {
+      for (final id in NotificationChannels.legacyChannelIds) {
+        await android.deleteNotificationChannel(channelId: id);
+      }
       for (final channel in NotificationChannels.all()) {
         await android.createNotificationChannel(channel);
       }

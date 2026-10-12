@@ -51,7 +51,7 @@ void main() {
       highLat: HighLatitudeRule.seventhOfTheNight,
       adjustmentsMin: {for (final p in PrayerName.values) p: p == PrayerName.fajr ? -3 : 2},
       preReminderMin: {for (final p in PrayerName.values) p: p == PrayerName.isha ? 15 : 0},
-      sound: AzanSound.madina,
+      sound: AzanSound.short,
       hijriAdjustDays: -1,
       localeTag: 'en_PK',
     );
@@ -60,7 +60,7 @@ void main() {
     final reloaded = await repo.load();
     expect(reloaded, custom);
     expect(reloaded.methodIsManual, isTrue);
-    expect(reloaded.sound, AzanSound.madina);
+    expect(reloaded.sound, AzanSound.short);
     expect(reloaded.adjustmentFor(PrayerName.fajr), -3);
   });
 
@@ -74,6 +74,23 @@ void main() {
     expect(s.azanFor(PrayerName.fajr), isFalse);
     expect(s.azanFor(PrayerName.asr), isTrue);
     expect(s.adjustmentsMin.length, PrayerName.values.length);
+  });
+
+  test('settings saved with the old placeholder sound names are migrated, not lost', () async {
+    await prefs.setString(
+      'prayer_settings_v1',
+      jsonEncode({'cityName': 'Lahore', 'sound': 'makkah'}),
+    );
+    var s = await repo.load();
+    expect(s.cityName, 'Lahore', reason: 'other settings survive');
+    expect(s.sound, AzanSound.full);
+
+    await prefs.setString('prayer_settings_v1', jsonEncode({'sound': 'madina'}));
+    expect((await repo.load()).sound, AzanSound.short);
+
+    await prefs.setString('prayer_settings_v1', jsonEncode({'sound': 'something-new'}));
+    s = await repo.load();
+    expect(s.sound, AzanSound.beep, reason: 'unknown values fall back to the beep');
   });
 
   test('corrupted stored settings fall back to defaults instead of crashing', () async {
@@ -97,13 +114,13 @@ void main() {
   });
 
   test('only changed keys are recorded in the settings history', () async {
-    await repo.save(PrayerSettings.defaults().copyWith(sound: AzanSound.makkah, hijriAdjustDays: 1));
+    await repo.save(PrayerSettings.defaults().copyWith(sound: AzanSound.full, hijriAdjustDays: 1));
     final rows = await db.settingsHistoryDao.recent();
     final keys = rows.map((r) => r.settingKey).toSet();
     expect(keys, {'sound', 'hijriAdjustDays'});
     final sound = rows.firstWhere((r) => r.settingKey == 'sound');
     expect(jsonDecode(sound.oldValue!), 'beep');
-    expect(jsonDecode(sound.newValue), 'makkah');
+    expect(jsonDecode(sound.newValue), 'full');
     expect(sound.changedAt.toUtc(), DateTime.utc(2026, 10, 12));
   });
 

@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PrayerSettingsDto {
 
- double get lat; double get lng; String get countryCode; String get timezoneId; String get cityName; CalcMethod get method; Madhab get madhab; HighLatitudeRule get highLat; Map<PrayerName, int> get adjustmentsMin; Map<PrayerName, bool> get azanEnabled; Map<PrayerName, int> get preReminderMin; AzanSound get sound; int get hijriAdjustDays; bool get followMeLocation; bool get methodIsManual; bool get madhabIsManual; String get localeTag;
+ double get lat; double get lng; String get countryCode; String get timezoneId; String get cityName; CalcMethod get method; Madhab get madhab; HighLatitudeRule get highLat; Map<PrayerName, int> get adjustmentsMin; Map<PrayerName, bool> get azanEnabled; Map<PrayerName, int> get preReminderMin;@JsonKey(fromJson: _soundFromJson, toJson: _soundToJson) AzanSound get sound; int get hijriAdjustDays; bool get followMeLocation; bool get methodIsManual; bool get madhabIsManual; String get localeTag;
 /// Create a copy of PrayerSettingsDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -54,7 +54,7 @@ abstract mixin class $PrayerSettingsDtoCopyWith<$Res>  {
   factory $PrayerSettingsDtoCopyWith(PrayerSettingsDto value, $Res Function(PrayerSettingsDto) _then) = _$PrayerSettingsDtoCopyWithImpl;
 @useResult
 $Res call({
- double lat, double lng, String countryCode, String timezoneId, String cityName, CalcMethod method, Madhab madhab, HighLatitudeRule highLat, Map<PrayerName, int> adjustmentsMin, Map<PrayerName, bool> azanEnabled, Map<PrayerName, int> preReminderMin, AzanSound sound, int hijriAdjustDays, bool followMeLocation, bool methodIsManual, bool madhabIsManual, String localeTag
+ double lat, double lng, String countryCode, String timezoneId, String cityName, CalcMethod method, Madhab madhab, HighLatitudeRule highLat, Map<PrayerName, int> adjustmentsMin, Map<PrayerName, bool> azanEnabled, Map<PrayerName, int> preReminderMin,@JsonKey(fromJson: _soundFromJson, toJson: _soundToJson) AzanSound sound, int hijriAdjustDays, bool followMeLocation, bool methodIsManual, bool madhabIsManual, String localeTag
 });
 
 
@@ -175,7 +175,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( double lat,  double lng,  String countryCode,  String timezoneId,  String cityName,  CalcMethod method,  Madhab madhab,  HighLatitudeRule highLat,  Map<PrayerName, int> adjustmentsMin,  Map<PrayerName, bool> azanEnabled,  Map<PrayerName, int> preReminderMin,  AzanSound sound,  int hijriAdjustDays,  bool followMeLocation,  bool methodIsManual,  bool madhabIsManual,  String localeTag)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( double lat,  double lng,  String countryCode,  String timezoneId,  String cityName,  CalcMethod method,  Madhab madhab,  HighLatitudeRule highLat,  Map<PrayerName, int> adjustmentsMin,  Map<PrayerName, bool> azanEnabled,  Map<PrayerName, int> preReminderMin, @JsonKey(fromJson: _soundFromJson, toJson: _soundToJson)  AzanSound sound,  int hijriAdjustDays,  bool followMeLocation,  bool methodIsManual,  bool madhabIsManual,  String localeTag)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PrayerSettingsDto() when $default != null:
 return $default(_that.lat,_that.lng,_that.countryCode,_that.timezoneId,_that.cityName,_that.method,_that.madhab,_that.highLat,_that.adjustmentsMin,_that.azanEnabled,_that.preReminderMin,_that.sound,_that.hijriAdjustDays,_that.followMeLocation,_that.methodIsManual,_that.madhabIsManual,_that.localeTag);case _:
@@ -196,7 +196,7 @@ return $default(_that.lat,_that.lng,_that.countryCode,_that.timezoneId,_that.cit
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( double lat,  double lng,  String countryCode,  String timezoneId,  String cityName,  CalcMethod method,  Madhab madhab,  HighLatitudeRule highLat,  Map<PrayerName, int> adjustmentsMin,  Map<PrayerName, bool> azanEnabled,  Map<PrayerName, int> preReminderMin,  AzanSound sound,  int hijriAdjustDays,  bool followMeLocation,  bool methodIsManual,  bool madhabIsManual,  String localeTag)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( double lat,  double lng,  String countryCode,  String timezoneId,  String cityName,  CalcMethod method,  Madhab madhab,  HighLatitudeRule highLat,  Map<PrayerName, int> adjustmentsMin,  Map<PrayerName, bool> azanEnabled,  Map<PrayerName, int> preReminderMin, @JsonKey(fromJson: _soundFromJson, toJson: _soundToJson)  AzanSound sound,  int hijriAdjustDays,  bool followMeLocation,  bool methodIsManual,  bool madhabIsManual,  String localeTag)  $default,) {final _that = this;
 switch (_that) {
 case _PrayerSettingsDto():
 return $default(_that.lat,_that.lng,_that.countryCode,_that.timezoneId,_that.cityName,_that.method,_that.madhab,_that.highLat,_that.adjustmentsMin,_that.azanEnabled,_that.preReminderMin,_that.sound,_that.hijriAdjustDays,_that.followMeLocation,_that.methodIsManual,_that.madhabIsManual,_that.localeTag);case _:
@@ -216,7 +216,7 @@ return $default(_that.lat,_that.lng,_that.countryCode,_that.timezoneId,_that.cit
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( double lat,  double lng,  String countryCode,  String timezoneId,  String cityName,  CalcMethod method,  Madhab madhab,  HighLatitudeRule highLat,  Map<PrayerName, int> adjustmentsMin,  Map<PrayerName, bool> azanEnabled,  Map<PrayerName, int> preReminderMin,  AzanSound sound,  int hijriAdjustDays,  bool followMeLocation,  bool methodIsManual,  bool madhabIsManual,  String localeTag)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( double lat,  double lng,  String countryCode,  String timezoneId,  String cityName,  CalcMethod method,  Madhab madhab,  HighLatitudeRule highLat,  Map<PrayerName, int> adjustmentsMin,  Map<PrayerName, bool> azanEnabled,  Map<PrayerName, int> preReminderMin, @JsonKey(fromJson: _soundFromJson, toJson: _soundToJson)  AzanSound sound,  int hijriAdjustDays,  bool followMeLocation,  bool methodIsManual,  bool madhabIsManual,  String localeTag)?  $default,) {final _that = this;
 switch (_that) {
 case _PrayerSettingsDto() when $default != null:
 return $default(_that.lat,_that.lng,_that.countryCode,_that.timezoneId,_that.cityName,_that.method,_that.madhab,_that.highLat,_that.adjustmentsMin,_that.azanEnabled,_that.preReminderMin,_that.sound,_that.hijriAdjustDays,_that.followMeLocation,_that.methodIsManual,_that.madhabIsManual,_that.localeTag);case _:
@@ -231,7 +231,7 @@ return $default(_that.lat,_that.lng,_that.countryCode,_that.timezoneId,_that.cit
 @JsonSerializable()
 
 class _PrayerSettingsDto extends PrayerSettingsDto {
-  const _PrayerSettingsDto({this.lat = 24.8607, this.lng = 67.0011, this.countryCode = 'PK', this.timezoneId = 'Asia/Karachi', this.cityName = 'Karachi', this.method = CalcMethod.karachi, this.madhab = Madhab.hanafi, this.highLat = HighLatitudeRule.middleOfTheNight,  Map<PrayerName, int> adjustmentsMin = const <PrayerName, int>{},  Map<PrayerName, bool> azanEnabled = const <PrayerName, bool>{},  Map<PrayerName, int> preReminderMin = const <PrayerName, int>{}, this.sound = AzanSound.beep, this.hijriAdjustDays = 0, this.followMeLocation = true, this.methodIsManual = false, this.madhabIsManual = false, this.localeTag = 'en'}): _adjustmentsMin = adjustmentsMin,_azanEnabled = azanEnabled,_preReminderMin = preReminderMin,super._();
+  const _PrayerSettingsDto({this.lat = 24.8607, this.lng = 67.0011, this.countryCode = 'PK', this.timezoneId = 'Asia/Karachi', this.cityName = 'Karachi', this.method = CalcMethod.karachi, this.madhab = Madhab.hanafi, this.highLat = HighLatitudeRule.middleOfTheNight,  Map<PrayerName, int> adjustmentsMin = const <PrayerName, int>{},  Map<PrayerName, bool> azanEnabled = const <PrayerName, bool>{},  Map<PrayerName, int> preReminderMin = const <PrayerName, int>{}, @JsonKey(fromJson: _soundFromJson, toJson: _soundToJson) this.sound = AzanSound.beep, this.hijriAdjustDays = 0, this.followMeLocation = true, this.methodIsManual = false, this.madhabIsManual = false, this.localeTag = 'en'}): _adjustmentsMin = adjustmentsMin,_azanEnabled = azanEnabled,_preReminderMin = preReminderMin,super._();
   factory _PrayerSettingsDto.fromJson(Map<String, dynamic> json) => _$PrayerSettingsDtoFromJson(json);
 
 @override@JsonKey() final  double lat;
@@ -263,7 +263,7 @@ class _PrayerSettingsDto extends PrayerSettingsDto {
   return EqualUnmodifiableMapView(_preReminderMin);
 }
 
-@override@JsonKey() final  AzanSound sound;
+@override@JsonKey(fromJson: _soundFromJson, toJson: _soundToJson) final  AzanSound sound;
 @override@JsonKey() final  int hijriAdjustDays;
 @override@JsonKey() final  bool followMeLocation;
 @override@JsonKey() final  bool methodIsManual;
@@ -305,7 +305,7 @@ abstract mixin class _$PrayerSettingsDtoCopyWith<$Res> implements $PrayerSetting
   factory _$PrayerSettingsDtoCopyWith(_PrayerSettingsDto value, $Res Function(_PrayerSettingsDto) _then) = __$PrayerSettingsDtoCopyWithImpl;
 @override @useResult
 $Res call({
- double lat, double lng, String countryCode, String timezoneId, String cityName, CalcMethod method, Madhab madhab, HighLatitudeRule highLat, Map<PrayerName, int> adjustmentsMin, Map<PrayerName, bool> azanEnabled, Map<PrayerName, int> preReminderMin, AzanSound sound, int hijriAdjustDays, bool followMeLocation, bool methodIsManual, bool madhabIsManual, String localeTag
+ double lat, double lng, String countryCode, String timezoneId, String cityName, CalcMethod method, Madhab madhab, HighLatitudeRule highLat, Map<PrayerName, int> adjustmentsMin, Map<PrayerName, bool> azanEnabled, Map<PrayerName, int> preReminderMin,@JsonKey(fromJson: _soundFromJson, toJson: _soundToJson) AzanSound sound, int hijriAdjustDays, bool followMeLocation, bool methodIsManual, bool madhabIsManual, String localeTag
 });
 
 

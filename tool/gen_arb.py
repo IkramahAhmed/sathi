@@ -113,9 +113,14 @@ add("preReminder", "Reminder before prayer", "نماز سے پہلے یاد دہ
 add("off", "Off", "بند", "Band")
 add("azanSound", "Azan sound", "اذان کی آواز", "Azan ki awaz")
 add("soundBeep", "Beep", "بیپ", "Beep")
-add("soundMakkah", "Makkah", "مکہ", "Makkah")
-add("soundMadina", "Madina", "مدینہ", "Madina")
+add("soundFull", "Azan (full)", "اذان (مکمل)", "Azan (mukammal)")
+add("soundShort", "Azan (short)", "اذان (مختصر)", "Azan (mukhtasar)")
 add("soundSilent", "Silent", "خاموش", "Khamosh")
+add("audioCredits", "Audio credits", "آڈیو کا حوالہ", "Audio ka hawala")
+add("audioCreditsBody",
+    "Azan recording: “The Adhan - Muslim Call to Prayer - Aaqib Azeez”, shared on Wikimedia Commons by Atcovi under CC BY-SA 4.0. The short version is a trimmed copy with a fade-out. Source: commons.wikimedia.org (File:The Adhan - Muslim Call to Prayer - Aaqib Azeez.mp3). License: creativecommons.org/licenses/by-sa/4.0",
+    "اذان کی ریکارڈنگ: “The Adhan - Muslim Call to Prayer - Aaqib Azeez”، جسے Atcovi نے Wikimedia Commons پر CC BY-SA 4.0 کے تحت شیئر کیا۔ مختصر ورژن اسی کی کاٹی گئی کاپی ہے جس کے آخر میں آواز مدھم ہوتی ہے۔ ماخذ: commons.wikimedia.org (File:The Adhan - Muslim Call to Prayer - Aaqib Azeez.mp3)۔ لائسنس: creativecommons.org/licenses/by-sa/4.0",
+    "Azan ki recording: “The Adhan - Muslim Call to Prayer - Aaqib Azeez”, jo Atcovi ne Wikimedia Commons par CC BY-SA 4.0 ke tahat share ki. Mukhtasar version usi ki kati hui copy hai jis ke aakhir mein awaz dheemi hoti hai. Source: commons.wikimedia.org (File:The Adhan - Muslim Call to Prayer - Aaqib Azeez.mp3). License: creativecommons.org/licenses/by-sa/4.0")
 add("previewSound", "Preview", "سنیں", "Suniye")
 add("secHijri", "Hijri date", "ہجری تاریخ", "Hijri tareekh")
 add("hijriAdjust", "Moon-sighting correction", "چاند دیکھنے کی تصحیح", "Chand dekhne ki tasheeh")

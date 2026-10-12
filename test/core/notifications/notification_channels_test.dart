@@ -10,8 +10,8 @@ void main() {
     final ids = NotificationChannels.all().map((c) => c.id).toList();
     expect(ids, [
       'azan_beep',
-      'azan_makkah',
-      'azan_madina',
+      'azan_full',
+      'azan_short',
       'azan_silent',
       'pre_reminder',
     ]);
@@ -38,20 +38,42 @@ void main() {
   });
 
   test('bundled raw sound files exist for every audible azan sound', () {
+    final raw = Directory('android/app/src/main/res/raw');
+    final names = raw.listSync().map((f) => f.uri.pathSegments.last).toList();
     for (final sound in AzanSound.values.where((s) => !s.isSilent)) {
-      final wav = File('android/app/src/main/res/raw/${sound.channelId}.wav');
-      expect(wav.existsSync(), isTrue, reason: '${wav.path} is missing');
+      expect(
+        names.any((n) => RegExp('^${sound.channelId}\\.(mp3|wav|ogg|m4a)\$').hasMatch(n)),
+        isTrue,
+        reason: 'no raw file for ${sound.channelId} in $names',
+      );
       expect(RegExp(r'^[a-z0-9_]+$').hasMatch(sound.channelId), isTrue,
           reason: 'Android raw resources must be lowercase a-z, 0-9, _');
     }
   });
 
   test('notification details use the full-screen-free, max-priority azan settings', () {
-    final details = NotificationChannels.detailsFor('azan_makkah').android!;
-    expect(details.channelId, 'azan_makkah');
+    final details = NotificationChannels.detailsFor('azan_full').android!;
+    expect(details.channelId, 'azan_full');
     expect(details.fullScreenIntent, isFalse);
     expect(details.importance, Importance.max);
     expect(details.channelBypassDnd, isFalse);
+  });
+
+  test('legacy placeholder channels are scheduled for deletion, not recreated', () {
+    expect(NotificationChannels.legacyChannelIds, ['azan_makkah', 'azan_madina']);
+    final current = NotificationChannels.all().map((c) => c.id);
+    expect(current.any(NotificationChannels.legacyChannelIds.contains), isFalse);
+  });
+
+  test('iOS uses the short clip for the full azan (30 second limit) and has a caf for each', () {
+    final full = NotificationChannels.detailsFor('azan_full').iOS!;
+    expect(full.sound, 'azan_short.caf');
+    expect(NotificationChannels.detailsFor('azan_short').iOS!.sound, 'azan_short.caf');
+    expect(NotificationChannels.detailsFor('azan_beep').iOS!.sound, 'azan_beep.caf');
+    expect(NotificationChannels.detailsFor('azan_silent').iOS!.sound, isNull);
+    for (final name in ['azan_short.caf', 'azan_beep.caf']) {
+      expect(File('ios/Runner/Sounds/$name').existsSync(), isTrue, reason: name);
+    }
   });
 
   test('unknown channel ids fall back to the first channel instead of throwing', () {

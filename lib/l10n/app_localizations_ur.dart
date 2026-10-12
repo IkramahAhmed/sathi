@@ -263,13 +263,20 @@ class AppLocalizationsUr extends AppLocalizations {
   String get soundBeep => 'بیپ';
 
   @override
-  String get soundMakkah => 'مکہ';
+  String get soundFull => 'اذان (مکمل)';
 
   @override
-  String get soundMadina => 'مدینہ';
+  String get soundShort => 'اذان (مختصر)';
 
   @override
   String get soundSilent => 'خاموش';
+
+  @override
+  String get audioCredits => 'آڈیو کا حوالہ';
+
+  @override
+  String get audioCreditsBody =>
+      'اذان کی ریکارڈنگ: “The Adhan - Muslim Call to Prayer - Aaqib Azeez”، جسے Atcovi نے Wikimedia Commons پر CC BY-SA 4.0 کے تحت شیئر کیا۔ مختصر ورژن اسی کی کاٹی گئی کاپی ہے جس کے آخر میں آواز مدھم ہوتی ہے۔ ماخذ: commons.wikimedia.org (File:The Adhan - Muslim Call to Prayer - Aaqib Azeez.mp3)۔ لائسنس: creativecommons.org/licenses/by-sa/4.0';
 
   @override
   String get previewSound => 'سنیں';

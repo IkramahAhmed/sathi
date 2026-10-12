@@ -38,8 +38,7 @@ _PrayerSettingsDto _$PrayerSettingsDtoFromJson(
             MapEntry($enumDecode(_$PrayerNameEnumMap, k), (e as num).toInt()),
       ) ??
       const <PrayerName, int>{},
-  sound:
-      $enumDecodeNullable(_$AzanSoundEnumMap, json['sound']) ?? AzanSound.beep,
+  sound: json['sound'] == null ? AzanSound.beep : _soundFromJson(json['sound']),
   hijriAdjustDays: (json['hijriAdjustDays'] as num?)?.toInt() ?? 0,
   followMeLocation: json['followMeLocation'] as bool? ?? true,
   methodIsManual: json['methodIsManual'] as bool? ?? false,
@@ -66,7 +65,7 @@ Map<String, dynamic> _$PrayerSettingsDtoToJson(_PrayerSettingsDto instance) =>
       'preReminderMin': instance.preReminderMin.map(
         (k, e) => MapEntry(_$PrayerNameEnumMap[k]!, e),
       ),
-      'sound': _$AzanSoundEnumMap[instance.sound]!,
+      'sound': _soundToJson(instance.sound),
       'hijriAdjustDays': instance.hijriAdjustDays,
       'followMeLocation': instance.followMeLocation,
       'methodIsManual': instance.methodIsManual,
@@ -104,11 +103,4 @@ const _$PrayerNameEnumMap = {
   PrayerName.asr: 'asr',
   PrayerName.maghrib: 'maghrib',
   PrayerName.isha: 'isha',
-};
-
-const _$AzanSoundEnumMap = {
-  AzanSound.beep: 'beep',
-  AzanSound.makkah: 'makkah',
-  AzanSound.madina: 'madina',
-  AzanSound.silent: 'silent',
 };

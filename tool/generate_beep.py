@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Generates PLACEHOLDER notification tones (not real azan recordings).
+"""Generates the plain three-beep notification tone (azan_beep.wav).
 
-Replace the files in android/app/src/main/res/raw with real audio, keeping the
-same names (lowercase, no spaces). See README.md > "Adding azan sounds".
-Usage: python3 tool/generate_placeholder_sounds.py
+The real azan sounds (azan_full, azan_short) are recordings, not generated;
+see README.md > "Azan sounds" and tool/make_short_azan.py.
+Usage: python3 tool/generate_beep.py
 """
 import math
 import struct
@@ -52,18 +52,6 @@ def main():
     for _ in range(3):
         beep += tone(880, 0.35) + silence(0.2)
     write("azan_beep", beep)
-
-    # Placeholder "makkah": slow descending phrase.
-    makkah = []
-    for f in (523.25, 493.88, 440.0, 392.0, 440.0, 392.0):
-        makkah += tone(f, 0.9, overtones=(1.0, 0.4, 0.2)) + silence(0.1)
-    write("azan_makkah", makkah)
-
-    # Placeholder "madina": slow ascending phrase.
-    madina = []
-    for f in (392.0, 440.0, 493.88, 523.25, 587.33, 523.25):
-        madina += tone(f, 0.9, overtones=(1.0, 0.5, 0.25)) + silence(0.1)
-    write("azan_madina", madina)
 
 
 if __name__ == "__main__":

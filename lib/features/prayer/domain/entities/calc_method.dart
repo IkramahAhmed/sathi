@@ -42,9 +42,15 @@ enum HighLatitudeRule {
 /// Bundled azan sounds. Each one has its own notification channel because
 /// Android caches a channel's sound for good.
 enum AzanSound {
+  /// A plain three-beep tone.
   beep('azan_beep'),
-  makkah('azan_makkah'),
-  madina('azan_madina'),
+
+  /// The complete azan recording (about 1½ minutes). Android only: iOS limits
+  /// notification sounds to 30 seconds, so it plays [short] there.
+  full('azan_full'),
+
+  /// The opening of the azan, trimmed to under 30 seconds.
+  short('azan_short'),
   silent('azan_silent');
 
   const AzanSound(this.channelId);
@@ -53,4 +59,13 @@ enum AzanSound {
   final String channelId;
 
   bool get isSilent => this == silent;
+
+  /// Parses a stored value. Older versions saved `makkah` and `madina`; those
+  /// placeholder sounds map to the real recordings that replaced them.
+  static AzanSound fromStored(String? name) => switch (name) {
+        'full' || 'makkah' => AzanSound.full,
+        'short' || 'madina' => AzanSound.short,
+        'silent' => AzanSound.silent,
+        _ => AzanSound.beep,
+      };
 }

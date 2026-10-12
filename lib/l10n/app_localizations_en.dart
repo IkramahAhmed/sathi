@@ -263,13 +263,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get soundBeep => 'Beep';
 
   @override
-  String get soundMakkah => 'Makkah';
+  String get soundFull => 'Azan (full)';
 
   @override
-  String get soundMadina => 'Madina';
+  String get soundShort => 'Azan (short)';
 
   @override
   String get soundSilent => 'Silent';
+
+  @override
+  String get audioCredits => 'Audio credits';
+
+  @override
+  String get audioCreditsBody =>
+      'Azan recording: “The Adhan - Muslim Call to Prayer - Aaqib Azeez”, shared on Wikimedia Commons by Atcovi under CC BY-SA 4.0. The short version is a trimmed copy with a fade-out. Source: commons.wikimedia.org (File:The Adhan - Muslim Call to Prayer - Aaqib Azeez.mp3). License: creativecommons.org/licenses/by-sa/4.0';
 
   @override
   String get previewSound => 'Preview';
@@ -688,13 +695,20 @@ class AppLocalizationsEnPk extends AppLocalizationsEn {
   String get soundBeep => 'Beep';
 
   @override
-  String get soundMakkah => 'Makkah';
+  String get soundFull => 'Azan (mukammal)';
 
   @override
-  String get soundMadina => 'Madina';
+  String get soundShort => 'Azan (mukhtasar)';
 
   @override
   String get soundSilent => 'Khamosh';
+
+  @override
+  String get audioCredits => 'Audio ka hawala';
+
+  @override
+  String get audioCreditsBody =>
+      'Azan ki recording: “The Adhan - Muslim Call to Prayer - Aaqib Azeez”, jo Atcovi ne Wikimedia Commons par CC BY-SA 4.0 ke tahat share ki. Mukhtasar version usi ki kati hui copy hai jis ke aakhir mein awaz dheemi hoti hai. Source: commons.wikimedia.org (File:The Adhan - Muslim Call to Prayer - Aaqib Azeez.mp3). License: creativecommons.org/licenses/by-sa/4.0';
 
   @override
   String get previewSound => 'Suniye';

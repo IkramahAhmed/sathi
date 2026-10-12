@@ -191,6 +191,19 @@ class SettingsScreen extends ConsumerWidget {
             trailing: const Icon(Icons.chevron_right),
             onTap: () => context.push(Routes.oemGuide),
           ),
+          ListTile(
+            key: const ValueKey('audio-credits'),
+            leading: const Icon(Icons.copyright_outlined),
+            title: Text(l10n.audioCredits),
+            onTap: () => showDialog<void>(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: Text(l10n.audioCredits),
+                content: SingleChildScrollView(child: Text(l10n.audioCreditsBody)),
+                actions: [TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(l10n.close))],
+              ),
+            ),
+          ),
         ],
       ),
     );
