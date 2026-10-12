@@ -1,0 +1,24 @@
+group 'com.hemanthraj.fluttercompass'
+version '1.0-SNAPSHOT'
+
+// Patched for Gradle 9 / AGP 9: removed the buildscript block (old AGP 7.4
+// classpath, Kotlin 1.9) and raised compileSdk from 33 to 36, which current
+// AndroidX dependencies require. See ../PATCHES.md.
+apply plugin: 'com.android.library'
+// The plugin is written in Kotlin; the Kotlin Gradle plugin version comes from the
+// host app (android/settings.gradle.kts), so no buildscript classpath is needed.
+apply plugin: 'kotlin-android'
+
+android {
+    namespace "com.hemanthraj.fluttercompass"
+    compileSdk 36
+
+    defaultConfig {
+        minSdk 21
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}

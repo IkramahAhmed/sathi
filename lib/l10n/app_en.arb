@@ -1,0 +1,259 @@
+{
+  "@@locale": "en",
+  "appName": "Saathi",
+  "navHome": "Home",
+  "navTimetable": "Timetable",
+  "navQibla": "Qibla",
+  "navSettings": "Settings",
+  "ok": "OK",
+  "cancel": "Cancel",
+  "skip": "Skip",
+  "next": "Next",
+  "back": "Back",
+  "done": "Done",
+  "retry": "Try again",
+  "close": "Close",
+  "allow": "Allow",
+  "allowed": "Allowed",
+  "genericError": "Something went wrong",
+  "prayerFajr": "Fajr",
+  "prayerSunrise": "Sunrise",
+  "prayerDhuhr": "Dhuhr",
+  "prayerAsr": "Asr",
+  "prayerMaghrib": "Maghrib",
+  "prayerIsha": "Isha",
+  "prayerJumma": "Jumma",
+  "prayerTimesTitle": "Prayer times",
+  "nextPrayer": "Next: {prayer} in {duration}",
+  "@nextPrayer": {
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      },
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "sunriseAt": "Sunrise {time}",
+  "@sunriseAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "prayedLabel": "Prayed",
+  "markPrayed": "Mark {prayer} as prayed",
+  "@markPrayed": {
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      }
+    }
+  },
+  "azanToggle": "Azan for {prayer}",
+  "@azanToggle": {
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      }
+    }
+  },
+  "hijriDate": "{day} {month} {year} AH",
+  "@hijriDate": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      },
+      "month": {
+        "type": "String"
+      },
+      "year": {
+        "type": "int"
+      }
+    }
+  },
+  "locationRefresh": "Update my location",
+  "locationUpdated": "Location set to {city}",
+  "@locationUpdated": {
+    "placeholders": {
+      "city": {
+        "type": "String"
+      }
+    }
+  },
+  "locationFailed": "Could not get your location",
+  "durationHoursMinutes": "{hours} h {minutes} min",
+  "@durationHoursMinutes": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "durationMinutes": "{minutes} min",
+  "@durationMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "durationSeconds": "{seconds} s",
+  "@durationSeconds": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "bannerExactTitle": "Exact alarms are off",
+  "bannerExactBody": "Azan may arrive a few minutes late. Allow “Alarms & reminders” for on-time azan.",
+  "bannerExactAction": "Allow",
+  "bannerNotifTitle": "Notifications are off",
+  "bannerNotifBody": "Turn notifications on to hear the azan.",
+  "tasbeehTitle": "Tasbeeh",
+  "tasbeehTapHint": "Tap to count",
+  "tasbeehReset": "Reset",
+  "timetableTitle": "Monthly timetable",
+  "shareImage": "Share as image",
+  "shareFailed": "Could not share the timetable",
+  "colDate": "Date",
+  "previousMonth": "Previous month",
+  "nextMonth": "Next month",
+  "settingsTitle": "Settings",
+  "secLocation": "Location",
+  "useMyLocation": "Use my location",
+  "chooseCity": "Choose a city",
+  "searchCity": "Search city",
+  "currentLocation": "{city}, {country}",
+  "@currentLocation": {
+    "placeholders": {
+      "city": {
+        "type": "String"
+      },
+      "country": {
+        "type": "String"
+      }
+    }
+  },
+  "followMe": "Update when I travel",
+  "followMeHint": "Recalculates when you move more than 50 km",
+  "secCalculation": "Calculation",
+  "method": "Method",
+  "madhab": "Asr (madhab)",
+  "madhabHanafi": "Hanafi",
+  "madhabShafi": "Shafi’i / Maliki / Hanbali",
+  "highLatRule": "High-latitude rule",
+  "highLatMiddle": "Middle of the night",
+  "highLatSeventh": "One-seventh of the night",
+  "highLatAngle": "Twilight angle",
+  "autoMethod": "Auto: {method}",
+  "@autoMethod": {
+    "placeholders": {
+      "method": {
+        "type": "String"
+      }
+    }
+  },
+  "useCountryDefaults": "Use country defaults",
+  "secPrayers": "Prayers",
+  "masjidAdjust": "Masjid time (± minutes)",
+  "minutesValue": "{minutes} min",
+  "@minutesValue": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "preReminder": "Reminder before prayer",
+  "off": "Off",
+  "azanSound": "Azan sound",
+  "soundBeep": "Beep",
+  "soundMakkah": "Makkah",
+  "soundMadina": "Madina",
+  "soundSilent": "Silent",
+  "previewSound": "Preview",
+  "secHijri": "Hijri date",
+  "hijriAdjust": "Moon-sighting correction",
+  "hijriNoChange": "No change",
+  "hijriPlusOne": "+1 day",
+  "hijriMinusOne": "−1 day",
+  "secLanguage": "Language",
+  "langEnglish": "English",
+  "langUrdu": "اردو",
+  "langRomanUrdu": "Roman Urdu",
+  "testNotification": "Test notification in 10 s",
+  "testScheduled": "A test notification will arrive in 10 seconds",
+  "testTitle": "Saathi test",
+  "testBody": "If you can hear this, the azan will work",
+  "batteryHelp": "Battery & background help",
+  "pendingCount": "{count} azan alerts scheduled",
+  "@pendingCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "qiblaTitle": "Qibla",
+  "qiblaBearing": "Qibla is {degrees}° from north",
+  "@qiblaBearing": {
+    "placeholders": {
+      "degrees": {
+        "type": "int"
+      }
+    }
+  },
+  "qiblaNoSensor": "This phone has no compass sensor. Use the bearing above with a compass.",
+  "qiblaFace": "Turn until the arrow points up",
+  "stepOf": "Step {current} of {total}",
+  "@stepOf": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "onbWelcomeTitle": "Assalamu alaikum",
+  "onbWelcomeBody": "Saathi tells you prayer times and plays the azan, even with no internet.",
+  "onbLanguageTitle": "Choose your language",
+  "onbLocationTitle": "Your location",
+  "onbLocationBody": "Used to calculate accurate prayer times. It stays on your phone.",
+  "onbLocationAllow": "Use my location",
+  "onbLocationManual": "Or choose a city",
+  "onbNotifTitle": "Azan notifications",
+  "onbNotifBody": "Allow notifications so Saathi can call you to prayer.",
+  "onbExactTitle": "On-time alarms",
+  "onbExactBody": "Allow “Alarms & reminders” so the azan fires at the exact minute.",
+  "onbOemTitle": "Keep Saathi running",
+  "onbOemBody": "Your phone may stop apps in the background. A few settings keep the azan reliable.",
+  "onbOemOpen": "See the steps",
+  "onbDoneTitle": "All set",
+  "onbDoneBody": "Saathi will call you at every prayer.",
+  "onbStart": "Start",
+  "oemTitle": "Allow background azan",
+  "oemIntro": "{brand} phones often stop background apps to save battery. Do these steps once:",
+  "@oemIntro": {
+    "placeholders": {
+      "brand": {
+        "type": "String"
+      }
+    }
+  },
+  "oemStep1": "Open App info, then Battery, and choose “No restrictions” (or “Unrestricted”).",
+  "oemStep2": "Turn on “Autostart” or “Auto-launch” for Saathi.",
+  "oemStep3": "In Recent apps, lock Saathi (pull its card down or long-press, then choose Lock).",
+  "oemStep4": "Keep notifications and notification sound switched on.",
+  "oemOpenSettings": "Open app settings",
+  "oemDontShow": "Don’t show again",
+  "oemGotIt": "Got it"
+}
