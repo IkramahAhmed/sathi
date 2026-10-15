@@ -7,14 +7,18 @@ import '../features/prayer/presentation/screens/home_screen.dart';
 import '../features/prayer/presentation/screens/monthly_timetable_screen.dart';
 import '../features/prayer/presentation/screens/onboarding_screen.dart';
 import '../features/prayer/presentation/screens/permission_guide_screen.dart';
+import '../features/prayer/presentation/screens/qaza_screen.dart';
 import '../features/prayer/presentation/screens/qibla_screen.dart';
 import '../features/prayer/presentation/screens/settings_screen.dart';
+import '../features/prayer/presentation/screens/tracker_screen.dart';
 import 'app_shell.dart';
 
 part 'router.g.dart';
 
 abstract final class Routes {
   static const home = '/';
+  static const tracker = '/tracker';
+  static const qaza = '/qaza';
   static const monthly = '/monthly';
   static const qibla = '/qibla';
   static const settings = '/settings';
@@ -37,6 +41,7 @@ GoRouter router(Ref ref) {
     routes: [
       GoRoute(path: Routes.onboarding, builder: (_, _) => const OnboardingScreen()),
       GoRoute(path: Routes.oemGuide, builder: (_, _) => const PermissionGuideScreen()),
+      GoRoute(path: Routes.qaza, builder: (_, _) => const QazaScreen()),
       StatefulShellRoute.indexedStack(
         builder: (context, state, shell) => AppShell(shell: shell),
         branches: [
@@ -49,6 +54,9 @@ GoRouter router(Ref ref) {
                     .firstOrNull,
               ),
             ),
+          ]),
+          StatefulShellBranch(routes: [
+            GoRoute(path: Routes.tracker, builder: (_, _) => const TrackerScreen()),
           ]),
           StatefulShellBranch(routes: [
             GoRoute(path: Routes.monthly, builder: (_, _) => const MonthlyTimetableScreen()),

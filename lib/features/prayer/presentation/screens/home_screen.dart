@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
-import '../../../../app/providers.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../../../app/router.dart';
 import '../../domain/entities/prayer_name.dart';
+import '../../domain/entities/streaks.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../l10n_helpers.dart';
 import '../providers/prayer_providers.dart';
 import '../providers/settings_controller.dart';
-import '../providers/sync_controller.dart';
+import '../providers/tracker_providers.dart';
 import '../widgets/next_prayer_countdown.dart';
 import '../widgets/prayer_row.dart';
 import '../widgets/status_banners.dart';
@@ -119,8 +122,11 @@ class HomeScreen extends ConsumerWidget {
               onToggleAzan: (enabled) =>
                   ref.read(settingsControllerProvider.notifier).setAzanEnabled(prayer, enabled: enabled),
               onTogglePrayed: (done) async {
-                await ref.read(markPrayerDoneProvider)(today.date, prayer, done: done);
-                ref.read(syncStatusControllerProvider.notifier).scheduleSoon();
+                final router = GoRouter.of(context);
+                final result = await ref.read(prayerActionsProvider).setDone(today.date, prayer, done: done);
+                if (result == TickResult.needsProof) {
+                  router.push('${Routes.verify}?prayer=${prayer.name}&date=${dateKey(today.date)}');
+                }
               },
             ),
             const SizedBox(height: 8),

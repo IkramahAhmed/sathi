@@ -402,6 +402,354 @@ class AppLocalizationsEn extends AppLocalizations {
   String get syncDeleted => 'Cloud data deleted';
 
   @override
+  String get navTracker => 'Tracker';
+
+  @override
+  String get trackerTitle => 'Prayer tracker';
+
+  @override
+  String streakCurrent(int days) {
+    return '$days-day streak';
+  }
+
+  @override
+  String streakBest(int days) {
+    return 'Best: $days';
+  }
+
+  @override
+  String get streakNone => 'Pray all five today to start a streak';
+
+  @override
+  String get trackerToday => 'Today';
+
+  @override
+  String get trackerPrevDay => 'Previous day';
+
+  @override
+  String get trackerNextDay => 'Next day';
+
+  @override
+  String get trackerFuture => 'You cannot tick a day that has not happened yet';
+
+  @override
+  String get trackerPausedDay =>
+      'Paused: prayers on this day are not counted as missed';
+
+  @override
+  String get dayComplete => 'All five prayed';
+
+  @override
+  String get pauseTitle => 'Pause';
+
+  @override
+  String get pauseHelp =>
+      'For illness or a woman\'s period. Paused days do not break your streak or count as missed. This stays on this phone only and is never uploaded.';
+
+  @override
+  String get pauseStart => 'Start a pause today';
+
+  @override
+  String get pauseEnd => 'Resume';
+
+  @override
+  String pauseSince(String date) {
+    return 'Paused since $date';
+  }
+
+  @override
+  String get pauseAddPast => 'Add past days';
+
+  @override
+  String pauseRange(String start, String end) {
+    return '$start to $end';
+  }
+
+  @override
+  String get pauseRemove => 'Remove';
+
+  @override
+  String get pauseNone => 'No pauses';
+
+  @override
+  String get qazaTitle => 'Qaza (missed prayers)';
+
+  @override
+  String qazaCardOwed(int count) {
+    return '$count to make up';
+  }
+
+  @override
+  String get qazaCardNone => 'Nothing owed';
+
+  @override
+  String get qazaMadeUp => 'Made up one';
+
+  @override
+  String get qazaAddOne => 'Add one missed';
+
+  @override
+  String get qazaSetBalance => 'Set starting balance';
+
+  @override
+  String get qazaBalanceHelp =>
+      'How many of each prayer do you owe? Leave a prayer at 0 if none.';
+
+  @override
+  String get qazaEstimate => 'Estimate from years';
+
+  @override
+  String get qazaYears => 'Years of missed prayers';
+
+  @override
+  String get qazaYearsHelp =>
+      'Fills every prayer with years × 365. You can adjust each one after.';
+
+  @override
+  String get qazaApply => 'Apply';
+
+  @override
+  String get qazaAuto => 'Count missed prayers automatically';
+
+  @override
+  String get qazaAutoHelp =>
+      'Adds a missed prayer when its time ends without a tick. Starts from today. It is taken back if you tick it later, and paused days are skipped.';
+
+  @override
+  String get qazaHistory => 'History';
+
+  @override
+  String get qazaHistoryEmpty => 'Nothing yet';
+
+  @override
+  String get qazaSourceInitial => 'Starting balance';
+
+  @override
+  String get qazaSourceAdded => 'Added';
+
+  @override
+  String get qazaSourceMadeUp => 'Made up';
+
+  @override
+  String get qazaSourceAuto => 'Counted automatically';
+
+  @override
+  String qazaTotal(int count) {
+    return '$count prayers to make up';
+  }
+
+  @override
+  String get jamaatSection => 'Jama\'at (mosque)';
+
+  @override
+  String get jamaatHelp =>
+      'Set your mosque\'s jama\'at times to see them next to each prayer, and to be reminded to leave. Use minutes after the azan, or a fixed time.';
+
+  @override
+  String get jamaatNotSet => 'Not set';
+
+  @override
+  String jamaatAfter(int minutes) {
+    return '$minutes min after azan';
+  }
+
+  @override
+  String jamaatFixed(String time) {
+    return 'At $time';
+  }
+
+  @override
+  String jamaatAt(String time) {
+    return 'Jama\'at $time';
+  }
+
+  @override
+  String get jamaatEdit => 'Jama\'at time';
+
+  @override
+  String get jamaatModeAfter => 'Minutes after azan';
+
+  @override
+  String get jamaatModeFixed => 'Fixed time';
+
+  @override
+  String get jamaatPickTime => 'Pick time';
+
+  @override
+  String get jamaatClear => 'Clear';
+
+  @override
+  String get jummaTime => 'Jumma time';
+
+  @override
+  String get leaveReminder => 'Remind me to leave';
+
+  @override
+  String leaveMinutes(int minutes) {
+    return '$minutes min before jama\'at';
+  }
+
+  @override
+  String get silentDuring => 'Silence my phone during jama\'at';
+
+  @override
+  String get silentHelp =>
+      'Needs Do Not Disturb access. The phone returns to normal afterwards.';
+
+  @override
+  String get silentGrantAccess => 'Allow Do Not Disturb access';
+
+  @override
+  String get azanAlarmVolume => 'Play azan on the alarm volume';
+
+  @override
+  String get azanAlarmHelp =>
+      'Heard even in silent mode, and not affected by the media volume.';
+
+  @override
+  String get checkSetupTitle => 'Check my setup';
+
+  @override
+  String get checkSetupIntro =>
+      'Make sure the azan will really sound. Fix anything marked in red.';
+
+  @override
+  String get checkNotifications => 'Notifications allowed';
+
+  @override
+  String get checkExact => 'Alarms and reminders allowed';
+
+  @override
+  String get checkExactHelp => 'Lets the azan fire at the exact minute.';
+
+  @override
+  String get checkBattery => 'Battery: unrestricted';
+
+  @override
+  String get checkBatteryHelp =>
+      'Open app settings, then Battery, and choose No restrictions.';
+
+  @override
+  String get checkChannel => 'Azan sound turned on in system settings';
+
+  @override
+  String get checkChannelHelp =>
+      'The azan sound is muted for this app. Turn it on in the notification settings.';
+
+  @override
+  String checkScheduled(int count) {
+    return '$count alerts scheduled';
+  }
+
+  @override
+  String get checkNoneScheduled => 'No alerts are scheduled';
+
+  @override
+  String get checkOk => 'OK';
+
+  @override
+  String get checkFix => 'Fix';
+
+  @override
+  String get checkTestNow => 'Play a test azan now';
+
+  @override
+  String get checkReplan => 'Re-plan all alerts';
+
+  @override
+  String get checkReplanned => 'Alerts re-planned';
+
+  @override
+  String get endSection => 'Prayer time ending';
+
+  @override
+  String get endHelp =>
+      'Get reminded before a prayer\'s time ends, and again until you have prayed. If a prayer is missed it goes to your qaza list.';
+
+  @override
+  String get endEnable => 'Remind me before a prayer ends';
+
+  @override
+  String get endLead => 'First reminder';
+
+  @override
+  String endLeadValue(int minutes) {
+    return '$minutes min before the end';
+  }
+
+  @override
+  String get endRepeat => 'Then repeat every';
+
+  @override
+  String endRepeatValue(int minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String get endPrayers => 'Which prayers';
+
+  @override
+  String get endRequirePhoto => 'Photo proof';
+
+  @override
+  String get endRequirePhotoHelp =>
+      'Keep reminding until you take a photo of your prayer place, such as your prayer mat or the mosque. The photo is checked on this phone and is never saved or sent anywhere.';
+
+  @override
+  String get verifyTitle => 'Prayer photo check';
+
+  @override
+  String get verifyIntro =>
+      'After you pray, take a photo of your prayer place, such as your prayer mat or the mosque. It is checked on this phone only and is never saved.';
+
+  @override
+  String verifyPrayer(String prayer, String date) {
+    return '$prayer · $date';
+  }
+
+  @override
+  String get verifyTake => 'Take photo';
+
+  @override
+  String get verifyChecking => 'Checking…';
+
+  @override
+  String get verifySuccess => 'Verified. May Allah accept your prayer.';
+
+  @override
+  String get verifyFail =>
+      'That does not look like a prayer place. Try again with your prayer mat or the mosque in view.';
+
+  @override
+  String get verifyTryAgain => 'Try again';
+
+  @override
+  String get verifyStop => 'Stop reminding me';
+
+  @override
+  String get verifyStopHelp =>
+      'Use this if you cannot pray now. The prayer is not marked as prayed.';
+
+  @override
+  String verifySaw(String labels) {
+    return 'The phone saw: $labels';
+  }
+
+  @override
+  String get verifyEnded =>
+      'This prayer\'s time has ended. You can still tick it in the tracker.';
+
+  @override
+  String get verifyProofNeeded => 'Photo proof is on for this prayer';
+
+  @override
+  String get verifyNoCamera => 'The camera could not be opened';
+
+  @override
+  String get verifyChecklistHint =>
+      'Tip: make sure the prayer mat or the mosque fills most of the picture.';
+
+  @override
   String get secLanguage => 'Language';
 
   @override
@@ -938,6 +1286,357 @@ class AppLocalizationsEnPk extends AppLocalizationsEn {
 
   @override
   String get syncDeleted => 'Cloud data delete ho gaya';
+
+  @override
+  String get navTracker => 'Tracker';
+
+  @override
+  String get trackerTitle => 'Namaz tracker';
+
+  @override
+  String streakCurrent(int days) {
+    return '$days din ka silsila';
+  }
+
+  @override
+  String streakBest(int days) {
+    return 'Behtareen: $days';
+  }
+
+  @override
+  String get streakNone =>
+      'Silsila shuru karne ke liye aaj paanchon namazein parhein';
+
+  @override
+  String get trackerToday => 'Aaj';
+
+  @override
+  String get trackerPrevDay => 'Pichla din';
+
+  @override
+  String get trackerNextDay => 'Agla din';
+
+  @override
+  String get trackerFuture =>
+      'Aanay wale din ki namaz nishan zad nahi ho sakti';
+
+  @override
+  String get trackerPausedDay =>
+      'Waqfa: is din ki namazein chhooti hui shumar nahi hongi';
+
+  @override
+  String get dayComplete => 'Paanchon parhein';
+
+  @override
+  String get pauseTitle => 'Waqfa';
+
+  @override
+  String get pauseHelp =>
+      'Bimari ya khawateen ke makhsoos ayyam ke liye. Waqfe ke din silsila nahi torte aur chhooti namazon mein shumar nahi hote. Yeh sirf isi phone par rehta hai, kabhi upload nahi hota.';
+
+  @override
+  String get pauseStart => 'Aaj se waqfa shuru karein';
+
+  @override
+  String get pauseEnd => 'Dobara shuru karein';
+
+  @override
+  String pauseSince(String date) {
+    return '$date se waqfe mein';
+  }
+
+  @override
+  String get pauseAddPast => 'Pichhle din shamil karein';
+
+  @override
+  String pauseRange(String start, String end) {
+    return '$start se $end tak';
+  }
+
+  @override
+  String get pauseRemove => 'Hatayein';
+
+  @override
+  String get pauseNone => 'Koi waqfa nahi';
+
+  @override
+  String get qazaTitle => 'Qaza namazein';
+
+  @override
+  String qazaCardOwed(int count) {
+    return '$count ada karni hain';
+  }
+
+  @override
+  String get qazaCardNone => 'Koi qaza nahi';
+
+  @override
+  String get qazaMadeUp => 'Ek ada ki';
+
+  @override
+  String get qazaAddOne => 'Ek chhooti hui shamil karein';
+
+  @override
+  String get qazaSetBalance => 'Ibtidai tadaad muqarrar karein';
+
+  @override
+  String get qazaBalanceHelp =>
+      'Har namaz ki kitni qaza hai? Na ho to 0 rehne dein.';
+
+  @override
+  String get qazaEstimate => 'Barson se andaza lagayein';
+
+  @override
+  String get qazaYears => 'Chhooti namazon ke saal';
+
+  @override
+  String get qazaYearsHelp =>
+      'Har namaz mein saal × 365 bhar deta hai. Baad mein har ek badal sakte hain.';
+
+  @override
+  String get qazaApply => 'Lagu karein';
+
+  @override
+  String get qazaAuto => 'Chhooti namazein khud ginein';
+
+  @override
+  String get qazaAutoHelp =>
+      'Namaz ka waqt bagair nishan zad hue khatam ho to qaza mein shamil kar deta hai. Aaj se shuru hota hai. Baad mein nishan zad karein to wapas ho jati hai, aur waqfe ke din chhor diye jate hain.';
+
+  @override
+  String get qazaHistory => 'Tareekh';
+
+  @override
+  String get qazaHistoryEmpty => 'Abhi kuch nahi';
+
+  @override
+  String get qazaSourceInitial => 'Ibtidai tadaad';
+
+  @override
+  String get qazaSourceAdded => 'Shamil ki';
+
+  @override
+  String get qazaSourceMadeUp => 'Ada ki';
+
+  @override
+  String get qazaSourceAuto => 'Khud shumar hui';
+
+  @override
+  String qazaTotal(int count) {
+    return '$count namazein ada karni hain';
+  }
+
+  @override
+  String get jamaatSection => 'Jamaat (masjid)';
+
+  @override
+  String get jamaatHelp =>
+      'Apni masjid ki jamaat ke auqaat muqarrar karein taake har namaz ke saath nazar aayein aur rawangi ki yaad-dehani milay. Azan ke baad minute ya muqarrara waqt istemal karein.';
+
+  @override
+  String get jamaatNotSet => 'Muqarrar nahi';
+
+  @override
+  String jamaatAfter(int minutes) {
+    return 'Azan ke $minutes minute baad';
+  }
+
+  @override
+  String jamaatFixed(String time) {
+    return '$time par';
+  }
+
+  @override
+  String jamaatAt(String time) {
+    return 'Jamaat $time';
+  }
+
+  @override
+  String get jamaatEdit => 'Jamaat ka waqt';
+
+  @override
+  String get jamaatModeAfter => 'Azan ke baad minute';
+
+  @override
+  String get jamaatModeFixed => 'Muqarrara waqt';
+
+  @override
+  String get jamaatPickTime => 'Waqt chunein';
+
+  @override
+  String get jamaatClear => 'Hatayein';
+
+  @override
+  String get jummaTime => 'Jumma ka waqt';
+
+  @override
+  String get leaveReminder => 'Rawangi ki yaad-dehani';
+
+  @override
+  String leaveMinutes(int minutes) {
+    return 'Jamaat se $minutes minute pehle';
+  }
+
+  @override
+  String get silentDuring => 'Jamaat ke dauran phone khamosh karein';
+
+  @override
+  String get silentHelp =>
+      'Disturb na karein ki rasai darkar hai. Baad mein phone pehle jaisa ho jata hai.';
+
+  @override
+  String get silentGrantAccess => 'Disturb na karein ki rasai dein';
+
+  @override
+  String get azanAlarmVolume => 'Azan alarm ki awaz par chalayein';
+
+  @override
+  String get azanAlarmHelp =>
+      'Khamosh mode mein bhi sunai deti hai aur media volume se mutasir nahi hoti.';
+
+  @override
+  String get checkSetupTitle => 'Meri tarteeb janchein';
+
+  @override
+  String get checkSetupIntro =>
+      'Yaqeeni banayein ke azan waqai sunai degi. Surkh nishan wali cheez durust karein.';
+
+  @override
+  String get checkNotifications => 'Notifications ki ijazat';
+
+  @override
+  String get checkExact => 'Alarms aur reminders ki ijazat';
+
+  @override
+  String get checkExactHelp => 'Azan theek minute par bajne deti hai.';
+
+  @override
+  String get checkBattery => 'Battery: bagair pabandi';
+
+  @override
+  String get checkBatteryHelp =>
+      'App settings kholein, phir Battery, aur bagair pabandi chunein.';
+
+  @override
+  String get checkChannel => 'System settings mein azan ki awaz on hai';
+
+  @override
+  String get checkChannelHelp =>
+      'Is app ke liye azan ki awaz band hai. Notification settings mein on karein.';
+
+  @override
+  String checkScheduled(int count) {
+    return '$count alerts muqarrar hain';
+  }
+
+  @override
+  String get checkNoneScheduled => 'Koi alert muqarrar nahi';
+
+  @override
+  String get checkOk => 'Theek';
+
+  @override
+  String get checkFix => 'Durust karein';
+
+  @override
+  String get checkTestNow => 'Abhi azmaishi azan chalayein';
+
+  @override
+  String get checkReplan => 'Tamam alerts dobara tarteeb dein';
+
+  @override
+  String get checkReplanned => 'Alerts dobara tarteeb diye gaye';
+
+  @override
+  String get endSection => 'Namaz ka waqt khatam hone wala hai';
+
+  @override
+  String get endHelp =>
+      'Namaz ka waqt khatam hone se pehle yaad-dehani milegi, aur namaz parhne tak baar baar. Namaz chhoot jaye to qaza fehrist mein chali jati hai.';
+
+  @override
+  String get endEnable => 'Namaz khatam hone se pehle yaad dilayein';
+
+  @override
+  String get endLead => 'Pehli yaad-dehani';
+
+  @override
+  String endLeadValue(int minutes) {
+    return 'Khatam hone se $minutes minute pehle';
+  }
+
+  @override
+  String get endRepeat => 'Phir har';
+
+  @override
+  String endRepeatValue(int minutes) {
+    return '$minutes minute';
+  }
+
+  @override
+  String get endPrayers => 'Kaun si namazein';
+
+  @override
+  String get endRequirePhoto => 'Tasveeri saboot';
+
+  @override
+  String get endRequirePhotoHelp =>
+      'Jab tak aap apni namaz ki jagah, jaise jaye-namaz ya masjid, ki tasveer na lein yaad-dehani jari rahegi. Tasveer isi phone par janchi jati hai aur kahin mehfooz ya irsal nahi hoti.';
+
+  @override
+  String get verifyTitle => 'Namaz ki tasveer ki janch';
+
+  @override
+  String get verifyIntro =>
+      'Namaz ke baad apni namaz ki jagah, jaise jaye-namaz ya masjid, ki tasveer lein. Yeh sirf isi phone par janchi jati hai aur mehfooz nahi hoti.';
+
+  @override
+  String verifyPrayer(String prayer, String date) {
+    return '$prayer · $date';
+  }
+
+  @override
+  String get verifyTake => 'Tasveer lein';
+
+  @override
+  String get verifyChecking => 'Janch ho rahi hai…';
+
+  @override
+  String get verifySuccess =>
+      'Tasdeeq ho gayi. Allah aap ki namaz qabool farmaye.';
+
+  @override
+  String get verifyFail =>
+      'Yeh namaz ki jagah nahi lagti. Jaye-namaz ya masjid nazar aate hue dobara koshish karein.';
+
+  @override
+  String get verifyTryAgain => 'Dobara koshish karein';
+
+  @override
+  String get verifyStop => 'Yaad-dehani band karein';
+
+  @override
+  String get verifyStopHelp =>
+      'Agar abhi namaz nahi parh sakte to yeh istemal karein. Namaz parhi hui nishan zad nahi hogi.';
+
+  @override
+  String verifySaw(String labels) {
+    return 'Phone ne dekha: $labels';
+  }
+
+  @override
+  String get verifyEnded =>
+      'Is namaz ka waqt khatam ho chuka hai. Aap ise tracker mein nishan zad kar sakte hain.';
+
+  @override
+  String get verifyProofNeeded => 'Is namaz ke liye tasveeri saboot lazmi hai';
+
+  @override
+  String get verifyNoCamera => 'Camera nahi khul saka';
+
+  @override
+  String get verifyChecklistHint =>
+      'Mashwara: yaqeeni banayein ke jaye-namaz ya masjid tasveer ka bara hissa ho.';
 
   @override
   String get secLanguage => 'Zubaan';

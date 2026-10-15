@@ -14,6 +14,7 @@ import '../features/prayer/presentation/providers/prayer_providers.dart';
 import '../features/prayer/presentation/providers/reschedule_controller.dart';
 import '../features/prayer/presentation/providers/settings_controller.dart';
 import '../features/prayer/presentation/providers/sync_controller.dart';
+import '../features/prayer/presentation/providers/tracker_providers.dart';
 import '../l10n/app_localizations.dart';
 import 'providers.dart';
 import 'router.dart';
@@ -59,6 +60,7 @@ class _SaathiAppState extends ConsumerState<SaathiApp> with WidgetsBindingObserv
     await ref.read(settingsControllerProvider.future);
     await ref.read(permissionsControllerProvider.notifier).refresh();
     await ref.read(rescheduleControllerProvider.notifier).reschedule();
+    unawaited(ref.read(prayerActionsProvider).reconcileQaza());
     try {
       await ref.read(settingsControllerProvider.notifier).followIfMoved();
     } catch (error, stackTrace) {

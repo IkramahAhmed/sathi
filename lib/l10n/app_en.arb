@@ -232,6 +232,217 @@
   "syncDeleteBody": "This erases your backup from the cloud. The prayed log on this phone is not touched.",
   "syncDeleteConfirm": "Delete",
   "syncDeleted": "Cloud data deleted",
+  "navTracker": "Tracker",
+  "trackerTitle": "Prayer tracker",
+  "streakCurrent": "{days}-day streak",
+  "@streakCurrent": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "streakBest": "Best: {days}",
+  "@streakBest": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "streakNone": "Pray all five today to start a streak",
+  "trackerToday": "Today",
+  "trackerPrevDay": "Previous day",
+  "trackerNextDay": "Next day",
+  "trackerFuture": "You cannot tick a day that has not happened yet",
+  "trackerPausedDay": "Paused: prayers on this day are not counted as missed",
+  "dayComplete": "All five prayed",
+  "pauseTitle": "Pause",
+  "pauseHelp": "For illness or a woman's period. Paused days do not break your streak or count as missed. This stays on this phone only and is never uploaded.",
+  "pauseStart": "Start a pause today",
+  "pauseEnd": "Resume",
+  "pauseSince": "Paused since {date}",
+  "@pauseSince": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "pauseAddPast": "Add past days",
+  "pauseRange": "{start} to {end}",
+  "@pauseRange": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "pauseRemove": "Remove",
+  "pauseNone": "No pauses",
+  "qazaTitle": "Qaza (missed prayers)",
+  "qazaCardOwed": "{count} to make up",
+  "@qazaCardOwed": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "qazaCardNone": "Nothing owed",
+  "qazaMadeUp": "Made up one",
+  "qazaAddOne": "Add one missed",
+  "qazaSetBalance": "Set starting balance",
+  "qazaBalanceHelp": "How many of each prayer do you owe? Leave a prayer at 0 if none.",
+  "qazaEstimate": "Estimate from years",
+  "qazaYears": "Years of missed prayers",
+  "qazaYearsHelp": "Fills every prayer with years × 365. You can adjust each one after.",
+  "qazaApply": "Apply",
+  "qazaAuto": "Count missed prayers automatically",
+  "qazaAutoHelp": "Adds a missed prayer when its time ends without a tick. Starts from today. It is taken back if you tick it later, and paused days are skipped.",
+  "qazaHistory": "History",
+  "qazaHistoryEmpty": "Nothing yet",
+  "qazaSourceInitial": "Starting balance",
+  "qazaSourceAdded": "Added",
+  "qazaSourceMadeUp": "Made up",
+  "qazaSourceAuto": "Counted automatically",
+  "qazaTotal": "{count} prayers to make up",
+  "@qazaTotal": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "jamaatSection": "Jama'at (mosque)",
+  "jamaatHelp": "Set your mosque's jama'at times to see them next to each prayer, and to be reminded to leave. Use minutes after the azan, or a fixed time.",
+  "jamaatNotSet": "Not set",
+  "jamaatAfter": "{minutes} min after azan",
+  "@jamaatAfter": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "jamaatFixed": "At {time}",
+  "@jamaatFixed": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "jamaatAt": "Jama'at {time}",
+  "@jamaatAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "jamaatEdit": "Jama'at time",
+  "jamaatModeAfter": "Minutes after azan",
+  "jamaatModeFixed": "Fixed time",
+  "jamaatPickTime": "Pick time",
+  "jamaatClear": "Clear",
+  "jummaTime": "Jumma time",
+  "leaveReminder": "Remind me to leave",
+  "leaveMinutes": "{minutes} min before jama'at",
+  "@leaveMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "silentDuring": "Silence my phone during jama'at",
+  "silentHelp": "Needs Do Not Disturb access. The phone returns to normal afterwards.",
+  "silentGrantAccess": "Allow Do Not Disturb access",
+  "azanAlarmVolume": "Play azan on the alarm volume",
+  "azanAlarmHelp": "Heard even in silent mode, and not affected by the media volume.",
+  "checkSetupTitle": "Check my setup",
+  "checkSetupIntro": "Make sure the azan will really sound. Fix anything marked in red.",
+  "checkNotifications": "Notifications allowed",
+  "checkExact": "Alarms and reminders allowed",
+  "checkExactHelp": "Lets the azan fire at the exact minute.",
+  "checkBattery": "Battery: unrestricted",
+  "checkBatteryHelp": "Open app settings, then Battery, and choose No restrictions.",
+  "checkChannel": "Azan sound turned on in system settings",
+  "checkChannelHelp": "The azan sound is muted for this app. Turn it on in the notification settings.",
+  "checkScheduled": "{count} alerts scheduled",
+  "@checkScheduled": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "checkNoneScheduled": "No alerts are scheduled",
+  "checkOk": "OK",
+  "checkFix": "Fix",
+  "checkTestNow": "Play a test azan now",
+  "checkReplan": "Re-plan all alerts",
+  "checkReplanned": "Alerts re-planned",
+  "endSection": "Prayer time ending",
+  "endHelp": "Get reminded before a prayer's time ends, and again until you have prayed. If a prayer is missed it goes to your qaza list.",
+  "endEnable": "Remind me before a prayer ends",
+  "endLead": "First reminder",
+  "endLeadValue": "{minutes} min before the end",
+  "@endLeadValue": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "endRepeat": "Then repeat every",
+  "endRepeatValue": "{minutes} min",
+  "@endRepeatValue": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "endPrayers": "Which prayers",
+  "endRequirePhoto": "Photo proof",
+  "endRequirePhotoHelp": "Keep reminding until you take a photo of your prayer place, such as your prayer mat or the mosque. The photo is checked on this phone and is never saved or sent anywhere.",
+  "verifyTitle": "Prayer photo check",
+  "verifyIntro": "After you pray, take a photo of your prayer place, such as your prayer mat or the mosque. It is checked on this phone only and is never saved.",
+  "verifyPrayer": "{prayer} · {date}",
+  "@verifyPrayer": {
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "verifyTake": "Take photo",
+  "verifyChecking": "Checking…",
+  "verifySuccess": "Verified. May Allah accept your prayer.",
+  "verifyFail": "That does not look like a prayer place. Try again with your prayer mat or the mosque in view.",
+  "verifyTryAgain": "Try again",
+  "verifyStop": "Stop reminding me",
+  "verifyStopHelp": "Use this if you cannot pray now. The prayer is not marked as prayed.",
+  "verifySaw": "The phone saw: {labels}",
+  "@verifySaw": {
+    "placeholders": {
+      "labels": {
+        "type": "String"
+      }
+    }
+  },
+  "verifyEnded": "This prayer's time has ended. You can still tick it in the tracker.",
+  "verifyProofNeeded": "Photo proof is on for this prayer",
+  "verifyNoCamera": "The camera could not be opened",
+  "verifyChecklistHint": "Tip: make sure the prayer mat or the mosque fills most of the picture.",
   "secLanguage": "Language",
   "langEnglish": "English",
   "langUrdu": "اردو",

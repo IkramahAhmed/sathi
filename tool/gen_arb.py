@@ -173,6 +173,160 @@ add("syncDeleteBody",
     "Yeh cloud se aap ka backup mita dega. Is phone ka log mehfooz rahega.")
 add("syncDeleteConfirm", "Delete", "حذف کریں", "Delete")
 add("syncDeleted", "Cloud data deleted", "کلاؤڈ ڈیٹا حذف ہو گیا", "Cloud data delete ho gaya")
+# ---- Tracker, pauses and streaks
+add("navTracker", "Tracker", "ٹریکر", "Tracker")
+add("trackerTitle", "Prayer tracker", "نماز ٹریکر", "Namaz tracker")
+add("streakCurrent", "{days}-day streak", "{days} دن کا سلسلہ", "{days} din ka silsila", {"days": "int"})
+add("streakBest", "Best: {days}", "بہترین: {days}", "Behtareen: {days}", {"days": "int"})
+add("streakNone", "Pray all five today to start a streak", "سلسلہ شروع کرنے کے لیے آج پانچوں نمازیں پڑھیں",
+    "Silsila shuru karne ke liye aaj paanchon namazein parhein")
+add("trackerToday", "Today", "آج", "Aaj")
+add("trackerPrevDay", "Previous day", "پچھلا دن", "Pichla din")
+add("trackerNextDay", "Next day", "اگلا دن", "Agla din")
+add("trackerFuture", "You cannot tick a day that has not happened yet", "آنے والے دن کی نماز نشان زد نہیں ہو سکتی",
+    "Aanay wale din ki namaz nishan zad nahi ho sakti")
+add("trackerPausedDay", "Paused: prayers on this day are not counted as missed",
+    "وقفہ: اس دن کی نمازیں چھوٹی ہوئی شمار نہیں ہوں گی", "Waqfa: is din ki namazein chhooti hui shumar nahi hongi")
+add("dayComplete", "All five prayed", "پانچوں پڑھیں", "Paanchon parhein")
+add("pauseTitle", "Pause", "وقفہ", "Waqfa")
+add("pauseHelp",
+    "For illness or a woman's period. Paused days do not break your streak or count as missed. This stays on this phone only and is never uploaded.",
+    "بیماری یا خواتین کے مخصوص ایام کے لیے۔ وقفے کے دن سلسلہ نہیں توڑتے اور چھوٹی نمازوں میں شمار نہیں ہوتے۔ یہ صرف اسی فون پر رہتا ہے، کبھی اپ لوڈ نہیں ہوتا۔",
+    "Bimari ya khawateen ke makhsoos ayyam ke liye. Waqfe ke din silsila nahi torte aur chhooti namazon mein shumar nahi hote. Yeh sirf isi phone par rehta hai, kabhi upload nahi hota.")
+add("pauseStart", "Start a pause today", "آج سے وقفہ شروع کریں", "Aaj se waqfa shuru karein")
+add("pauseEnd", "Resume", "دوبارہ شروع کریں", "Dobara shuru karein")
+add("pauseSince", "Paused since {date}", "{date} سے وقفے میں", "{date} se waqfe mein", {"date": "String"})
+add("pauseAddPast", "Add past days", "پچھلے دن شامل کریں", "Pichhle din shamil karein")
+add("pauseRange", "{start} to {end}", "{start} سے {end} تک", "{start} se {end} tak", {"start": "String", "end": "String"})
+add("pauseRemove", "Remove", "ہٹائیں", "Hatayein")
+add("pauseNone", "No pauses", "کوئی وقفہ نہیں", "Koi waqfa nahi")
+
+# ---- Qaza
+add("qazaTitle", "Qaza (missed prayers)", "قضا نمازیں", "Qaza namazein")
+add("qazaCardOwed", "{count} to make up", "{count} ادا کرنی ہیں", "{count} ada karni hain", {"count": "int"})
+add("qazaCardNone", "Nothing owed", "کوئی قضا نہیں", "Koi qaza nahi")
+add("qazaMadeUp", "Made up one", "ایک ادا کی", "Ek ada ki")
+add("qazaAddOne", "Add one missed", "ایک چھوٹی ہوئی شامل کریں", "Ek chhooti hui shamil karein")
+add("qazaSetBalance", "Set starting balance", "ابتدائی تعداد مقرر کریں", "Ibtidai tadaad muqarrar karein")
+add("qazaBalanceHelp", "How many of each prayer do you owe? Leave a prayer at 0 if none.",
+    "ہر نماز کی کتنی قضا ہے؟ نہ ہو تو 0 رہنے دیں۔", "Har namaz ki kitni qaza hai? Na ho to 0 rehne dein.")
+add("qazaEstimate", "Estimate from years", "برسوں سے اندازہ لگائیں", "Barson se andaza lagayein")
+add("qazaYears", "Years of missed prayers", "چھوٹی نمازوں کے سال", "Chhooti namazon ke saal")
+add("qazaYearsHelp", "Fills every prayer with years × 365. You can adjust each one after.",
+    "ہر نماز میں سال × 365 بھر دیتا ہے۔ بعد میں ہر ایک بدل سکتے ہیں۔",
+    "Har namaz mein saal × 365 bhar deta hai. Baad mein har ek badal sakte hain.")
+add("qazaApply", "Apply", "لاگو کریں", "Lagu karein")
+add("qazaAuto", "Count missed prayers automatically", "چھوٹی نمازیں خود گنیں", "Chhooti namazein khud ginein")
+add("qazaAutoHelp",
+    "Adds a missed prayer when its time ends without a tick. Starts from today. It is taken back if you tick it later, and paused days are skipped.",
+    "نماز کا وقت بغیر نشان زد ہوئے ختم ہو تو قضا میں شامل کر دیتا ہے۔ آج سے شروع ہوتا ہے۔ بعد میں نشان زد کریں تو واپس ہو جاتی ہے، اور وقفے کے دن چھوڑ دیے جاتے ہیں۔",
+    "Namaz ka waqt bagair nishan zad hue khatam ho to qaza mein shamil kar deta hai. Aaj se shuru hota hai. Baad mein nishan zad karein to wapas ho jati hai, aur waqfe ke din chhor diye jate hain.")
+add("qazaHistory", "History", "تاریخ", "Tareekh")
+add("qazaHistoryEmpty", "Nothing yet", "ابھی کچھ نہیں", "Abhi kuch nahi")
+add("qazaSourceInitial", "Starting balance", "ابتدائی تعداد", "Ibtidai tadaad")
+add("qazaSourceAdded", "Added", "شامل کی", "Shamil ki")
+add("qazaSourceMadeUp", "Made up", "ادا کی", "Ada ki")
+add("qazaSourceAuto", "Counted automatically", "خود شمار ہوئی", "Khud shumar hui")
+add("qazaTotal", "{count} prayers to make up", "{count} نمازیں ادا کرنی ہیں", "{count} namazein ada karni hain", {"count": "int"})
+
+# ---- Jama'at
+add("jamaatSection", "Jama'at (mosque)", "جماعت (مسجد)", "Jamaat (masjid)")
+add("jamaatHelp",
+    "Set your mosque's jama'at times to see them next to each prayer, and to be reminded to leave. Use minutes after the azan, or a fixed time.",
+    "اپنی مسجد کی جماعت کے اوقات مقرر کریں تاکہ ہر نماز کے ساتھ نظر آئیں اور روانگی کی یاد دہانی ملے۔ اذان کے بعد منٹ یا مقررہ وقت استعمال کریں۔",
+    "Apni masjid ki jamaat ke auqaat muqarrar karein taake har namaz ke saath nazar aayein aur rawangi ki yaad-dehani milay. Azan ke baad minute ya muqarrara waqt istemal karein.")
+add("jamaatNotSet", "Not set", "مقرر نہیں", "Muqarrar nahi")
+add("jamaatAfter", "{minutes} min after azan", "اذان کے {minutes} منٹ بعد", "Azan ke {minutes} minute baad", {"minutes": "int"})
+add("jamaatFixed", "At {time}", "{time} پر", "{time} par", {"time": "String"})
+add("jamaatAt", "Jama'at {time}", "جماعت {time}", "Jamaat {time}", {"time": "String"})
+add("jamaatEdit", "Jama'at time", "جماعت کا وقت", "Jamaat ka waqt")
+add("jamaatModeAfter", "Minutes after azan", "اذان کے بعد منٹ", "Azan ke baad minute")
+add("jamaatModeFixed", "Fixed time", "مقررہ وقت", "Muqarrara waqt")
+add("jamaatPickTime", "Pick time", "وقت چنیں", "Waqt chunein")
+add("jamaatClear", "Clear", "ہٹائیں", "Hatayein")
+add("jummaTime", "Jumma time", "جمعہ کا وقت", "Jumma ka waqt")
+add("leaveReminder", "Remind me to leave", "روانگی کی یاد دہانی", "Rawangi ki yaad-dehani")
+add("leaveMinutes", "{minutes} min before jama'at", "جماعت سے {minutes} منٹ پہلے", "Jamaat se {minutes} minute pehle", {"minutes": "int"})
+add("silentDuring", "Silence my phone during jama'at", "جماعت کے دوران فون خاموش کریں", "Jamaat ke dauran phone khamosh karein")
+add("silentHelp", "Needs Do Not Disturb access. The phone returns to normal afterwards.",
+    "ڈسٹرب نہ کریں کی رسائی درکار ہے۔ بعد میں فون پہلے جیسا ہو جاتا ہے۔",
+    "Disturb na karein ki rasai darkar hai. Baad mein phone pehle jaisa ho jata hai.")
+add("silentGrantAccess", "Allow Do Not Disturb access", "ڈسٹرب نہ کریں کی رسائی دیں", "Disturb na karein ki rasai dein")
+
+# ---- Azan reliability and setup check
+add("azanAlarmVolume", "Play azan on the alarm volume", "اذان الارم کی آواز پر چلائیں", "Azan alarm ki awaz par chalayein")
+add("azanAlarmHelp", "Heard even in silent mode, and not affected by the media volume.",
+    "خاموش موڈ میں بھی سنائی دیتی ہے اور میڈیا والیوم سے متاثر نہیں ہوتی۔",
+    "Khamosh mode mein bhi sunai deti hai aur media volume se mutasir nahi hoti.")
+add("checkSetupTitle", "Check my setup", "میری ترتیب جانچیں", "Meri tarteeb janchein")
+add("checkSetupIntro", "Make sure the azan will really sound. Fix anything marked in red.",
+    "یقینی بنائیں کہ اذان واقعی سنائی دے گی۔ سرخ نشان والی چیز درست کریں۔",
+    "Yaqeeni banayein ke azan waqai sunai degi. Surkh nishan wali cheez durust karein.")
+add("checkNotifications", "Notifications allowed", "نوٹیفکیشن کی اجازت", "Notifications ki ijazat")
+add("checkExact", "Alarms and reminders allowed", "الارم اور ریمائنڈرز کی اجازت", "Alarms aur reminders ki ijazat")
+add("checkExactHelp", "Lets the azan fire at the exact minute.", "اذان ٹھیک منٹ پر بجنے دیتی ہے۔", "Azan theek minute par bajne deti hai.")
+add("checkBattery", "Battery: unrestricted", "بیٹری: بغیر پابندی", "Battery: bagair pabandi")
+add("checkBatteryHelp", "Open app settings, then Battery, and choose No restrictions.",
+    "ایپ کی ترتیبات کھولیں، پھر بیٹری، اور بغیر پابندی چنیں۔", "App settings kholein, phir Battery, aur bagair pabandi chunein.")
+add("checkChannel", "Azan sound turned on in system settings", "سسٹم ترتیبات میں اذان کی آواز آن ہے", "System settings mein azan ki awaz on hai")
+add("checkChannelHelp", "The azan sound is muted for this app. Turn it on in the notification settings.",
+    "اس ایپ کے لیے اذان کی آواز بند ہے۔ نوٹیفکیشن ترتیبات میں آن کریں۔",
+    "Is app ke liye azan ki awaz band hai. Notification settings mein on karein.")
+add("checkScheduled", "{count} alerts scheduled", "{count} الرٹس مقرر ہیں", "{count} alerts muqarrar hain", {"count": "int"})
+add("checkNoneScheduled", "No alerts are scheduled", "کوئی الرٹ مقرر نہیں", "Koi alert muqarrar nahi")
+add("checkOk", "OK", "ٹھیک", "Theek")
+add("checkFix", "Fix", "درست کریں", "Durust karein")
+add("checkTestNow", "Play a test azan now", "ابھی آزمائشی اذان چلائیں", "Abhi azmaishi azan chalayein")
+add("checkReplan", "Re-plan all alerts", "تمام الرٹس دوبارہ ترتیب دیں", "Tamam alerts dobara tarteeb dein")
+add("checkReplanned", "Alerts re-planned", "الرٹس دوبارہ ترتیب دیے گئے", "Alerts dobara tarteeb diye gaye")
+
+# ---- Prayer time ending
+add("endSection", "Prayer time ending", "نماز کا وقت ختم ہونے والا ہے", "Namaz ka waqt khatam hone wala hai")
+add("endHelp",
+    "Get reminded before a prayer's time ends, and again until you have prayed. If a prayer is missed it goes to your qaza list.",
+    "نماز کا وقت ختم ہونے سے پہلے یاد دہانی ملے گی، اور نماز پڑھنے تک بار بار۔ نماز چھوٹ جائے تو قضا فہرست میں چلی جاتی ہے۔",
+    "Namaz ka waqt khatam hone se pehle yaad-dehani milegi, aur namaz parhne tak baar baar. Namaz chhoot jaye to qaza fehrist mein chali jati hai.")
+add("endEnable", "Remind me before a prayer ends", "نماز ختم ہونے سے پہلے یاد دلائیں", "Namaz khatam hone se pehle yaad dilayein")
+add("endLead", "First reminder", "پہلی یاد دہانی", "Pehli yaad-dehani")
+add("endLeadValue", "{minutes} min before the end", "ختم ہونے سے {minutes} منٹ پہلے", "Khatam hone se {minutes} minute pehle", {"minutes": "int"})
+add("endRepeat", "Then repeat every", "پھر ہر", "Phir har")
+add("endRepeatValue", "{minutes} min", "{minutes} منٹ", "{minutes} minute", {"minutes": "int"})
+add("endPrayers", "Which prayers", "کون سی نمازیں", "Kaun si namazein")
+add("endRequirePhoto", "Photo proof", "تصویری ثبوت", "Tasveeri saboot")
+add("endRequirePhotoHelp",
+    "Keep reminding until you take a photo of your prayer place, such as your prayer mat or the mosque. The photo is checked on this phone and is never saved or sent anywhere.",
+    "جب تک آپ اپنی نماز کی جگہ، جیسے جائے نماز یا مسجد، کی تصویر نہ لیں یاد دہانی جاری رہے گی۔ تصویر اسی فون پر جانچی جاتی ہے اور کہیں محفوظ یا ارسال نہیں ہوتی۔",
+    "Jab tak aap apni namaz ki jagah, jaise jaye-namaz ya masjid, ki tasveer na lein yaad-dehani jari rahegi. Tasveer isi phone par janchi jati hai aur kahin mehfooz ya irsal nahi hoti.")
+
+# ---- Photo check
+add("verifyTitle", "Prayer photo check", "نماز کی تصویر کی جانچ", "Namaz ki tasveer ki janch")
+add("verifyIntro",
+    "After you pray, take a photo of your prayer place, such as your prayer mat or the mosque. It is checked on this phone only and is never saved.",
+    "نماز کے بعد اپنی نماز کی جگہ، جیسے جائے نماز یا مسجد، کی تصویر لیں۔ یہ صرف اسی فون پر جانچی جاتی ہے اور محفوظ نہیں ہوتی۔",
+    "Namaz ke baad apni namaz ki jagah, jaise jaye-namaz ya masjid, ki tasveer lein. Yeh sirf isi phone par janchi jati hai aur mehfooz nahi hoti.")
+add("verifyPrayer", "{prayer} · {date}", "{prayer} · {date}", "{prayer} · {date}", {"prayer": "String", "date": "String"})
+add("verifyTake", "Take photo", "تصویر لیں", "Tasveer lein")
+add("verifyChecking", "Checking…", "جانچ ہو رہی ہے…", "Janch ho rahi hai…")
+add("verifySuccess", "Verified. May Allah accept your prayer.", "تصدیق ہو گئی۔ اللہ آپ کی نماز قبول فرمائے۔",
+    "Tasdeeq ho gayi. Allah aap ki namaz qabool farmaye.")
+add("verifyFail",
+    "That does not look like a prayer place. Try again with your prayer mat or the mosque in view.",
+    "یہ نماز کی جگہ نہیں لگتی۔ جائے نماز یا مسجد نظر آتے ہوئے دوبارہ کوشش کریں۔",
+    "Yeh namaz ki jagah nahi lagti. Jaye-namaz ya masjid nazar aate hue dobara koshish karein.")
+add("verifyTryAgain", "Try again", "دوبارہ کوشش کریں", "Dobara koshish karein")
+add("verifyStop", "Stop reminding me", "یاد دہانی بند کریں", "Yaad-dehani band karein")
+add("verifyStopHelp", "Use this if you cannot pray now. The prayer is not marked as prayed.",
+    "اگر ابھی نماز نہیں پڑھ سکتے تو یہ استعمال کریں۔ نماز پڑھی ہوئی نشان زد نہیں ہوگی۔",
+    "Agar abhi namaz nahi parh sakte to yeh istemal karein. Namaz parhi hui nishan zad nahi hogi.")
+add("verifySaw", "The phone saw: {labels}", "فون نے دیکھا: {labels}", "Phone ne dekha: {labels}", {"labels": "String"})
+add("verifyEnded", "This prayer's time has ended. You can still tick it in the tracker.",
+    "اس نماز کا وقت ختم ہو چکا ہے۔ آپ اسے ٹریکر میں نشان زد کر سکتے ہیں۔",
+    "Is namaz ka waqt khatam ho chuka hai. Aap ise tracker mein nishan zad kar sakte hain.")
+add("verifyProofNeeded", "Photo proof is on for this prayer", "اس نماز کے لیے تصویری ثبوت لازمی ہے", "Is namaz ke liye tasveeri saboot lazmi hai")
+add("verifyNoCamera", "The camera could not be opened", "کیمرہ نہیں کھل سکا", "Camera nahi khul saka")
+add("verifyChecklistHint", "Tip: make sure the prayer mat or the mosque fills most of the picture.",
+    "مشورہ: یقینی بنائیں کہ جائے نماز یا مسجد تصویر کا بڑا حصہ ہو۔",
+    "Mashwara: yaqeeni banayein ke jaye-namaz ya masjid tasveer ka bara hissa ho.")
 add("secLanguage", "Language", "زبان", "Zubaan")
 add("langEnglish", "English", "English", "English")
 add("langUrdu", "اردو", "اردو", "اردو")

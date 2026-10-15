@@ -813,6 +813,606 @@ abstract class AppLocalizations {
   /// **'Cloud data deleted'**
   String get syncDeleted;
 
+  /// No description provided for @navTracker.
+  ///
+  /// In en, this message translates to:
+  /// **'Tracker'**
+  String get navTracker;
+
+  /// No description provided for @trackerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayer tracker'**
+  String get trackerTitle;
+
+  /// No description provided for @streakCurrent.
+  ///
+  /// In en, this message translates to:
+  /// **'{days}-day streak'**
+  String streakCurrent(int days);
+
+  /// No description provided for @streakBest.
+  ///
+  /// In en, this message translates to:
+  /// **'Best: {days}'**
+  String streakBest(int days);
+
+  /// No description provided for @streakNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Pray all five today to start a streak'**
+  String get streakNone;
+
+  /// No description provided for @trackerToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get trackerToday;
+
+  /// No description provided for @trackerPrevDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous day'**
+  String get trackerPrevDay;
+
+  /// No description provided for @trackerNextDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Next day'**
+  String get trackerNextDay;
+
+  /// No description provided for @trackerFuture.
+  ///
+  /// In en, this message translates to:
+  /// **'You cannot tick a day that has not happened yet'**
+  String get trackerFuture;
+
+  /// No description provided for @trackerPausedDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Paused: prayers on this day are not counted as missed'**
+  String get trackerPausedDay;
+
+  /// No description provided for @dayComplete.
+  ///
+  /// In en, this message translates to:
+  /// **'All five prayed'**
+  String get dayComplete;
+
+  /// No description provided for @pauseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause'**
+  String get pauseTitle;
+
+  /// No description provided for @pauseHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'For illness or a woman\'s period. Paused days do not break your streak or count as missed. This stays on this phone only and is never uploaded.'**
+  String get pauseHelp;
+
+  /// No description provided for @pauseStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start a pause today'**
+  String get pauseStart;
+
+  /// No description provided for @pauseEnd.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume'**
+  String get pauseEnd;
+
+  /// No description provided for @pauseSince.
+  ///
+  /// In en, this message translates to:
+  /// **'Paused since {date}'**
+  String pauseSince(String date);
+
+  /// No description provided for @pauseAddPast.
+  ///
+  /// In en, this message translates to:
+  /// **'Add past days'**
+  String get pauseAddPast;
+
+  /// No description provided for @pauseRange.
+  ///
+  /// In en, this message translates to:
+  /// **'{start} to {end}'**
+  String pauseRange(String start, String end);
+
+  /// No description provided for @pauseRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get pauseRemove;
+
+  /// No description provided for @pauseNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No pauses'**
+  String get pauseNone;
+
+  /// No description provided for @qazaTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Qaza (missed prayers)'**
+  String get qazaTitle;
+
+  /// No description provided for @qazaCardOwed.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} to make up'**
+  String qazaCardOwed(int count);
+
+  /// No description provided for @qazaCardNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing owed'**
+  String get qazaCardNone;
+
+  /// No description provided for @qazaMadeUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Made up one'**
+  String get qazaMadeUp;
+
+  /// No description provided for @qazaAddOne.
+  ///
+  /// In en, this message translates to:
+  /// **'Add one missed'**
+  String get qazaAddOne;
+
+  /// No description provided for @qazaSetBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Set starting balance'**
+  String get qazaSetBalance;
+
+  /// No description provided for @qazaBalanceHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'How many of each prayer do you owe? Leave a prayer at 0 if none.'**
+  String get qazaBalanceHelp;
+
+  /// No description provided for @qazaEstimate.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimate from years'**
+  String get qazaEstimate;
+
+  /// No description provided for @qazaYears.
+  ///
+  /// In en, this message translates to:
+  /// **'Years of missed prayers'**
+  String get qazaYears;
+
+  /// No description provided for @qazaYearsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Fills every prayer with years × 365. You can adjust each one after.'**
+  String get qazaYearsHelp;
+
+  /// No description provided for @qazaApply.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply'**
+  String get qazaApply;
+
+  /// No description provided for @qazaAuto.
+  ///
+  /// In en, this message translates to:
+  /// **'Count missed prayers automatically'**
+  String get qazaAuto;
+
+  /// No description provided for @qazaAutoHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Adds a missed prayer when its time ends without a tick. Starts from today. It is taken back if you tick it later, and paused days are skipped.'**
+  String get qazaAutoHelp;
+
+  /// No description provided for @qazaHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'History'**
+  String get qazaHistory;
+
+  /// No description provided for @qazaHistoryEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing yet'**
+  String get qazaHistoryEmpty;
+
+  /// No description provided for @qazaSourceInitial.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting balance'**
+  String get qazaSourceInitial;
+
+  /// No description provided for @qazaSourceAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Added'**
+  String get qazaSourceAdded;
+
+  /// No description provided for @qazaSourceMadeUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Made up'**
+  String get qazaSourceMadeUp;
+
+  /// No description provided for @qazaSourceAuto.
+  ///
+  /// In en, this message translates to:
+  /// **'Counted automatically'**
+  String get qazaSourceAuto;
+
+  /// No description provided for @qazaTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} prayers to make up'**
+  String qazaTotal(int count);
+
+  /// No description provided for @jamaatSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Jama\'at (mosque)'**
+  String get jamaatSection;
+
+  /// No description provided for @jamaatHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Set your mosque\'s jama\'at times to see them next to each prayer, and to be reminded to leave. Use minutes after the azan, or a fixed time.'**
+  String get jamaatHelp;
+
+  /// No description provided for @jamaatNotSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not set'**
+  String get jamaatNotSet;
+
+  /// No description provided for @jamaatAfter.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min after azan'**
+  String jamaatAfter(int minutes);
+
+  /// No description provided for @jamaatFixed.
+  ///
+  /// In en, this message translates to:
+  /// **'At {time}'**
+  String jamaatFixed(String time);
+
+  /// No description provided for @jamaatAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Jama\'at {time}'**
+  String jamaatAt(String time);
+
+  /// No description provided for @jamaatEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Jama\'at time'**
+  String get jamaatEdit;
+
+  /// No description provided for @jamaatModeAfter.
+  ///
+  /// In en, this message translates to:
+  /// **'Minutes after azan'**
+  String get jamaatModeAfter;
+
+  /// No description provided for @jamaatModeFixed.
+  ///
+  /// In en, this message translates to:
+  /// **'Fixed time'**
+  String get jamaatModeFixed;
+
+  /// No description provided for @jamaatPickTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick time'**
+  String get jamaatPickTime;
+
+  /// No description provided for @jamaatClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get jamaatClear;
+
+  /// No description provided for @jummaTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Jumma time'**
+  String get jummaTime;
+
+  /// No description provided for @leaveReminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Remind me to leave'**
+  String get leaveReminder;
+
+  /// No description provided for @leaveMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min before jama\'at'**
+  String leaveMinutes(int minutes);
+
+  /// No description provided for @silentDuring.
+  ///
+  /// In en, this message translates to:
+  /// **'Silence my phone during jama\'at'**
+  String get silentDuring;
+
+  /// No description provided for @silentHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs Do Not Disturb access. The phone returns to normal afterwards.'**
+  String get silentHelp;
+
+  /// No description provided for @silentGrantAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow Do Not Disturb access'**
+  String get silentGrantAccess;
+
+  /// No description provided for @azanAlarmVolume.
+  ///
+  /// In en, this message translates to:
+  /// **'Play azan on the alarm volume'**
+  String get azanAlarmVolume;
+
+  /// No description provided for @azanAlarmHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Heard even in silent mode, and not affected by the media volume.'**
+  String get azanAlarmHelp;
+
+  /// No description provided for @checkSetupTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Check my setup'**
+  String get checkSetupTitle;
+
+  /// No description provided for @checkSetupIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Make sure the azan will really sound. Fix anything marked in red.'**
+  String get checkSetupIntro;
+
+  /// No description provided for @checkNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications allowed'**
+  String get checkNotifications;
+
+  /// No description provided for @checkExact.
+  ///
+  /// In en, this message translates to:
+  /// **'Alarms and reminders allowed'**
+  String get checkExact;
+
+  /// No description provided for @checkExactHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Lets the azan fire at the exact minute.'**
+  String get checkExactHelp;
+
+  /// No description provided for @checkBattery.
+  ///
+  /// In en, this message translates to:
+  /// **'Battery: unrestricted'**
+  String get checkBattery;
+
+  /// No description provided for @checkBatteryHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Open app settings, then Battery, and choose No restrictions.'**
+  String get checkBatteryHelp;
+
+  /// No description provided for @checkChannel.
+  ///
+  /// In en, this message translates to:
+  /// **'Azan sound turned on in system settings'**
+  String get checkChannel;
+
+  /// No description provided for @checkChannelHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The azan sound is muted for this app. Turn it on in the notification settings.'**
+  String get checkChannelHelp;
+
+  /// No description provided for @checkScheduled.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} alerts scheduled'**
+  String checkScheduled(int count);
+
+  /// No description provided for @checkNoneScheduled.
+  ///
+  /// In en, this message translates to:
+  /// **'No alerts are scheduled'**
+  String get checkNoneScheduled;
+
+  /// No description provided for @checkOk.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get checkOk;
+
+  /// No description provided for @checkFix.
+  ///
+  /// In en, this message translates to:
+  /// **'Fix'**
+  String get checkFix;
+
+  /// No description provided for @checkTestNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Play a test azan now'**
+  String get checkTestNow;
+
+  /// No description provided for @checkReplan.
+  ///
+  /// In en, this message translates to:
+  /// **'Re-plan all alerts'**
+  String get checkReplan;
+
+  /// No description provided for @checkReplanned.
+  ///
+  /// In en, this message translates to:
+  /// **'Alerts re-planned'**
+  String get checkReplanned;
+
+  /// No description provided for @endSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayer time ending'**
+  String get endSection;
+
+  /// No description provided for @endHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Get reminded before a prayer\'s time ends, and again until you have prayed. If a prayer is missed it goes to your qaza list.'**
+  String get endHelp;
+
+  /// No description provided for @endEnable.
+  ///
+  /// In en, this message translates to:
+  /// **'Remind me before a prayer ends'**
+  String get endEnable;
+
+  /// No description provided for @endLead.
+  ///
+  /// In en, this message translates to:
+  /// **'First reminder'**
+  String get endLead;
+
+  /// No description provided for @endLeadValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min before the end'**
+  String endLeadValue(int minutes);
+
+  /// No description provided for @endRepeat.
+  ///
+  /// In en, this message translates to:
+  /// **'Then repeat every'**
+  String get endRepeat;
+
+  /// No description provided for @endRepeatValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min'**
+  String endRepeatValue(int minutes);
+
+  /// No description provided for @endPrayers.
+  ///
+  /// In en, this message translates to:
+  /// **'Which prayers'**
+  String get endPrayers;
+
+  /// No description provided for @endRequirePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo proof'**
+  String get endRequirePhoto;
+
+  /// No description provided for @endRequirePhotoHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep reminding until you take a photo of your prayer place, such as your prayer mat or the mosque. The photo is checked on this phone and is never saved or sent anywhere.'**
+  String get endRequirePhotoHelp;
+
+  /// No description provided for @verifyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayer photo check'**
+  String get verifyTitle;
+
+  /// No description provided for @verifyIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'After you pray, take a photo of your prayer place, such as your prayer mat or the mosque. It is checked on this phone only and is never saved.'**
+  String get verifyIntro;
+
+  /// No description provided for @verifyPrayer.
+  ///
+  /// In en, this message translates to:
+  /// **'{prayer} · {date}'**
+  String verifyPrayer(String prayer, String date);
+
+  /// No description provided for @verifyTake.
+  ///
+  /// In en, this message translates to:
+  /// **'Take photo'**
+  String get verifyTake;
+
+  /// No description provided for @verifyChecking.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking…'**
+  String get verifyChecking;
+
+  /// No description provided for @verifySuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Verified. May Allah accept your prayer.'**
+  String get verifySuccess;
+
+  /// No description provided for @verifyFail.
+  ///
+  /// In en, this message translates to:
+  /// **'That does not look like a prayer place. Try again with your prayer mat or the mosque in view.'**
+  String get verifyFail;
+
+  /// No description provided for @verifyTryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get verifyTryAgain;
+
+  /// No description provided for @verifyStop.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop reminding me'**
+  String get verifyStop;
+
+  /// No description provided for @verifyStopHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Use this if you cannot pray now. The prayer is not marked as prayed.'**
+  String get verifyStopHelp;
+
+  /// No description provided for @verifySaw.
+  ///
+  /// In en, this message translates to:
+  /// **'The phone saw: {labels}'**
+  String verifySaw(String labels);
+
+  /// No description provided for @verifyEnded.
+  ///
+  /// In en, this message translates to:
+  /// **'This prayer\'s time has ended. You can still tick it in the tracker.'**
+  String get verifyEnded;
+
+  /// No description provided for @verifyProofNeeded.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo proof is on for this prayer'**
+  String get verifyProofNeeded;
+
+  /// No description provided for @verifyNoCamera.
+  ///
+  /// In en, this message translates to:
+  /// **'The camera could not be opened'**
+  String get verifyNoCamera;
+
+  /// No description provided for @verifyChecklistHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tip: make sure the prayer mat or the mosque fills most of the picture.'**
+  String get verifyChecklistHint;
+
   /// No description provided for @secLanguage.
   ///
   /// In en, this message translates to:

@@ -135,6 +135,29 @@ QazaService qazaService(Ref ref) {
   );
 }
 
+/// Remembers the day tracking began.
+class TrackingStartStore {
+  const TrackingStartStore(this._store);
+
+  final KeyValueStore _store;
+
+  static const _key = 'tracking_started';
+
+  DateTime? read() {
+    final raw = _store.getString(_key);
+    return raw == null ? null : DateTime.tryParse(raw);
+  }
+
+  Future<void> write(DateTime date) => _store.setString(
+        _key,
+        '${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+      );
+}
+
+@Riverpod(keepAlive: true)
+TrackingStartStore trackingStartStore(Ref ref) =>
+    TrackingStartStore(PrefsKeyValueStore(ref.watch(sharedPreferencesProvider)));
+
 /// Handles taps on "prayer ending" reminders while the app is running.
 @Riverpod(keepAlive: true)
 HandleReminderAction handleReminderAction(Ref ref) => HandleReminderAction(

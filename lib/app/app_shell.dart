@@ -24,6 +24,11 @@ class AppShell extends StatelessWidget {
             label: l10n.navHome,
           ),
           NavigationDestination(
+            icon: const Icon(Icons.local_fire_department_outlined),
+            selectedIcon: const Icon(Icons.local_fire_department),
+            label: l10n.navTracker,
+          ),
+          NavigationDestination(
             icon: const Icon(Icons.calendar_month_outlined),
             selectedIcon: const Icon(Icons.calendar_month),
             label: l10n.navTimetable,

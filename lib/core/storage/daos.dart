@@ -82,6 +82,16 @@ class PrayerLogsDao extends DatabaseAccessor<AppDatabase> with _$PrayerLogsDaoMi
     return out;
   }
 
+  /// Every ticked prayer from [from] (`yyyy-MM-dd`) onwards, kept up to date.
+  Stream<Map<String, Set<String>>> watchDoneSince(String from) =>
+      (select(prayerLogs)..where((t) => t.date.isBiggerOrEqualValue(from) & t.done.equals(true))).watch().map((rows) {
+        final out = <String, Set<String>>{};
+        for (final r in rows) {
+          (out[r.date] ??= {}).add(r.prayer);
+        }
+        return out;
+      });
+
   /// The first date that has any log, or null. Used to guess when tracking began.
   Future<String?> earliestDate() async {
     final row = await (select(prayerLogs)

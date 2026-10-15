@@ -831,6 +831,54 @@ final class QazaServiceProvider
 
 String _$qazaServiceHash() => r'2276ccbe5c8b8629c02219f780aedfeb757ac218';
 
+@ProviderFor(trackingStartStore)
+final trackingStartStoreProvider = TrackingStartStoreProvider._();
+
+final class TrackingStartStoreProvider
+    extends
+        $FunctionalProvider<
+          TrackingStartStore,
+          TrackingStartStore,
+          TrackingStartStore
+        >
+    with $Provider<TrackingStartStore> {
+  TrackingStartStoreProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'trackingStartStoreProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$trackingStartStoreHash();
+
+  @$internal
+  @override
+  $ProviderElement<TrackingStartStore> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  TrackingStartStore create(Ref ref) {
+    return trackingStartStore(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(TrackingStartStore value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<TrackingStartStore>(value),
+    );
+  }
+}
+
+String _$trackingStartStoreHash() =>
+    r'862aa8ccf6c45758492ef14bf8fe789ebfc1237a';
+
 /// Handles taps on "prayer ending" reminders while the app is running.
 
 @ProviderFor(handleReminderAction)
