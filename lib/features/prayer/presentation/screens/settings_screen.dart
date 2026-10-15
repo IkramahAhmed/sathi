@@ -14,6 +14,7 @@ import '../providers/prayer_providers.dart';
 import '../providers/reschedule_controller.dart';
 import '../providers/settings_controller.dart';
 import '../widgets/city_picker.dart';
+import '../widgets/cloud_sync_section.dart';
 
 const List<int> _reminderChoices = [0, 5, 10, 15, 20, 30];
 
@@ -163,6 +164,7 @@ class SettingsScreen extends ConsumerWidget {
               ],
             ),
           ),
+          const CloudSyncSection(),
           _Section(l10n.secLanguage),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),

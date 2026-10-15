@@ -8,10 +8,13 @@ import '../core/notifications/local_notification_scheduler.dart';
 import '../core/notifications/notification_scheduler.dart';
 import '../core/notifications/permission_service.dart';
 import '../core/storage/app_database.dart';
+import '../core/sync/cloud_api.dart';
+import '../core/sync/sync_config.dart';
 import '../core/utils/clock.dart';
 import '../features/prayer/data/datasources/adhan_calculator.dart';
 import '../features/prayer/data/datasources/settings_local_data_source.dart';
 import '../features/prayer/data/repositories/prayer_repository_impl.dart';
+import '../features/prayer/data/sync/prayer_sync_service.dart';
 import '../features/prayer/data/repositories/settings_repository_impl.dart';
 import '../features/prayer/domain/repositories/prayer_repository.dart';
 import '../features/prayer/domain/repositories/settings_repository.dart';
@@ -93,6 +96,27 @@ ScheduleUpcomingAzans scheduleUpcomingAzans(Ref ref) => ScheduleUpcomingAzans(
       ref.watch(prayerRepositoryProvider),
       ref.watch(notificationSchedulerProvider),
       ref.watch(clockProvider),
+    );
+
+/// Where the sync key is stored (Android Keystore / iOS Keychain).
+@Riverpod(keepAlive: true)
+SecretStore secretStore(Ref ref) => const SecureSecretStore();
+
+@Riverpod(keepAlive: true)
+SyncConfigStore syncConfigStore(Ref ref) => SyncConfigStore(
+      PrefsKeyValueStore(ref.watch(sharedPreferencesProvider)),
+      ref.watch(secretStoreProvider),
+    );
+
+@Riverpod(keepAlive: true)
+CloudApi cloudApi(Ref ref) => HttpCloudApi();
+
+@Riverpod(keepAlive: true)
+PrayerSyncService prayerSyncService(Ref ref) => PrayerSyncService(
+      logs: ref.watch(appDatabaseProvider).prayerLogsDao,
+      api: ref.watch(cloudApiProvider),
+      config: ref.watch(syncConfigStoreProvider),
+      clock: ref.watch(clockProvider),
     );
 
 /// Tracks whether the app is in the foreground so tickers can pause.

@@ -127,6 +127,52 @@ add("hijriAdjust", "Moon-sighting correction", "چاند دیکھنے کی تص�
 add("hijriNoChange", "No change", "کوئی تبدیلی نہیں", "Koi tabdeeli nahi")
 add("hijriPlusOne", "+1 day", "+1 دن", "+1 din")
 add("hijriMinusOne", "−1 day", "−1 دن", "−1 din")
+add("syncSection", "Cloud backup", "کلاؤڈ بیک اپ", "Cloud backup")
+add("syncTitle", "Back up my prayed log", "میری ادا کی گئی نمازوں کا بیک اپ", "Meri ada ki gayi namazon ka backup")
+add("syncSubtitle", "Keeps your ticked prayers safe and the same on all your phones",
+    "آپ کی نشان زد نمازیں محفوظ رہتی ہیں اور آپ کے تمام فونز پر یکساں",
+    "Aap ki nishan zad namazein mehfooz rehti hain aur aap ke tamam phones par yaksan")
+add("syncServer", "Server address", "سرور کا پتہ", "Server ka pata")
+add("syncServerNotSet", "Not set", "مقرر نہیں", "Muqarrar nahi")
+add("syncServerHint", "https://your-server.workers.dev", "https://your-server.workers.dev", "https://your-server.workers.dev")
+add("syncServerInvalid", "Enter an https:// address", "https:// والا پتہ درج کریں", "https:// wala pata darj karein")
+add("syncKey", "Sync key", "سنک کی", "Sync key")
+add("syncKeyHelp",
+    "Keep this secret. Anyone with it can see your prayed log. You need it to restore your log on a new phone.",
+    "اسے خفیہ رکھیں۔ جس کے پاس یہ ہو وہ آپ کی ادا کی گئی نمازیں دیکھ سکتا ہے۔ نئے فون پر لاگ بحال کرنے کے لیے یہ ضروری ہے۔",
+    "Isay khufiya rakhein. Jis ke paas yeh ho woh aap ki ada ki gayi namazein dekh sakta hai. Naye phone par log bahal karne ke liye yeh zaroori hai.")
+add("syncKeyCopy", "Copy key", "کی کاپی کریں", "Key copy karein")
+add("syncKeyCopied", "Key copied", "کی کاپی ہو گئی", "Key copy ho gayi")
+add("syncKeyShow", "Show key", "کی دکھائیں", "Key dikhayein")
+add("syncKeyHide", "Hide key", "کی چھپائیں", "Key chhupayein")
+add("syncUseKey", "Use a key from another phone", "دوسرے فون کی کی استعمال کریں", "Doosre phone ki key istemal karein")
+add("syncUseKeyHelp",
+    "Paste the key from your other phone. This phone's log is merged with the cloud copy.",
+    "اپنے دوسرے فون کی کی یہاں پیسٹ کریں۔ اس فون کا لاگ کلاؤڈ کاپی کے ساتھ مل جائے گا۔",
+    "Apne doosre phone ki key yahan paste karein. Is phone ka log cloud copy ke saath mil jayega.")
+add("syncKeyInvalid", "That does not look like a valid key", "یہ درست کی نہیں لگتی", "Yeh durust key nahi lagti")
+add("syncUse", "Use this key", "یہ کی استعمال کریں", "Yeh key istemal karein")
+add("syncSave", "Save", "محفوظ کریں", "Save")
+add("syncNow", "Sync now", "ابھی سنک کریں", "Abhi sync karein")
+add("syncRunning", "Syncing…", "سنک ہو رہا ہے…", "Sync ho raha hai…")
+add("syncLastSynced", "Last synced {time}", "آخری سنک {time}", "Aakhri sync {time}", {"time": "String"})
+add("syncNever", "Not synced yet", "ابھی تک سنک نہیں ہوا", "Abhi tak sync nahi hua")
+add("syncPending", "{count} waiting to upload", "{count} اپ لوڈ کے منتظر", "{count} upload ke muntazir", {"count": "int"})
+add("syncProblemSetup", "Set the server address first", "پہلے سرور کا پتہ مقرر کریں", "Pehle server ka pata muqarrar karein")
+add("syncProblemOffline", "No connection. It will try again later.",
+    "رابطہ نہیں۔ بعد میں دوبارہ کوشش ہوگی۔", "Rabta nahi. Baad mein dobara koshish hogi.")
+add("syncProblemServer", "The server had a problem. It will try again later.",
+    "سرور میں مسئلہ تھا۔ بعد میں دوبارہ کوشش ہوگی۔", "Server mein masla tha. Baad mein dobara koshish hogi.")
+add("syncProblemKey", "The server did not accept this key.", "سرور نے یہ کی قبول نہیں کی۔", "Server ne yeh key qabool nahi ki.")
+add("syncProblemOther", "Sync did not work. It will try again later.",
+    "سنک نہیں ہو سکا۔ بعد میں دوبارہ کوشش ہوگی۔", "Sync nahi ho saka. Baad mein dobara koshish hogi.")
+add("syncDelete", "Delete my cloud data", "میرا کلاؤڈ ڈیٹا حذف کریں", "Mera cloud data delete karein")
+add("syncDeleteBody",
+    "This erases your backup from the cloud. The prayed log on this phone is not touched.",
+    "یہ کلاؤڈ سے آپ کا بیک اپ مٹا دے گا۔ اس فون کا لاگ محفوظ رہے گا۔",
+    "Yeh cloud se aap ka backup mita dega. Is phone ka log mehfooz rahega.")
+add("syncDeleteConfirm", "Delete", "حذف کریں", "Delete")
+add("syncDeleted", "Cloud data deleted", "کلاؤڈ ڈیٹا حذف ہو گیا", "Cloud data delete ho gaya")
 add("secLanguage", "Language", "زبان", "Zubaan")
 add("langEnglish", "English", "English", "English")
 add("langUrdu", "اردو", "اردو", "اردو")

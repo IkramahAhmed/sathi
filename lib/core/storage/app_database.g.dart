@@ -49,8 +49,54 @@ class $PrayerLogsTable extends PrayerLogs
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _doneMeta = const VerificationMeta('done');
   @override
-  List<GeneratedColumn> get $columns => [id, date, prayer, doneAt];
+  late final GeneratedColumn<bool> done = GeneratedColumn<bool>(
+    'done',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("done" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: Constant(DateTime.fromMillisecondsSinceEpoch(0, isUtc: true)),
+  );
+  static const VerificationMeta _dirtyMeta = const VerificationMeta('dirty');
+  @override
+  late final GeneratedColumn<bool> dirty = GeneratedColumn<bool>(
+    'dirty',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("dirty" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    date,
+    prayer,
+    doneAt,
+    done,
+    updatedAt,
+    dirty,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -90,6 +136,24 @@ class $PrayerLogsTable extends PrayerLogs
     } else if (isInserting) {
       context.missing(_doneAtMeta);
     }
+    if (data.containsKey('done')) {
+      context.handle(
+        _doneMeta,
+        done.isAcceptableOrUnknown(data['done']!, _doneMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    }
+    if (data.containsKey('dirty')) {
+      context.handle(
+        _dirtyMeta,
+        dirty.isAcceptableOrUnknown(data['dirty']!, _dirtyMeta),
+      );
+    }
     return context;
   }
 
@@ -119,6 +183,18 @@ class $PrayerLogsTable extends PrayerLogs
         DriftSqlType.dateTime,
         data['${effectivePrefix}done_at'],
       )!,
+      done: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}done'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      dirty: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}dirty'],
+      )!,
     );
   }
 
@@ -135,11 +211,23 @@ class PrayerLog extends DataClass implements Insertable<PrayerLog> {
   final String date;
   final String prayer;
   final DateTime doneAt;
+
+  /// False means the prayer was un-ticked.
+  final bool done;
+
+  /// When this row last changed (UTC). Used for last-write-wins.
+  final DateTime updatedAt;
+
+  /// True while the change has not been uploaded yet.
+  final bool dirty;
   const PrayerLog({
     required this.id,
     required this.date,
     required this.prayer,
     required this.doneAt,
+    required this.done,
+    required this.updatedAt,
+    required this.dirty,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -148,6 +236,9 @@ class PrayerLog extends DataClass implements Insertable<PrayerLog> {
     map['date'] = Variable<String>(date);
     map['prayer'] = Variable<String>(prayer);
     map['done_at'] = Variable<DateTime>(doneAt);
+    map['done'] = Variable<bool>(done);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    map['dirty'] = Variable<bool>(dirty);
     return map;
   }
 
@@ -157,6 +248,9 @@ class PrayerLog extends DataClass implements Insertable<PrayerLog> {
       date: Value(date),
       prayer: Value(prayer),
       doneAt: Value(doneAt),
+      done: Value(done),
+      updatedAt: Value(updatedAt),
+      dirty: Value(dirty),
     );
   }
 
@@ -170,6 +264,9 @@ class PrayerLog extends DataClass implements Insertable<PrayerLog> {
       date: serializer.fromJson<String>(json['date']),
       prayer: serializer.fromJson<String>(json['prayer']),
       doneAt: serializer.fromJson<DateTime>(json['doneAt']),
+      done: serializer.fromJson<bool>(json['done']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      dirty: serializer.fromJson<bool>(json['dirty']),
     );
   }
   @override
@@ -180,6 +277,9 @@ class PrayerLog extends DataClass implements Insertable<PrayerLog> {
       'date': serializer.toJson<String>(date),
       'prayer': serializer.toJson<String>(prayer),
       'doneAt': serializer.toJson<DateTime>(doneAt),
+      'done': serializer.toJson<bool>(done),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'dirty': serializer.toJson<bool>(dirty),
     };
   }
 
@@ -188,11 +288,17 @@ class PrayerLog extends DataClass implements Insertable<PrayerLog> {
     String? date,
     String? prayer,
     DateTime? doneAt,
+    bool? done,
+    DateTime? updatedAt,
+    bool? dirty,
   }) => PrayerLog(
     id: id ?? this.id,
     date: date ?? this.date,
     prayer: prayer ?? this.prayer,
     doneAt: doneAt ?? this.doneAt,
+    done: done ?? this.done,
+    updatedAt: updatedAt ?? this.updatedAt,
+    dirty: dirty ?? this.dirty,
   );
   PrayerLog copyWithCompanion(PrayerLogsCompanion data) {
     return PrayerLog(
@@ -200,6 +306,9 @@ class PrayerLog extends DataClass implements Insertable<PrayerLog> {
       date: data.date.present ? data.date.value : this.date,
       prayer: data.prayer.present ? data.prayer.value : this.prayer,
       doneAt: data.doneAt.present ? data.doneAt.value : this.doneAt,
+      done: data.done.present ? data.done.value : this.done,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      dirty: data.dirty.present ? data.dirty.value : this.dirty,
     );
   }
 
@@ -209,13 +318,17 @@ class PrayerLog extends DataClass implements Insertable<PrayerLog> {
           ..write('id: $id, ')
           ..write('date: $date, ')
           ..write('prayer: $prayer, ')
-          ..write('doneAt: $doneAt')
+          ..write('doneAt: $doneAt, ')
+          ..write('done: $done, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('dirty: $dirty')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, date, prayer, doneAt);
+  int get hashCode =>
+      Object.hash(id, date, prayer, doneAt, done, updatedAt, dirty);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -223,7 +336,10 @@ class PrayerLog extends DataClass implements Insertable<PrayerLog> {
           other.id == this.id &&
           other.date == this.date &&
           other.prayer == this.prayer &&
-          other.doneAt == this.doneAt);
+          other.doneAt == this.doneAt &&
+          other.done == this.done &&
+          other.updatedAt == this.updatedAt &&
+          other.dirty == this.dirty);
 }
 
 class PrayerLogsCompanion extends UpdateCompanion<PrayerLog> {
@@ -231,17 +347,26 @@ class PrayerLogsCompanion extends UpdateCompanion<PrayerLog> {
   final Value<String> date;
   final Value<String> prayer;
   final Value<DateTime> doneAt;
+  final Value<bool> done;
+  final Value<DateTime> updatedAt;
+  final Value<bool> dirty;
   const PrayerLogsCompanion({
     this.id = const Value.absent(),
     this.date = const Value.absent(),
     this.prayer = const Value.absent(),
     this.doneAt = const Value.absent(),
+    this.done = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.dirty = const Value.absent(),
   });
   PrayerLogsCompanion.insert({
     this.id = const Value.absent(),
     required String date,
     required String prayer,
     required DateTime doneAt,
+    this.done = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.dirty = const Value.absent(),
   }) : date = Value(date),
        prayer = Value(prayer),
        doneAt = Value(doneAt);
@@ -250,12 +375,18 @@ class PrayerLogsCompanion extends UpdateCompanion<PrayerLog> {
     Expression<String>? date,
     Expression<String>? prayer,
     Expression<DateTime>? doneAt,
+    Expression<bool>? done,
+    Expression<DateTime>? updatedAt,
+    Expression<bool>? dirty,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (date != null) 'date': date,
       if (prayer != null) 'prayer': prayer,
       if (doneAt != null) 'done_at': doneAt,
+      if (done != null) 'done': done,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (dirty != null) 'dirty': dirty,
     });
   }
 
@@ -264,12 +395,18 @@ class PrayerLogsCompanion extends UpdateCompanion<PrayerLog> {
     Value<String>? date,
     Value<String>? prayer,
     Value<DateTime>? doneAt,
+    Value<bool>? done,
+    Value<DateTime>? updatedAt,
+    Value<bool>? dirty,
   }) {
     return PrayerLogsCompanion(
       id: id ?? this.id,
       date: date ?? this.date,
       prayer: prayer ?? this.prayer,
       doneAt: doneAt ?? this.doneAt,
+      done: done ?? this.done,
+      updatedAt: updatedAt ?? this.updatedAt,
+      dirty: dirty ?? this.dirty,
     );
   }
 
@@ -288,6 +425,15 @@ class PrayerLogsCompanion extends UpdateCompanion<PrayerLog> {
     if (doneAt.present) {
       map['done_at'] = Variable<DateTime>(doneAt.value);
     }
+    if (done.present) {
+      map['done'] = Variable<bool>(done.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (dirty.present) {
+      map['dirty'] = Variable<bool>(dirty.value);
+    }
     return map;
   }
 
@@ -297,7 +443,10 @@ class PrayerLogsCompanion extends UpdateCompanion<PrayerLog> {
           ..write('id: $id, ')
           ..write('date: $date, ')
           ..write('prayer: $prayer, ')
-          ..write('doneAt: $doneAt')
+          ..write('doneAt: $doneAt, ')
+          ..write('done: $done, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('dirty: $dirty')
           ..write(')'))
         .toString();
   }
@@ -686,12 +835,18 @@ typedef $$PrayerLogsTableCreateCompanionBuilder = PrayerLogsCompanion Function({
   required String date,
   required String prayer,
   required DateTime doneAt,
+  Value<bool> done,
+  Value<DateTime> updatedAt,
+  Value<bool> dirty,
 });
 typedef $$PrayerLogsTableUpdateCompanionBuilder = PrayerLogsCompanion Function({
   Value<int> id,
   Value<String> date,
   Value<String> prayer,
   Value<DateTime> doneAt,
+  Value<bool> done,
+  Value<DateTime> updatedAt,
+  Value<bool> dirty,
 });
 
 class $$PrayerLogsTableFilterComposer
@@ -720,6 +875,21 @@ class $$PrayerLogsTableFilterComposer
 
   ColumnFilters<DateTime> get doneAt => $composableBuilder(
     column: $table.doneAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get done => $composableBuilder(
+    column: $table.done,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get dirty => $composableBuilder(
+    column: $table.dirty,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -752,6 +922,21 @@ class $$PrayerLogsTableOrderingComposer
     column: $table.doneAt,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<bool> get done => $composableBuilder(
+    column: $table.done,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get dirty => $composableBuilder(
+    column: $table.dirty,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$PrayerLogsTableAnnotationComposer
@@ -774,6 +959,15 @@ class $$PrayerLogsTableAnnotationComposer
 
   GeneratedColumn<DateTime> get doneAt =>
       $composableBuilder(column: $table.doneAt, builder: (column) => column);
+
+  GeneratedColumn<bool> get done =>
+      $composableBuilder(column: $table.done, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<bool> get dirty =>
+      $composableBuilder(column: $table.dirty, builder: (column) => column);
 }
 
 class $$PrayerLogsTableTableManager
@@ -811,11 +1005,17 @@ class $$PrayerLogsTableTableManager
                 Value<String> date = const Value.absent(),
                 Value<String> prayer = const Value.absent(),
                 Value<DateTime> doneAt = const Value.absent(),
+                Value<bool> done = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<bool> dirty = const Value.absent(),
               }) => PrayerLogsCompanion(
                 id: id,
                 date: date,
                 prayer: prayer,
                 doneAt: doneAt,
+                done: done,
+                updatedAt: updatedAt,
+                dirty: dirty,
               ),
           createCompanionCallback:
               ({
@@ -823,11 +1023,17 @@ class $$PrayerLogsTableTableManager
                 required String date,
                 required String prayer,
                 required DateTime doneAt,
+                Value<bool> done = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<bool> dirty = const Value.absent(),
               }) => PrayerLogsCompanion.insert(
                 id: id,
                 date: date,
                 prayer: prayer,
                 doneAt: doneAt,
+                done: done,
+                updatedAt: updatedAt,
+                dirty: dirty,
               ),
           withReferenceMapper: (p0) => p0
               .map(

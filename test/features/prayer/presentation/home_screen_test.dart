@@ -46,6 +46,7 @@ void main() {
       ProviderScope(
         overrides: [
           sharedPreferencesProvider.overrideWithValue(prefs),
+          secretStoreProvider.overrideWithValue(FakeSecretStore()),
           clockProvider.overrideWithValue(() => now),
           settingsRepositoryProvider.overrideWithValue(settingsRepo),
           prayerRepositoryProvider.overrideWithValue(prayerRepo),
@@ -110,6 +111,7 @@ void main() {
       ProviderScope(
         overrides: [
           sharedPreferencesProvider.overrideWithValue(prefs),
+          secretStoreProvider.overrideWithValue(FakeSecretStore()),
           clockProvider.overrideWithValue(() => now),
           settingsRepositoryProvider.overrideWithValue(FakeSettingsRepository()),
           prayerRepositoryProvider.overrideWithValue(FakePrayerRepository()),

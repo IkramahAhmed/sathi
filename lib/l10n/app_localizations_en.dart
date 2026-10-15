@@ -297,6 +297,111 @@ class AppLocalizationsEn extends AppLocalizations {
   String get hijriMinusOne => '−1 day';
 
   @override
+  String get syncSection => 'Cloud backup';
+
+  @override
+  String get syncTitle => 'Back up my prayed log';
+
+  @override
+  String get syncSubtitle =>
+      'Keeps your ticked prayers safe and the same on all your phones';
+
+  @override
+  String get syncServer => 'Server address';
+
+  @override
+  String get syncServerNotSet => 'Not set';
+
+  @override
+  String get syncServerHint => 'https://your-server.workers.dev';
+
+  @override
+  String get syncServerInvalid => 'Enter an https:// address';
+
+  @override
+  String get syncKey => 'Sync key';
+
+  @override
+  String get syncKeyHelp =>
+      'Keep this secret. Anyone with it can see your prayed log. You need it to restore your log on a new phone.';
+
+  @override
+  String get syncKeyCopy => 'Copy key';
+
+  @override
+  String get syncKeyCopied => 'Key copied';
+
+  @override
+  String get syncKeyShow => 'Show key';
+
+  @override
+  String get syncKeyHide => 'Hide key';
+
+  @override
+  String get syncUseKey => 'Use a key from another phone';
+
+  @override
+  String get syncUseKeyHelp =>
+      'Paste the key from your other phone. This phone\'s log is merged with the cloud copy.';
+
+  @override
+  String get syncKeyInvalid => 'That does not look like a valid key';
+
+  @override
+  String get syncUse => 'Use this key';
+
+  @override
+  String get syncSave => 'Save';
+
+  @override
+  String get syncNow => 'Sync now';
+
+  @override
+  String get syncRunning => 'Syncing…';
+
+  @override
+  String syncLastSynced(String time) {
+    return 'Last synced $time';
+  }
+
+  @override
+  String get syncNever => 'Not synced yet';
+
+  @override
+  String syncPending(int count) {
+    return '$count waiting to upload';
+  }
+
+  @override
+  String get syncProblemSetup => 'Set the server address first';
+
+  @override
+  String get syncProblemOffline => 'No connection. It will try again later.';
+
+  @override
+  String get syncProblemServer =>
+      'The server had a problem. It will try again later.';
+
+  @override
+  String get syncProblemKey => 'The server did not accept this key.';
+
+  @override
+  String get syncProblemOther => 'Sync did not work. It will try again later.';
+
+  @override
+  String get syncDelete => 'Delete my cloud data';
+
+  @override
+  String get syncDeleteBody =>
+      'This erases your backup from the cloud. The prayed log on this phone is not touched.';
+
+  @override
+  String get syncDeleteConfirm => 'Delete';
+
+  @override
+  String get syncDeleted => 'Cloud data deleted';
+
+  @override
   String get secLanguage => 'Language';
 
   @override
@@ -727,6 +832,112 @@ class AppLocalizationsEnPk extends AppLocalizationsEn {
 
   @override
   String get hijriMinusOne => '−1 din';
+
+  @override
+  String get syncSection => 'Cloud backup';
+
+  @override
+  String get syncTitle => 'Meri ada ki gayi namazon ka backup';
+
+  @override
+  String get syncSubtitle =>
+      'Aap ki nishan zad namazein mehfooz rehti hain aur aap ke tamam phones par yaksan';
+
+  @override
+  String get syncServer => 'Server ka pata';
+
+  @override
+  String get syncServerNotSet => 'Muqarrar nahi';
+
+  @override
+  String get syncServerHint => 'https://your-server.workers.dev';
+
+  @override
+  String get syncServerInvalid => 'https:// wala pata darj karein';
+
+  @override
+  String get syncKey => 'Sync key';
+
+  @override
+  String get syncKeyHelp =>
+      'Isay khufiya rakhein. Jis ke paas yeh ho woh aap ki ada ki gayi namazein dekh sakta hai. Naye phone par log bahal karne ke liye yeh zaroori hai.';
+
+  @override
+  String get syncKeyCopy => 'Key copy karein';
+
+  @override
+  String get syncKeyCopied => 'Key copy ho gayi';
+
+  @override
+  String get syncKeyShow => 'Key dikhayein';
+
+  @override
+  String get syncKeyHide => 'Key chhupayein';
+
+  @override
+  String get syncUseKey => 'Doosre phone ki key istemal karein';
+
+  @override
+  String get syncUseKeyHelp =>
+      'Apne doosre phone ki key yahan paste karein. Is phone ka log cloud copy ke saath mil jayega.';
+
+  @override
+  String get syncKeyInvalid => 'Yeh durust key nahi lagti';
+
+  @override
+  String get syncUse => 'Yeh key istemal karein';
+
+  @override
+  String get syncSave => 'Save';
+
+  @override
+  String get syncNow => 'Abhi sync karein';
+
+  @override
+  String get syncRunning => 'Sync ho raha hai…';
+
+  @override
+  String syncLastSynced(String time) {
+    return 'Aakhri sync $time';
+  }
+
+  @override
+  String get syncNever => 'Abhi tak sync nahi hua';
+
+  @override
+  String syncPending(int count) {
+    return '$count upload ke muntazir';
+  }
+
+  @override
+  String get syncProblemSetup => 'Pehle server ka pata muqarrar karein';
+
+  @override
+  String get syncProblemOffline => 'Rabta nahi. Baad mein dobara koshish hogi.';
+
+  @override
+  String get syncProblemServer =>
+      'Server mein masla tha. Baad mein dobara koshish hogi.';
+
+  @override
+  String get syncProblemKey => 'Server ne yeh key qabool nahi ki.';
+
+  @override
+  String get syncProblemOther =>
+      'Sync nahi ho saka. Baad mein dobara koshish hogi.';
+
+  @override
+  String get syncDelete => 'Mera cloud data delete karein';
+
+  @override
+  String get syncDeleteBody =>
+      'Yeh cloud se aap ka backup mita dega. Is phone ka log mehfooz rahega.';
+
+  @override
+  String get syncDeleteConfirm => 'Delete';
+
+  @override
+  String get syncDeleted => 'Cloud data delete ho gaya';
 
   @override
   String get secLanguage => 'Zubaan';

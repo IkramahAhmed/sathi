@@ -621,6 +621,198 @@ abstract class AppLocalizations {
   /// **'−1 day'**
   String get hijriMinusOne;
 
+  /// No description provided for @syncSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Cloud backup'**
+  String get syncSection;
+
+  /// No description provided for @syncTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Back up my prayed log'**
+  String get syncTitle;
+
+  /// No description provided for @syncSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Keeps your ticked prayers safe and the same on all your phones'**
+  String get syncSubtitle;
+
+  /// No description provided for @syncServer.
+  ///
+  /// In en, this message translates to:
+  /// **'Server address'**
+  String get syncServer;
+
+  /// No description provided for @syncServerNotSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not set'**
+  String get syncServerNotSet;
+
+  /// No description provided for @syncServerHint.
+  ///
+  /// In en, this message translates to:
+  /// **'https://your-server.workers.dev'**
+  String get syncServerHint;
+
+  /// No description provided for @syncServerInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter an https:// address'**
+  String get syncServerInvalid;
+
+  /// No description provided for @syncKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync key'**
+  String get syncKey;
+
+  /// No description provided for @syncKeyHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep this secret. Anyone with it can see your prayed log. You need it to restore your log on a new phone.'**
+  String get syncKeyHelp;
+
+  /// No description provided for @syncKeyCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy key'**
+  String get syncKeyCopy;
+
+  /// No description provided for @syncKeyCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Key copied'**
+  String get syncKeyCopied;
+
+  /// No description provided for @syncKeyShow.
+  ///
+  /// In en, this message translates to:
+  /// **'Show key'**
+  String get syncKeyShow;
+
+  /// No description provided for @syncKeyHide.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide key'**
+  String get syncKeyHide;
+
+  /// No description provided for @syncUseKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Use a key from another phone'**
+  String get syncUseKey;
+
+  /// No description provided for @syncUseKeyHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste the key from your other phone. This phone\'s log is merged with the cloud copy.'**
+  String get syncUseKeyHelp;
+
+  /// No description provided for @syncKeyInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'That does not look like a valid key'**
+  String get syncKeyInvalid;
+
+  /// No description provided for @syncUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Use this key'**
+  String get syncUse;
+
+  /// No description provided for @syncSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get syncSave;
+
+  /// No description provided for @syncNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync now'**
+  String get syncNow;
+
+  /// No description provided for @syncRunning.
+  ///
+  /// In en, this message translates to:
+  /// **'Syncing…'**
+  String get syncRunning;
+
+  /// No description provided for @syncLastSynced.
+  ///
+  /// In en, this message translates to:
+  /// **'Last synced {time}'**
+  String syncLastSynced(String time);
+
+  /// No description provided for @syncNever.
+  ///
+  /// In en, this message translates to:
+  /// **'Not synced yet'**
+  String get syncNever;
+
+  /// No description provided for @syncPending.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} waiting to upload'**
+  String syncPending(int count);
+
+  /// No description provided for @syncProblemSetup.
+  ///
+  /// In en, this message translates to:
+  /// **'Set the server address first'**
+  String get syncProblemSetup;
+
+  /// No description provided for @syncProblemOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'No connection. It will try again later.'**
+  String get syncProblemOffline;
+
+  /// No description provided for @syncProblemServer.
+  ///
+  /// In en, this message translates to:
+  /// **'The server had a problem. It will try again later.'**
+  String get syncProblemServer;
+
+  /// No description provided for @syncProblemKey.
+  ///
+  /// In en, this message translates to:
+  /// **'The server did not accept this key.'**
+  String get syncProblemKey;
+
+  /// No description provided for @syncProblemOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync did not work. It will try again later.'**
+  String get syncProblemOther;
+
+  /// No description provided for @syncDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete my cloud data'**
+  String get syncDelete;
+
+  /// No description provided for @syncDeleteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This erases your backup from the cloud. The prayed log on this phone is not touched.'**
+  String get syncDeleteBody;
+
+  /// No description provided for @syncDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get syncDeleteConfirm;
+
+  /// No description provided for @syncDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Cloud data deleted'**
+  String get syncDeleted;
+
   /// No description provided for @secLanguage.
   ///
   /// In en, this message translates to:

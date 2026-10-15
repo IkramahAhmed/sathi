@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ import '../features/prayer/presentation/providers/permissions_controller.dart';
 import '../features/prayer/presentation/providers/prayer_providers.dart';
 import '../features/prayer/presentation/providers/reschedule_controller.dart';
 import '../features/prayer/presentation/providers/settings_controller.dart';
+import '../features/prayer/presentation/providers/sync_controller.dart';
 import '../l10n/app_localizations.dart';
 import 'providers.dart';
 import 'router.dart';
@@ -61,6 +63,8 @@ class _SaathiAppState extends ConsumerState<SaathiApp> with WidgetsBindingObserv
     } catch (error, stackTrace) {
       appLog.warning('Follow-me check failed', error, stackTrace);
     }
+    // Last, and never awaited for anything else: offline just means "later".
+    unawaited(ref.read(syncStatusControllerProvider.notifier).syncNow());
   }
 
   void _openFromPayload(String? payload) {

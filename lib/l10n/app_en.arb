@@ -186,6 +186,52 @@
   "hijriNoChange": "No change",
   "hijriPlusOne": "+1 day",
   "hijriMinusOne": "−1 day",
+  "syncSection": "Cloud backup",
+  "syncTitle": "Back up my prayed log",
+  "syncSubtitle": "Keeps your ticked prayers safe and the same on all your phones",
+  "syncServer": "Server address",
+  "syncServerNotSet": "Not set",
+  "syncServerHint": "https://your-server.workers.dev",
+  "syncServerInvalid": "Enter an https:// address",
+  "syncKey": "Sync key",
+  "syncKeyHelp": "Keep this secret. Anyone with it can see your prayed log. You need it to restore your log on a new phone.",
+  "syncKeyCopy": "Copy key",
+  "syncKeyCopied": "Key copied",
+  "syncKeyShow": "Show key",
+  "syncKeyHide": "Hide key",
+  "syncUseKey": "Use a key from another phone",
+  "syncUseKeyHelp": "Paste the key from your other phone. This phone's log is merged with the cloud copy.",
+  "syncKeyInvalid": "That does not look like a valid key",
+  "syncUse": "Use this key",
+  "syncSave": "Save",
+  "syncNow": "Sync now",
+  "syncRunning": "Syncing…",
+  "syncLastSynced": "Last synced {time}",
+  "@syncLastSynced": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "syncNever": "Not synced yet",
+  "syncPending": "{count} waiting to upload",
+  "@syncPending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "syncProblemSetup": "Set the server address first",
+  "syncProblemOffline": "No connection. It will try again later.",
+  "syncProblemServer": "The server had a problem. It will try again later.",
+  "syncProblemKey": "The server did not accept this key.",
+  "syncProblemOther": "Sync did not work. It will try again later.",
+  "syncDelete": "Delete my cloud data",
+  "syncDeleteBody": "This erases your backup from the cloud. The prayed log on this phone is not touched.",
+  "syncDeleteConfirm": "Delete",
+  "syncDeleted": "Cloud data deleted",
   "secLanguage": "Language",
   "langEnglish": "English",
   "langUrdu": "اردو",

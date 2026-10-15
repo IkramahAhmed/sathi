@@ -297,6 +297,111 @@ class AppLocalizationsUr extends AppLocalizations {
   String get hijriMinusOne => '−1 دن';
 
   @override
+  String get syncSection => 'کلاؤڈ بیک اپ';
+
+  @override
+  String get syncTitle => 'میری ادا کی گئی نمازوں کا بیک اپ';
+
+  @override
+  String get syncSubtitle =>
+      'آپ کی نشان زد نمازیں محفوظ رہتی ہیں اور آپ کے تمام فونز پر یکساں';
+
+  @override
+  String get syncServer => 'سرور کا پتہ';
+
+  @override
+  String get syncServerNotSet => 'مقرر نہیں';
+
+  @override
+  String get syncServerHint => 'https://your-server.workers.dev';
+
+  @override
+  String get syncServerInvalid => 'https:// والا پتہ درج کریں';
+
+  @override
+  String get syncKey => 'سنک کی';
+
+  @override
+  String get syncKeyHelp =>
+      'اسے خفیہ رکھیں۔ جس کے پاس یہ ہو وہ آپ کی ادا کی گئی نمازیں دیکھ سکتا ہے۔ نئے فون پر لاگ بحال کرنے کے لیے یہ ضروری ہے۔';
+
+  @override
+  String get syncKeyCopy => 'کی کاپی کریں';
+
+  @override
+  String get syncKeyCopied => 'کی کاپی ہو گئی';
+
+  @override
+  String get syncKeyShow => 'کی دکھائیں';
+
+  @override
+  String get syncKeyHide => 'کی چھپائیں';
+
+  @override
+  String get syncUseKey => 'دوسرے فون کی کی استعمال کریں';
+
+  @override
+  String get syncUseKeyHelp =>
+      'اپنے دوسرے فون کی کی یہاں پیسٹ کریں۔ اس فون کا لاگ کلاؤڈ کاپی کے ساتھ مل جائے گا۔';
+
+  @override
+  String get syncKeyInvalid => 'یہ درست کی نہیں لگتی';
+
+  @override
+  String get syncUse => 'یہ کی استعمال کریں';
+
+  @override
+  String get syncSave => 'محفوظ کریں';
+
+  @override
+  String get syncNow => 'ابھی سنک کریں';
+
+  @override
+  String get syncRunning => 'سنک ہو رہا ہے…';
+
+  @override
+  String syncLastSynced(String time) {
+    return 'آخری سنک $time';
+  }
+
+  @override
+  String get syncNever => 'ابھی تک سنک نہیں ہوا';
+
+  @override
+  String syncPending(int count) {
+    return '$count اپ لوڈ کے منتظر';
+  }
+
+  @override
+  String get syncProblemSetup => 'پہلے سرور کا پتہ مقرر کریں';
+
+  @override
+  String get syncProblemOffline => 'رابطہ نہیں۔ بعد میں دوبارہ کوشش ہوگی۔';
+
+  @override
+  String get syncProblemServer =>
+      'سرور میں مسئلہ تھا۔ بعد میں دوبارہ کوشش ہوگی۔';
+
+  @override
+  String get syncProblemKey => 'سرور نے یہ کی قبول نہیں کی۔';
+
+  @override
+  String get syncProblemOther => 'سنک نہیں ہو سکا۔ بعد میں دوبارہ کوشش ہوگی۔';
+
+  @override
+  String get syncDelete => 'میرا کلاؤڈ ڈیٹا حذف کریں';
+
+  @override
+  String get syncDeleteBody =>
+      'یہ کلاؤڈ سے آپ کا بیک اپ مٹا دے گا۔ اس فون کا لاگ محفوظ رہے گا۔';
+
+  @override
+  String get syncDeleteConfirm => 'حذف کریں';
+
+  @override
+  String get syncDeleted => 'کلاؤڈ ڈیٹا حذف ہو گیا';
+
+  @override
   String get secLanguage => 'زبان';
 
   @override

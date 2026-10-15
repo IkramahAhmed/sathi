@@ -32,7 +32,8 @@ class PrayerRepositoryImpl implements PrayerRepository {
       _logs.watchDone(_key(date)).map(_parse);
 
   @override
-  Future<void> setDone(DateTime date, PrayerName prayer, {required bool done}) => done
-      ? _logs.markDone(_key(date), prayer.name, DateTime.now().toUtc())
-      : _logs.unmark(_key(date), prayer.name);
+  Future<void> setDone(DateTime date, PrayerName prayer, {required bool done}) {
+    final now = DateTime.now().toUtc();
+    return done ? _logs.markDone(_key(date), prayer.name, now) : _logs.unmark(_key(date), prayer.name, now);
+  }
 }

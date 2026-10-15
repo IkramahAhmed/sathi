@@ -98,6 +98,41 @@ licensed. If you add your own recordings:
 
 To rebuild the short clip from the full one: `python3 tool/make_short_azan.py azan_full.mp3`.
 
+## Cloud backup (optional)
+
+The prayed log can be backed up to the cloud and shared between your phones. It is
+**off by default**, and the app works fully without it.
+
+- **Where it goes:** a small API ([`saathi-api`](../saathi-api), its own project) that stores
+  the data in a free Neon Postgres database. The app never connects to the database itself,
+  so no database password is ever inside the app.
+- **No account:** turning it on creates a random 256-bit **sync key**, kept in the Android
+  Keystore. Type the same key into a second phone (Settings, Cloud backup, "Use a key from
+  another phone") and both phones share one log. Anyone with the key can read that log.
+- **Offline first:** Drift stays the source of truth. Ticks are saved locally and queued;
+  they upload a few seconds after you tick, on app start and resume, or with "Sync now".
+  Offline simply means "later", and nothing is lost.
+- **Conflicts:** the newest edit wins. Un-ticking is kept as a marker so it syncs too.
+- **Privacy:** only the date, the prayer, ticked or not, and the time of the change are sent.
+  Location and settings never leave the phone. "Delete my cloud data" erases the cloud copy.
+
+To use it, deploy the API and enter its address in the app. The steps are in
+`../saathi-api/README.md`. You can also bake the address in at build time:
+
+```bash
+flutter run --release --dart-define=SAATHI_API_URL=https://saathi-api.you.workers.dev
+```
+
+Release builds only talk to `https://` addresses. Debug builds also allow `http://`, so you can
+try it against the local dev server (`npm run dev` in `saathi-api`; the emulator reaches it at
+`http://10.0.2.2:8787`).
+
+The sync tests run against fakes by default. To also test against a real running server:
+
+```bash
+SAATHI_E2E_URL=http://localhost:8787 flutter test test/e2e
+```
+
 ## Testing notifications
 
 - **In the app:** Settings, then "Test notification in 10 s". With exact alarms

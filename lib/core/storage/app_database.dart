@@ -15,5 +15,20 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? driftDatabase(name: 'saathi'));
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+        onCreate: (m) => m.createAll(),
+        onUpgrade: (m, from, to) async {
+          if (from < 2) {
+            // v2 adds cloud-sync bookkeeping. Existing ticks count as "done",
+            // were last changed when they were ticked, and still need uploading.
+            await m.addColumn(prayerLogs, prayerLogs.done);
+            await m.addColumn(prayerLogs, prayerLogs.updatedAt);
+            await m.addColumn(prayerLogs, prayerLogs.dirty);
+            await customStatement('UPDATE prayer_logs SET updated_at = done_at');
+          }
+        },
+      );
 }

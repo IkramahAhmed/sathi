@@ -702,6 +702,182 @@ final class ScheduleUpcomingAzansProvider
 String _$scheduleUpcomingAzansHash() =>
     r'69e0f23922c091e3ebc1095550bc1e566a16b6e1';
 
+/// Where the sync key is stored (Android Keystore / iOS Keychain).
+
+@ProviderFor(secretStore)
+final secretStoreProvider = SecretStoreProvider._();
+
+/// Where the sync key is stored (Android Keystore / iOS Keychain).
+
+final class SecretStoreProvider
+    extends $FunctionalProvider<SecretStore, SecretStore, SecretStore>
+    with $Provider<SecretStore> {
+  /// Where the sync key is stored (Android Keystore / iOS Keychain).
+  SecretStoreProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'secretStoreProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$secretStoreHash();
+
+  @$internal
+  @override
+  $ProviderElement<SecretStore> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  SecretStore create(Ref ref) {
+    return secretStore(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(SecretStore value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<SecretStore>(value),
+    );
+  }
+}
+
+String _$secretStoreHash() => r'f6ba1ced2e985c77ee9b83ea18f3bf60168186cd';
+
+@ProviderFor(syncConfigStore)
+final syncConfigStoreProvider = SyncConfigStoreProvider._();
+
+final class SyncConfigStoreProvider
+    extends
+        $FunctionalProvider<SyncConfigStore, SyncConfigStore, SyncConfigStore>
+    with $Provider<SyncConfigStore> {
+  SyncConfigStoreProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'syncConfigStoreProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$syncConfigStoreHash();
+
+  @$internal
+  @override
+  $ProviderElement<SyncConfigStore> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  SyncConfigStore create(Ref ref) {
+    return syncConfigStore(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(SyncConfigStore value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<SyncConfigStore>(value),
+    );
+  }
+}
+
+String _$syncConfigStoreHash() => r'98c3b3e832376901820887a73bcb289d9fc24f83';
+
+@ProviderFor(cloudApi)
+final cloudApiProvider = CloudApiProvider._();
+
+final class CloudApiProvider
+    extends $FunctionalProvider<CloudApi, CloudApi, CloudApi>
+    with $Provider<CloudApi> {
+  CloudApiProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'cloudApiProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$cloudApiHash();
+
+  @$internal
+  @override
+  $ProviderElement<CloudApi> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  CloudApi create(Ref ref) {
+    return cloudApi(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(CloudApi value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<CloudApi>(value),
+    );
+  }
+}
+
+String _$cloudApiHash() => r'9484b8b5260195bfda01a0e1e66bf38b7ba1b8c5';
+
+@ProviderFor(prayerSyncService)
+final prayerSyncServiceProvider = PrayerSyncServiceProvider._();
+
+final class PrayerSyncServiceProvider
+    extends
+        $FunctionalProvider<
+          PrayerSyncService,
+          PrayerSyncService,
+          PrayerSyncService
+        >
+    with $Provider<PrayerSyncService> {
+  PrayerSyncServiceProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'prayerSyncServiceProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$prayerSyncServiceHash();
+
+  @$internal
+  @override
+  $ProviderElement<PrayerSyncService> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  PrayerSyncService create(Ref ref) {
+    return prayerSyncService(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(PrayerSyncService value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<PrayerSyncService>(value),
+    );
+  }
+}
+
+String _$prayerSyncServiceHash() => r'b1b6b8d4bf23ed4fa9688fd29af91eaffd4445f4';
+
 /// Tracks whether the app is in the foreground so tickers can pause.
 
 @ProviderFor(AppLifecycle)

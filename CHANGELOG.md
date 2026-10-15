@@ -1,5 +1,25 @@
 # Changelog
 
+## v0.2.0 — Cloud backup
+
+### Added
+- Optional cloud backup of the prayed log to a free Neon database through the new
+  `saathi-api` service. Off by default; the app is unchanged without it.
+- Sync key created on the phone and stored in the Android Keystore. Use the same key on a
+  second phone to share the log. Settings has the key (hidden until shown), copy, restore
+  from another phone, server address, "Sync now" with plain-language status, and
+  "Delete my cloud data".
+- Last-write-wins merging. Un-ticking is kept as a marker so it reaches other phones.
+- Uploads a few seconds after a tick, on start and on resume. Works offline: changes queue.
+- The local database is upgraded to version 2 automatically; existing ticks upload on the
+  first sync.
+
+### Fixed
+- Release builds showed a blank screen: the resource shrinker removed the notification icon,
+  which the app only references by name. The icon and sounds are now kept, and a
+  notification problem can no longer stop the app from opening.
+- Release builds had no internet permission.
+
 ## v0.1.0 — Azan feature
 
 First release.

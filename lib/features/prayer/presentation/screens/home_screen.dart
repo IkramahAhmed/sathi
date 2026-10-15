@@ -8,6 +8,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../l10n_helpers.dart';
 import '../providers/prayer_providers.dart';
 import '../providers/settings_controller.dart';
+import '../providers/sync_controller.dart';
 import '../widgets/next_prayer_countdown.dart';
 import '../widgets/prayer_row.dart';
 import '../widgets/status_banners.dart';
@@ -117,8 +118,10 @@ class HomeScreen extends ConsumerWidget {
               isPast: today.times[prayer]!.isBefore(now),
               onToggleAzan: (enabled) =>
                   ref.read(settingsControllerProvider.notifier).setAzanEnabled(prayer, enabled: enabled),
-              onTogglePrayed: (done) =>
-                  ref.read(markPrayerDoneProvider)(today.date, prayer, done: done),
+              onTogglePrayed: (done) async {
+                await ref.read(markPrayerDoneProvider)(today.date, prayer, done: done);
+                ref.read(syncStatusControllerProvider.notifier).scheduleSoon();
+              },
             ),
             const SizedBox(height: 8),
           ],
