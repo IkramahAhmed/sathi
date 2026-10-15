@@ -73,6 +73,55 @@ class NotificationTexts {
     };
   }
 
+  String leaveTitle(PrayerName prayer, {bool isFriday = false}) {
+    final name = prayerName(prayer, isFriday: isFriday);
+    return switch (_tag) {
+      'ur' => '$name کی جماعت کے لیے روانہ ہوں',
+      'en_PK' => '$name ki jamaat ke liye rawana hon',
+      _ => 'Time to leave for $name jama\'at',
+    };
+  }
+
+  String leaveBody(String time) => switch (_tag) {
+        'ur' => 'جماعت $time پر ہے',
+        'en_PK' => 'Jamaat $time par hai',
+        _ => 'Jama\'at is at $time',
+      };
+
+  /// "Asr ends in 20 min", or a last call when [last] is true.
+  String endingTitle(PrayerName prayer, int minutesLeft, {bool last = false, bool isFriday = false}) {
+    final name = prayerName(prayer, isFriday: isFriday);
+    return switch (_tag) {
+      'ur' => last ? '$name کا وقت ختم ہونے والا ہے!' : '$name کا وقت $minutesLeft منٹ میں ختم',
+      'en_PK' => last ? '$name ka waqt khatam hone wala hai!' : '$name ka waqt $minutesLeft minute mein khatam',
+      _ => last ? '$name time is ending!' : '$name ends in $minutesLeft min',
+    };
+  }
+
+  String endingBody({required bool requirePhoto}) => switch (_tag) {
+        'ur' => requirePhoto ? 'نماز پڑھیں، پھر جائے نماز کی تصویر لے کر تصدیق کریں' : 'نماز پڑھ لیں',
+        'en_PK' => requirePhoto ? 'Namaz parhein, phir jaye-namaz ki tasveer le kar tasdeeq karein' : 'Namaz parh lein',
+        _ => requirePhoto ? 'Pray, then take a photo of your prayer place to confirm' : 'Time to pray',
+      };
+
+  String get actionTakePhoto => switch (_tag) {
+        'ur' => 'تصویر لیں',
+        'en_PK' => 'Tasveer lein',
+        _ => 'Take photo',
+      };
+
+  String get actionStop => switch (_tag) {
+        'ur' => 'یاد دہانی بند کریں',
+        'en_PK' => 'Yaad-dehani band karein',
+        _ => 'Stop reminders',
+      };
+
+  String get actionPrayed => switch (_tag) {
+        'ur' => 'پڑھ لی',
+        'en_PK' => 'Parh li',
+        _ => 'Prayed',
+      };
+
   String preReminderBody(String city) => switch (_tag) {
         'ur' => '$city: تیاری کر لیں',
         'en_PK' => '$city: tayari kar lein',

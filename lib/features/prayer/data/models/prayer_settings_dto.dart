@@ -1,6 +1,8 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../domain/entities/calc_method.dart';
+import '../../domain/entities/end_reminder.dart';
+import '../../domain/entities/jamaat.dart';
 import '../../domain/entities/prayer_name.dart';
 import '../../domain/entities/prayer_settings.dart';
 
@@ -37,6 +39,19 @@ abstract class PrayerSettingsDto with _$PrayerSettingsDto {
     @Default(false) bool methodIsManual,
     @Default(false) bool madhabIsManual,
     @Default('en') String localeTag,
+    @Default(<PrayerName, int>{}) Map<PrayerName, int> jamaatOffsetMin,
+    @Default(<PrayerName, int>{}) Map<PrayerName, int> jamaatFixedMin,
+    int? jummaFixedMin,
+    @Default(0) int leaveReminderMin,
+    @Default(false) bool silentDuringJamaat,
+    @Default(15) int silentMinutes,
+    @Default(false) bool endReminderEnabled,
+    @Default(<PrayerName, bool>{}) Map<PrayerName, bool> endReminderPrayers,
+    @Default(30) int endLeadMin,
+    @Default(10) int endRepeatMin,
+    @Default(false) bool endRequirePhoto,
+    @Default(false) bool azanOnAlarm,
+    String? autoQazaFrom,
   }) = _PrayerSettingsDto;
 
   factory PrayerSettingsDto.fromJson(Map<String, dynamic> json) =>
@@ -60,6 +75,19 @@ abstract class PrayerSettingsDto with _$PrayerSettingsDto {
         methodIsManual: s.methodIsManual,
         madhabIsManual: s.madhabIsManual,
         localeTag: s.localeTag,
+        jamaatOffsetMin: s.jamaat.offsetMin,
+        jamaatFixedMin: s.jamaat.fixedMin,
+        jummaFixedMin: s.jamaat.jummaFixedMin,
+        leaveReminderMin: s.jamaat.leaveReminderMin,
+        silentDuringJamaat: s.jamaat.silentDuringJamaat,
+        silentMinutes: s.jamaat.silentMinutes,
+        endReminderEnabled: s.endReminder.enabled,
+        endReminderPrayers: s.endReminder.prayers,
+        endLeadMin: s.endReminder.leadMin,
+        endRepeatMin: s.endReminder.repeatMin,
+        endRequirePhoto: s.endReminder.requirePhoto,
+        azanOnAlarm: s.azanOnAlarm,
+        autoQazaFrom: s.autoQazaFrom,
       );
 
   /// Converts to the domain entity, filling any missing per-prayer entries
@@ -90,6 +118,25 @@ abstract class PrayerSettingsDto with _$PrayerSettingsDto {
       methodIsManual: methodIsManual,
       madhabIsManual: madhabIsManual,
       localeTag: localeTag,
+      jamaat: JamaatSettings(
+        offsetMin: {for (final e in jamaatOffsetMin.entries) if (e.key.hasAzan) e.key: e.value.clamp(0, 120)},
+        fixedMin: {for (final e in jamaatFixedMin.entries) if (e.key.hasAzan) e.key: e.value.clamp(0, 1439)},
+        jummaFixedMin: jummaFixedMin?.clamp(0, 1439),
+        leaveReminderMin: leaveReminderMin.clamp(0, 120),
+        silentDuringJamaat: silentDuringJamaat,
+        silentMinutes: silentMinutes.clamp(5, 90),
+      ),
+      endReminder: EndReminderSettings(
+        enabled: endReminderEnabled,
+        prayers: {
+          for (final p in PrayerName.obligatory) p: endReminderPrayers[p] ?? true,
+        },
+        leadMin: endLeadMin.clamp(5, 180),
+        repeatMin: endRepeatMin.clamp(1, 60),
+        requirePhoto: endRequirePhoto,
+      ),
+      azanOnAlarm: azanOnAlarm,
+      autoQazaFrom: autoQazaFrom,
     );
   }
 }

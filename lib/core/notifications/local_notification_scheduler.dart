@@ -21,6 +21,7 @@ class LocalNotificationScheduler implements NotificationScheduler {
   static Future<void> initialize(
     FlutterLocalNotificationsPlugin plugin, {
     bool requestIosPermissionsOnInit = false,
+    DidReceiveBackgroundNotificationResponseCallback? onBackgroundResponse,
   }) async {
     await plugin.initialize(
       settings: InitializationSettings(
@@ -31,7 +32,9 @@ class LocalNotificationScheduler implements NotificationScheduler {
           requestSoundPermission: requestIosPermissionsOnInit,
         ),
       ),
-      onDidReceiveNotificationResponse: (response) => notificationTapBus.add(response.payload),
+      onDidReceiveNotificationResponse: (response) =>
+          notificationTapBus.add(NotificationTap(response.payload, actionId: response.actionId)),
+      onDidReceiveBackgroundNotificationResponse: onBackgroundResponse,
     );
 
     final android = plugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
@@ -50,6 +53,13 @@ class LocalNotificationScheduler implements NotificationScheduler {
 
   @override
   Future<void> cancelAll() => _plugin.cancelAll();
+
+  @override
+  Future<void> cancel(Iterable<int> ids) async {
+    for (final id in ids) {
+      await _plugin.cancel(id: id);
+    }
+  }
 
   @override
   Future<bool> canScheduleExact() async {
@@ -81,7 +91,7 @@ class LocalNotificationScheduler implements NotificationScheduler {
       _plugin.zonedSchedule(
         id: alarm.id,
         scheduledDate: when,
-        notificationDetails: NotificationChannels.detailsFor(alarm.channelId),
+        notificationDetails: NotificationChannels.detailsFor(alarm.channelId, actions: alarm.actions),
         androidScheduleMode: exact
             ? AndroidScheduleMode.exactAllowWhileIdle
             : AndroidScheduleMode.inexactAllowWhileIdle,

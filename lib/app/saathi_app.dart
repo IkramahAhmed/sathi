@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/notifications/notification_tap_bus.dart';
+import '../features/prayer/domain/usecases/handle_reminder_action.dart';
 import '../core/utils/logger.dart';
 import '../features/prayer/presentation/l10n_helpers.dart';
 import '../features/prayer/presentation/providers/permissions_controller.dart';
@@ -33,9 +34,9 @@ class _SaathiAppState extends ConsumerState<SaathiApp> with WidgetsBindingObserv
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    notificationTapBus.stream.listen(_openFromPayload);
+    notificationTapBus.stream.listen(_onTap);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _openFromPayload(widget.launchPayload);
+      if (widget.launchPayload != null) _onTap(NotificationTap(widget.launchPayload));
       _refreshEverything();
     });
   }
@@ -65,6 +66,25 @@ class _SaathiAppState extends ConsumerState<SaathiApp> with WidgetsBindingObserv
     }
     // Last, and never awaited for anything else: offline just means "later".
     unawaited(ref.read(syncStatusControllerProvider.notifier).syncNow());
+  }
+
+  /// Handles a tap on a notification or one of its buttons.
+  Future<void> _onTap(NotificationTap tap) async {
+    final outcome = await ref.read(handleReminderActionProvider)(actionId: tap.actionId, payload: tap.payload);
+    switch (outcome) {
+      case ReminderOutcome.needsPhoto:
+        final info = HandleReminderAction.parse(tap.payload);
+        if (info != null) {
+          final date = '${info.date.year}-${info.date.month.toString().padLeft(2, '0')}-${info.date.day.toString().padLeft(2, '0')}';
+          ref.read(routerProvider).go('${Routes.verify}?prayer=${info.prayer.name}&date=$date');
+        }
+      case ReminderOutcome.stopped || ReminderOutcome.prayed:
+        // The prayed log or the mute list changed: plan again from the new state.
+        unawaited(ref.read(rescheduleControllerProvider.notifier).reschedule());
+        unawaited(ref.read(syncStatusControllerProvider.notifier).syncNow());
+      case ReminderOutcome.ignored:
+        _openFromPayload(tap.payload);
+    }
   }
 
   void _openFromPayload(String? payload) {

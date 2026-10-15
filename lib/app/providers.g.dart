@@ -654,6 +654,94 @@ final class MarkPrayerDoneProvider
 
 String _$markPrayerDoneHash() => r'76e0f9270afff12aefa67245850cbfbd95a14c11';
 
+@ProviderFor(reminderMuteStore)
+final reminderMuteStoreProvider = ReminderMuteStoreProvider._();
+
+final class ReminderMuteStoreProvider
+    extends
+        $FunctionalProvider<
+          ReminderMuteStore,
+          ReminderMuteStore,
+          ReminderMuteStore
+        >
+    with $Provider<ReminderMuteStore> {
+  ReminderMuteStoreProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'reminderMuteStoreProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$reminderMuteStoreHash();
+
+  @$internal
+  @override
+  $ProviderElement<ReminderMuteStore> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  ReminderMuteStore create(Ref ref) {
+    return reminderMuteStore(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(ReminderMuteStore value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<ReminderMuteStore>(value),
+    );
+  }
+}
+
+String _$reminderMuteStoreHash() => r'9d0960380a8ed6e9893bfd746b62bf7bc062516d';
+
+@ProviderFor(reminderState)
+final reminderStateProvider = ReminderStateProvider._();
+
+final class ReminderStateProvider
+    extends $FunctionalProvider<ReminderState, ReminderState, ReminderState>
+    with $Provider<ReminderState> {
+  ReminderStateProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'reminderStateProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$reminderStateHash();
+
+  @$internal
+  @override
+  $ProviderElement<ReminderState> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  ReminderState create(Ref ref) {
+    return reminderState(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(ReminderState value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<ReminderState>(value),
+    );
+  }
+}
+
+String _$reminderStateHash() => r'39cdeaea663c4e9275ac9a7f1a7021b878195fee';
+
 @ProviderFor(scheduleUpcomingAzans)
 final scheduleUpcomingAzansProvider = ScheduleUpcomingAzansProvider._();
 
@@ -700,7 +788,101 @@ final class ScheduleUpcomingAzansProvider
 }
 
 String _$scheduleUpcomingAzansHash() =>
-    r'69e0f23922c091e3ebc1095550bc1e566a16b6e1';
+    r'9f429cda65daafe4dc33f15dc26f22b60aa271a5';
+
+@ProviderFor(qazaService)
+final qazaServiceProvider = QazaServiceProvider._();
+
+final class QazaServiceProvider
+    extends $FunctionalProvider<QazaService, QazaService, QazaService>
+    with $Provider<QazaService> {
+  QazaServiceProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'qazaServiceProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$qazaServiceHash();
+
+  @$internal
+  @override
+  $ProviderElement<QazaService> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  QazaService create(Ref ref) {
+    return qazaService(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(QazaService value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<QazaService>(value),
+    );
+  }
+}
+
+String _$qazaServiceHash() => r'2276ccbe5c8b8629c02219f780aedfeb757ac218';
+
+/// Handles taps on "prayer ending" reminders while the app is running.
+
+@ProviderFor(handleReminderAction)
+final handleReminderActionProvider = HandleReminderActionProvider._();
+
+/// Handles taps on "prayer ending" reminders while the app is running.
+
+final class HandleReminderActionProvider
+    extends
+        $FunctionalProvider<
+          HandleReminderAction,
+          HandleReminderAction,
+          HandleReminderAction
+        >
+    with $Provider<HandleReminderAction> {
+  /// Handles taps on "prayer ending" reminders while the app is running.
+  HandleReminderActionProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'handleReminderActionProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$handleReminderActionHash();
+
+  @$internal
+  @override
+  $ProviderElement<HandleReminderAction> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  HandleReminderAction create(Ref ref) {
+    return handleReminderAction(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(HandleReminderAction value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<HandleReminderAction>(value),
+    );
+  }
+}
+
+String _$handleReminderActionHash() =>
+    r'9c3c913c15d84dff2f6e012ee8155b031ac30a13';
 
 /// Where the sync key is stored (Android Keystore / iOS Keychain).
 

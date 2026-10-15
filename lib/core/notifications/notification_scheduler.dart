@@ -1,3 +1,15 @@
+/// A button on a notification.
+class AlarmAction {
+  const AlarmAction({required this.id, required this.label, this.opensApp = false});
+
+  /// Sent back when the user taps it.
+  final String id;
+  final String label;
+
+  /// True when the button should open the app, false to handle it in the background.
+  final bool opensApp;
+}
+
 /// One local notification to be shown at a future instant.
 class ScheduledAlarm {
   const ScheduledAlarm({
@@ -9,6 +21,7 @@ class ScheduledAlarm {
     required this.channelId,
     required this.payload,
     this.isPreReminder = false,
+    this.actions = const [],
   });
 
   /// Deterministic id; see `stableId`.
@@ -26,6 +39,9 @@ class ScheduledAlarm {
   /// JSON payload delivered when the notification is tapped.
   final String payload;
   final bool isPreReminder;
+
+  /// Optional buttons (Android).
+  final List<AlarmAction> actions;
 }
 
 /// Pure-Dart contract for scheduling local notifications. Shared later by the
@@ -33,6 +49,9 @@ class ScheduledAlarm {
 abstract interface class NotificationScheduler {
   /// Cancels every pending notification.
   Future<void> cancelAll();
+
+  /// Cancels the notifications with these ids. Unknown ids are ignored.
+  Future<void> cancel(Iterable<int> ids);
 
   /// Schedules all [alarms]. Falls back to inexact alarms when exact alarms
   /// are not permitted.

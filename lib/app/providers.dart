@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -14,7 +15,12 @@ import '../core/utils/clock.dart';
 import '../features/prayer/data/datasources/adhan_calculator.dart';
 import '../features/prayer/data/datasources/settings_local_data_source.dart';
 import '../features/prayer/data/repositories/prayer_repository_impl.dart';
+import '../features/prayer/data/qaza/qaza_service.dart';
+import '../features/prayer/data/reminders/drift_reminder_state.dart';
+import '../features/prayer/data/reminders/reminder_mute_store.dart';
 import '../features/prayer/data/sync/prayer_sync_service.dart';
+import '../features/prayer/domain/repositories/reminder_state.dart';
+import '../features/prayer/domain/usecases/handle_reminder_action.dart';
 import '../features/prayer/data/repositories/settings_repository_impl.dart';
 import '../features/prayer/domain/repositories/prayer_repository.dart';
 import '../features/prayer/domain/repositories/settings_repository.dart';
@@ -90,12 +96,52 @@ GetPrayerTimesRange getPrayerTimesRange(Ref ref) => GetPrayerTimesRange(
 @Riverpod(keepAlive: true)
 MarkPrayerDone markPrayerDone(Ref ref) => MarkPrayerDone(ref.watch(prayerRepositoryProvider));
 
+/// iOS keeps 64 pending notifications; Android has no such small limit.
+int get maxPendingNotificationsForPlatform =>
+    defaultTargetPlatform == TargetPlatform.android ? 140 : kMaxPendingNotifications;
+
+@Riverpod(keepAlive: true)
+ReminderMuteStore reminderMuteStore(Ref ref) =>
+    ReminderMuteStore(PrefsKeyValueStore(ref.watch(sharedPreferencesProvider)));
+
+@Riverpod(keepAlive: true)
+ReminderState reminderState(Ref ref) {
+  final db = ref.watch(appDatabaseProvider);
+  return DriftReminderState(
+    logs: db.prayerLogsDao,
+    pauses: db.pauseRangesDao,
+    mutes: ref.watch(reminderMuteStoreProvider),
+  );
+}
+
 @Riverpod(keepAlive: true)
 ScheduleUpcomingAzans scheduleUpcomingAzans(Ref ref) => ScheduleUpcomingAzans(
       ref.watch(settingsRepositoryProvider),
       ref.watch(prayerRepositoryProvider),
       ref.watch(notificationSchedulerProvider),
       ref.watch(clockProvider),
+      reminderState: ref.watch(reminderStateProvider),
+      maxPending: maxPendingNotificationsForPlatform,
+    );
+
+@Riverpod(keepAlive: true)
+QazaService qazaService(Ref ref) {
+  final db = ref.watch(appDatabaseProvider);
+  return QazaService(
+    qaza: db.qazaDao,
+    logs: db.prayerLogsDao,
+    pauses: db.pauseRangesDao,
+    times: ref.watch(adhanCalculatorProvider),
+  );
+}
+
+/// Handles taps on "prayer ending" reminders while the app is running.
+@Riverpod(keepAlive: true)
+HandleReminderAction handleReminderAction(Ref ref) => HandleReminderAction(
+      scheduler: ref.watch(notificationSchedulerProvider),
+      mute: (date, prayer) =>
+          ref.read(reminderMuteStoreProvider).mute(date, prayer, today: ref.read(clockProvider)()),
+      markPrayed: (date, prayer) => ref.read(prayerRepositoryProvider).setDone(date, prayer, done: true),
     );
 
 /// Where the sync key is stored (Android Keystore / iOS Keychain).

@@ -20,6 +20,7 @@ abstract final class Routes {
   static const settings = '/settings';
   static const onboarding = '/onboarding';
   static const oemGuide = '/oem-guide';
+  static const verify = '/verify';
 }
 
 /// The first route to show. Overridden in `main()` once onboarding state is known.

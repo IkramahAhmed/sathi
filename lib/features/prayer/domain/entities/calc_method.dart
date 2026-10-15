@@ -60,6 +60,11 @@ enum AzanSound {
 
   bool get isSilent => this == silent;
 
+  /// The channel that plays this sound on the alarm volume. Android fixes a
+  /// channel's audio stream when it is created, so the alarm variant is a
+  /// separate channel. The silent sound has no alarm variant.
+  String get alarmChannelId => isSilent ? channelId : '${channelId}_alarm';
+
   /// Parses a stored value. Older versions saved `makkah` and `madina`; those
   /// placeholder sounds map to the real recordings that replaced them.
   static AzanSound fromStored(String? name) => switch (name) {

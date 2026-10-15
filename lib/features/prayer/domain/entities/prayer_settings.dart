@@ -1,4 +1,6 @@
 import 'calc_method.dart';
+import 'end_reminder.dart';
+import 'jamaat.dart';
 import 'prayer_name.dart';
 
 /// All user-controllable prayer configuration plus the resolved location.
@@ -21,6 +23,10 @@ class PrayerSettings {
     required this.methodIsManual,
     required this.madhabIsManual,
     required this.localeTag,
+    this.jamaat = const JamaatSettings(),
+    this.endReminder = const EndReminderSettings(),
+    this.azanOnAlarm = false,
+    this.autoQazaFrom,
   });
 
   /// Defaults for a first run in Karachi, Pakistan.
@@ -77,6 +83,20 @@ class PrayerSettings {
   /// `en`, `ur` or `en_PK` (Roman Urdu).
   final String localeTag;
 
+  /// Mosque jama'at times and the reminders that go with them.
+  final JamaatSettings jamaat;
+
+  /// "This prayer is about to end" reminders, optionally needing photo proof.
+  final EndReminderSettings endReminder;
+
+  /// Play the azan on the alarm volume, so it is heard in silent mode and does
+  /// not depend on the media volume.
+  final bool azanOnAlarm;
+
+  /// Missed prayers are counted automatically from this date (`yyyy-MM-dd`).
+  /// Null means automatic counting is off.
+  final String? autoQazaFrom;
+
   int adjustmentFor(PrayerName p) => adjustmentsMin[p] ?? 0;
   bool azanFor(PrayerName p) => azanEnabled[p] ?? false;
   int preReminderFor(PrayerName p) => preReminderMin[p] ?? 0;
@@ -99,6 +119,11 @@ class PrayerSettings {
     bool? methodIsManual,
     bool? madhabIsManual,
     String? localeTag,
+    JamaatSettings? jamaat,
+    EndReminderSettings? endReminder,
+    bool? azanOnAlarm,
+    String? autoQazaFrom,
+    bool clearAutoQaza = false,
   }) =>
       PrayerSettings(
         lat: lat ?? this.lat,
@@ -118,6 +143,10 @@ class PrayerSettings {
         methodIsManual: methodIsManual ?? this.methodIsManual,
         madhabIsManual: madhabIsManual ?? this.madhabIsManual,
         localeTag: localeTag ?? this.localeTag,
+        jamaat: jamaat ?? this.jamaat,
+        endReminder: endReminder ?? this.endReminder,
+        azanOnAlarm: azanOnAlarm ?? this.azanOnAlarm,
+        autoQazaFrom: clearAutoQaza ? null : (autoQazaFrom ?? this.autoQazaFrom),
       );
 
   /// A stable, comparable snapshot used for change detection and history.
@@ -139,6 +168,10 @@ class PrayerSettings {
         'methodIsManual': methodIsManual,
         'madhabIsManual': madhabIsManual,
         'localeTag': localeTag,
+        'jamaat': jamaat.toComparableMap(),
+        'endReminder': endReminder.toComparableMap(),
+        'azanOnAlarm': azanOnAlarm,
+        'autoQazaFrom': autoQazaFrom,
       };
 
   @override

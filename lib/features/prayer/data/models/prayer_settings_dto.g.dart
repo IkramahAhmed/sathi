@@ -44,6 +44,33 @@ _PrayerSettingsDto _$PrayerSettingsDtoFromJson(
   methodIsManual: json['methodIsManual'] as bool? ?? false,
   madhabIsManual: json['madhabIsManual'] as bool? ?? false,
   localeTag: json['localeTag'] as String? ?? 'en',
+  jamaatOffsetMin:
+      (json['jamaatOffsetMin'] as Map<String, dynamic>?)?.map(
+        (k, e) =>
+            MapEntry($enumDecode(_$PrayerNameEnumMap, k), (e as num).toInt()),
+      ) ??
+      const <PrayerName, int>{},
+  jamaatFixedMin:
+      (json['jamaatFixedMin'] as Map<String, dynamic>?)?.map(
+        (k, e) =>
+            MapEntry($enumDecode(_$PrayerNameEnumMap, k), (e as num).toInt()),
+      ) ??
+      const <PrayerName, int>{},
+  jummaFixedMin: (json['jummaFixedMin'] as num?)?.toInt(),
+  leaveReminderMin: (json['leaveReminderMin'] as num?)?.toInt() ?? 0,
+  silentDuringJamaat: json['silentDuringJamaat'] as bool? ?? false,
+  silentMinutes: (json['silentMinutes'] as num?)?.toInt() ?? 15,
+  endReminderEnabled: json['endReminderEnabled'] as bool? ?? false,
+  endReminderPrayers:
+      (json['endReminderPrayers'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry($enumDecode(_$PrayerNameEnumMap, k), e as bool),
+      ) ??
+      const <PrayerName, bool>{},
+  endLeadMin: (json['endLeadMin'] as num?)?.toInt() ?? 30,
+  endRepeatMin: (json['endRepeatMin'] as num?)?.toInt() ?? 10,
+  endRequirePhoto: json['endRequirePhoto'] as bool? ?? false,
+  azanOnAlarm: json['azanOnAlarm'] as bool? ?? false,
+  autoQazaFrom: json['autoQazaFrom'] as String?,
 );
 
 Map<String, dynamic> _$PrayerSettingsDtoToJson(_PrayerSettingsDto instance) =>
@@ -71,6 +98,25 @@ Map<String, dynamic> _$PrayerSettingsDtoToJson(_PrayerSettingsDto instance) =>
       'methodIsManual': instance.methodIsManual,
       'madhabIsManual': instance.madhabIsManual,
       'localeTag': instance.localeTag,
+      'jamaatOffsetMin': instance.jamaatOffsetMin.map(
+        (k, e) => MapEntry(_$PrayerNameEnumMap[k]!, e),
+      ),
+      'jamaatFixedMin': instance.jamaatFixedMin.map(
+        (k, e) => MapEntry(_$PrayerNameEnumMap[k]!, e),
+      ),
+      'jummaFixedMin': instance.jummaFixedMin,
+      'leaveReminderMin': instance.leaveReminderMin,
+      'silentDuringJamaat': instance.silentDuringJamaat,
+      'silentMinutes': instance.silentMinutes,
+      'endReminderEnabled': instance.endReminderEnabled,
+      'endReminderPrayers': instance.endReminderPrayers.map(
+        (k, e) => MapEntry(_$PrayerNameEnumMap[k]!, e),
+      ),
+      'endLeadMin': instance.endLeadMin,
+      'endRepeatMin': instance.endRepeatMin,
+      'endRequirePhoto': instance.endRequirePhoto,
+      'azanOnAlarm': instance.azanOnAlarm,
+      'autoQazaFrom': instance.autoQazaFrom,
     };
 
 const _$CalcMethodEnumMap = {

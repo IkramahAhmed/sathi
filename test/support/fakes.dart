@@ -9,6 +9,7 @@ import 'package:saathi/features/prayer/domain/entities/prayer_name.dart';
 import 'package:saathi/features/prayer/domain/entities/prayer_settings.dart';
 import 'package:saathi/features/prayer/domain/entities/prayer_times_day.dart';
 import 'package:saathi/features/prayer/domain/repositories/prayer_repository.dart';
+import 'package:saathi/features/prayer/domain/repositories/reminder_state.dart';
 import 'package:saathi/features/prayer/domain/repositories/settings_repository.dart';
 
 /// In-memory [SettingsRepository] for tests.
@@ -94,6 +95,11 @@ class RecordingScheduler implements NotificationScheduler {
 
   @override
   Future<void> cancelAll() async => cancelAllCalls++;
+
+  final List<int> cancelled = [];
+
+  @override
+  Future<void> cancel(Iterable<int> ids) async => cancelled.addAll(ids);
 
   @override
   Future<bool> canScheduleExact() async => exact;
@@ -214,4 +220,27 @@ class _Row {
   final int seq;
 
   DateTime get updatedAt => change.updatedAt;
+}
+
+
+/// A [ReminderState] you can set up per test.
+class FakeReminderState implements ReminderState {
+  final Set<String> done = {};
+  final Set<String> muted = {};
+  final Set<String> paused = {};
+
+  static String key(DateTime d, PrayerName p) =>
+      '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}|${p.name}';
+
+  static String dayKey(DateTime d) =>
+      '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
+
+  @override
+  Future<bool> isDone(DateTime date, PrayerName prayer) async => done.contains(key(date, prayer));
+
+  @override
+  Future<bool> isMuted(DateTime date, PrayerName prayer) async => muted.contains(key(date, prayer));
+
+  @override
+  Future<bool> isPaused(DateTime date) async => paused.contains(dayKey(date));
 }
