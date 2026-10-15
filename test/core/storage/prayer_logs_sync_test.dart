@@ -1,4 +1,4 @@
-import 'package:drift/drift.dart';
+import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:saathi/core/storage/app_database.dart';
@@ -189,8 +189,44 @@ void main() {
       expect(await upgraded.prayerLogsDao.doneFor('2026-10-12'), {'fajr', 'asr'});
     });
 
-    test('a fresh database is created at version 2 with the sync columns', () async {
-      expect(db.schemaVersion, 2);
+    test('a version 2 database (cloud sync) upgrades to 3 and keeps its data', () async {
+      final upgraded = AppDatabase(
+        NativeDatabase.memory(setup: (raw) {
+          raw.execute('''
+            CREATE TABLE prayer_logs (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              date TEXT NOT NULL,
+              prayer TEXT NOT NULL,
+              done_at INTEGER NOT NULL,
+              done INTEGER NOT NULL DEFAULT 1,
+              updated_at INTEGER NOT NULL DEFAULT 0,
+              dirty INTEGER NOT NULL DEFAULT 1,
+              UNIQUE (date, prayer)
+            )''');
+          raw.execute('''
+            CREATE TABLE settings_history (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              changed_at INTEGER NOT NULL,
+              setting_key TEXT NOT NULL,
+              old_value TEXT,
+              new_value TEXT NOT NULL
+            )''');
+          raw.execute("INSERT INTO prayer_logs (date, prayer, done_at, updated_at, dirty) VALUES ('2026-10-12', 'fajr', 1791795600, 1791795600, 0)");
+          raw.execute('PRAGMA user_version = 2');
+        }),
+      );
+      addTearDown(upgraded.close);
+
+      expect(await upgraded.prayerLogsDao.doneFor('2026-10-12'), {'fajr'});
+      expect(await upgraded.prayerLogsDao.dirtyCount(), 0, reason: 'sync state is untouched');
+      // The new tables exist and work.
+      await upgraded.qazaDao.change('fajr', 2, DateTime.utc(2026, 10, 15), 'added');
+      expect(await upgraded.qazaDao.owedFor('fajr'), 2);
+      expect(await upgraded.pauseRangesDao.startPause('2026-10-15'), isNotNull);
+    });
+
+    test('a fresh database is created at version 3 with every table', () async {
+      expect(db.schemaVersion, 3);
       await db.prayerLogsDao.markDone(day, 'fajr', t0);
       final row = (await db.select(db.prayerLogs).get()).single;
       expect(row.done, isTrue);

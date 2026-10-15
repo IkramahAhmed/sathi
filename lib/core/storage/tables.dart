@@ -37,3 +37,41 @@ class SettingsHistory extends Table {
   TextColumn get oldValue => text().nullable()();
   TextColumn get newValue => text()();
 }
+
+/// Days on which prayers are not required (illness, a woman's period). Kept on
+/// the phone only: this is private health information and is never synced.
+@DataClassName('PauseRow')
+class PauseRanges extends Table {
+  IntColumn get id => integer().autoIncrement()();
+
+  /// First paused date, `yyyy-MM-dd`.
+  TextColumn get startDate => text()();
+
+  /// Last paused date, `yyyy-MM-dd`. Null while the pause is ongoing.
+  TextColumn get endDate => text().nullable()();
+}
+
+/// How many prayers of each kind the user still owes (qaza). Never below zero.
+class QazaBalance extends Table {
+  TextColumn get prayer => text()();
+  IntColumn get owed => integer().withDefault(const Constant(0))();
+
+  @override
+  Set<Column<Object>> get primaryKey => {prayer};
+}
+
+/// Every change to the qaza balance, newest last. Lets the user see and undo what happened.
+class QazaHistory extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get prayer => text()();
+
+  /// +n when prayers were added, -n when qaza prayers were made up.
+  IntColumn get delta => integer()();
+  DateTimeColumn get at => dateTime()();
+
+  /// `initial`, `added`, `madeUp` or `auto`.
+  TextColumn get source => text()();
+
+  /// For `auto` rows: `yyyy-MM-dd|prayer`, so the same missed prayer is never counted twice.
+  TextColumn get autoKey => text().nullable().unique()();
+}

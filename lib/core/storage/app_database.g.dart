@@ -809,6 +809,863 @@ class SettingsHistoryCompanion extends UpdateCompanion<SettingsHistoryData> {
   }
 }
 
+class $PauseRangesTable extends PauseRanges
+    with TableInfo<$PauseRangesTable, PauseRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PauseRangesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _startDateMeta = const VerificationMeta(
+    'startDate',
+  );
+  @override
+  late final GeneratedColumn<String> startDate = GeneratedColumn<String>(
+    'start_date',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _endDateMeta = const VerificationMeta(
+    'endDate',
+  );
+  @override
+  late final GeneratedColumn<String> endDate = GeneratedColumn<String>(
+    'end_date',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, startDate, endDate];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'pause_ranges';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<PauseRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('start_date')) {
+      context.handle(
+        _startDateMeta,
+        startDate.isAcceptableOrUnknown(data['start_date']!, _startDateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_startDateMeta);
+    }
+    if (data.containsKey('end_date')) {
+      context.handle(
+        _endDateMeta,
+        endDate.isAcceptableOrUnknown(data['end_date']!, _endDateMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  PauseRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PauseRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      startDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}start_date'],
+      )!,
+      endDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}end_date'],
+      ),
+    );
+  }
+
+  @override
+  $PauseRangesTable createAlias(String alias) {
+    return $PauseRangesTable(attachedDatabase, alias);
+  }
+}
+
+class PauseRow extends DataClass implements Insertable<PauseRow> {
+  final int id;
+
+  /// First paused date, `yyyy-MM-dd`.
+  final String startDate;
+
+  /// Last paused date, `yyyy-MM-dd`. Null while the pause is ongoing.
+  final String? endDate;
+  const PauseRow({required this.id, required this.startDate, this.endDate});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['start_date'] = Variable<String>(startDate);
+    if (!nullToAbsent || endDate != null) {
+      map['end_date'] = Variable<String>(endDate);
+    }
+    return map;
+  }
+
+  PauseRangesCompanion toCompanion(bool nullToAbsent) {
+    return PauseRangesCompanion(
+      id: Value(id),
+      startDate: Value(startDate),
+      endDate: endDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(endDate),
+    );
+  }
+
+  factory PauseRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PauseRow(
+      id: serializer.fromJson<int>(json['id']),
+      startDate: serializer.fromJson<String>(json['startDate']),
+      endDate: serializer.fromJson<String?>(json['endDate']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'startDate': serializer.toJson<String>(startDate),
+      'endDate': serializer.toJson<String?>(endDate),
+    };
+  }
+
+  PauseRow copyWith({
+    int? id,
+    String? startDate,
+    Value<String?> endDate = const Value.absent(),
+  }) => PauseRow(
+    id: id ?? this.id,
+    startDate: startDate ?? this.startDate,
+    endDate: endDate.present ? endDate.value : this.endDate,
+  );
+  PauseRow copyWithCompanion(PauseRangesCompanion data) {
+    return PauseRow(
+      id: data.id.present ? data.id.value : this.id,
+      startDate: data.startDate.present ? data.startDate.value : this.startDate,
+      endDate: data.endDate.present ? data.endDate.value : this.endDate,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PauseRow(')
+          ..write('id: $id, ')
+          ..write('startDate: $startDate, ')
+          ..write('endDate: $endDate')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, startDate, endDate);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PauseRow &&
+          other.id == this.id &&
+          other.startDate == this.startDate &&
+          other.endDate == this.endDate);
+}
+
+class PauseRangesCompanion extends UpdateCompanion<PauseRow> {
+  final Value<int> id;
+  final Value<String> startDate;
+  final Value<String?> endDate;
+  const PauseRangesCompanion({
+    this.id = const Value.absent(),
+    this.startDate = const Value.absent(),
+    this.endDate = const Value.absent(),
+  });
+  PauseRangesCompanion.insert({
+    this.id = const Value.absent(),
+    required String startDate,
+    this.endDate = const Value.absent(),
+  }) : startDate = Value(startDate);
+  static Insertable<PauseRow> custom({
+    Expression<int>? id,
+    Expression<String>? startDate,
+    Expression<String>? endDate,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (startDate != null) 'start_date': startDate,
+      if (endDate != null) 'end_date': endDate,
+    });
+  }
+
+  PauseRangesCompanion copyWith({
+    Value<int>? id,
+    Value<String>? startDate,
+    Value<String?>? endDate,
+  }) {
+    return PauseRangesCompanion(
+      id: id ?? this.id,
+      startDate: startDate ?? this.startDate,
+      endDate: endDate ?? this.endDate,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (startDate.present) {
+      map['start_date'] = Variable<String>(startDate.value);
+    }
+    if (endDate.present) {
+      map['end_date'] = Variable<String>(endDate.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PauseRangesCompanion(')
+          ..write('id: $id, ')
+          ..write('startDate: $startDate, ')
+          ..write('endDate: $endDate')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $QazaBalanceTable extends QazaBalance
+    with TableInfo<$QazaBalanceTable, QazaBalanceData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $QazaBalanceTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _prayerMeta = const VerificationMeta('prayer');
+  @override
+  late final GeneratedColumn<String> prayer = GeneratedColumn<String>(
+    'prayer',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _owedMeta = const VerificationMeta('owed');
+  @override
+  late final GeneratedColumn<int> owed = GeneratedColumn<int>(
+    'owed',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [prayer, owed];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'qaza_balance';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<QazaBalanceData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('prayer')) {
+      context.handle(
+        _prayerMeta,
+        prayer.isAcceptableOrUnknown(data['prayer']!, _prayerMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_prayerMeta);
+    }
+    if (data.containsKey('owed')) {
+      context.handle(
+        _owedMeta,
+        owed.isAcceptableOrUnknown(data['owed']!, _owedMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {prayer};
+  @override
+  QazaBalanceData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return QazaBalanceData(
+      prayer: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}prayer'],
+      )!,
+      owed: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}owed'],
+      )!,
+    );
+  }
+
+  @override
+  $QazaBalanceTable createAlias(String alias) {
+    return $QazaBalanceTable(attachedDatabase, alias);
+  }
+}
+
+class QazaBalanceData extends DataClass implements Insertable<QazaBalanceData> {
+  final String prayer;
+  final int owed;
+  const QazaBalanceData({required this.prayer, required this.owed});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['prayer'] = Variable<String>(prayer);
+    map['owed'] = Variable<int>(owed);
+    return map;
+  }
+
+  QazaBalanceCompanion toCompanion(bool nullToAbsent) {
+    return QazaBalanceCompanion(prayer: Value(prayer), owed: Value(owed));
+  }
+
+  factory QazaBalanceData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return QazaBalanceData(
+      prayer: serializer.fromJson<String>(json['prayer']),
+      owed: serializer.fromJson<int>(json['owed']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'prayer': serializer.toJson<String>(prayer),
+      'owed': serializer.toJson<int>(owed),
+    };
+  }
+
+  QazaBalanceData copyWith({String? prayer, int? owed}) =>
+      QazaBalanceData(prayer: prayer ?? this.prayer, owed: owed ?? this.owed);
+  QazaBalanceData copyWithCompanion(QazaBalanceCompanion data) {
+    return QazaBalanceData(
+      prayer: data.prayer.present ? data.prayer.value : this.prayer,
+      owed: data.owed.present ? data.owed.value : this.owed,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('QazaBalanceData(')
+          ..write('prayer: $prayer, ')
+          ..write('owed: $owed')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(prayer, owed);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is QazaBalanceData &&
+          other.prayer == this.prayer &&
+          other.owed == this.owed);
+}
+
+class QazaBalanceCompanion extends UpdateCompanion<QazaBalanceData> {
+  final Value<String> prayer;
+  final Value<int> owed;
+  final Value<int> rowid;
+  const QazaBalanceCompanion({
+    this.prayer = const Value.absent(),
+    this.owed = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  QazaBalanceCompanion.insert({
+    required String prayer,
+    this.owed = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : prayer = Value(prayer);
+  static Insertable<QazaBalanceData> custom({
+    Expression<String>? prayer,
+    Expression<int>? owed,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (prayer != null) 'prayer': prayer,
+      if (owed != null) 'owed': owed,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  QazaBalanceCompanion copyWith({
+    Value<String>? prayer,
+    Value<int>? owed,
+    Value<int>? rowid,
+  }) {
+    return QazaBalanceCompanion(
+      prayer: prayer ?? this.prayer,
+      owed: owed ?? this.owed,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (prayer.present) {
+      map['prayer'] = Variable<String>(prayer.value);
+    }
+    if (owed.present) {
+      map['owed'] = Variable<int>(owed.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('QazaBalanceCompanion(')
+          ..write('prayer: $prayer, ')
+          ..write('owed: $owed, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $QazaHistoryTable extends QazaHistory
+    with TableInfo<$QazaHistoryTable, QazaHistoryData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $QazaHistoryTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _prayerMeta = const VerificationMeta('prayer');
+  @override
+  late final GeneratedColumn<String> prayer = GeneratedColumn<String>(
+    'prayer',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _deltaMeta = const VerificationMeta('delta');
+  @override
+  late final GeneratedColumn<int> delta = GeneratedColumn<int>(
+    'delta',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _atMeta = const VerificationMeta('at');
+  @override
+  late final GeneratedColumn<DateTime> at = GeneratedColumn<DateTime>(
+    'at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sourceMeta = const VerificationMeta('source');
+  @override
+  late final GeneratedColumn<String> source = GeneratedColumn<String>(
+    'source',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _autoKeyMeta = const VerificationMeta(
+    'autoKey',
+  );
+  @override
+  late final GeneratedColumn<String> autoKey = GeneratedColumn<String>(
+    'auto_key',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    prayer,
+    delta,
+    at,
+    source,
+    autoKey,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'qaza_history';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<QazaHistoryData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('prayer')) {
+      context.handle(
+        _prayerMeta,
+        prayer.isAcceptableOrUnknown(data['prayer']!, _prayerMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_prayerMeta);
+    }
+    if (data.containsKey('delta')) {
+      context.handle(
+        _deltaMeta,
+        delta.isAcceptableOrUnknown(data['delta']!, _deltaMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_deltaMeta);
+    }
+    if (data.containsKey('at')) {
+      context.handle(_atMeta, at.isAcceptableOrUnknown(data['at']!, _atMeta));
+    } else if (isInserting) {
+      context.missing(_atMeta);
+    }
+    if (data.containsKey('source')) {
+      context.handle(
+        _sourceMeta,
+        source.isAcceptableOrUnknown(data['source']!, _sourceMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sourceMeta);
+    }
+    if (data.containsKey('auto_key')) {
+      context.handle(
+        _autoKeyMeta,
+        autoKey.isAcceptableOrUnknown(data['auto_key']!, _autoKeyMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  QazaHistoryData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return QazaHistoryData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      prayer: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}prayer'],
+      )!,
+      delta: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}delta'],
+      )!,
+      at: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}at'],
+      )!,
+      source: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source'],
+      )!,
+      autoKey: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}auto_key'],
+      ),
+    );
+  }
+
+  @override
+  $QazaHistoryTable createAlias(String alias) {
+    return $QazaHistoryTable(attachedDatabase, alias);
+  }
+}
+
+class QazaHistoryData extends DataClass implements Insertable<QazaHistoryData> {
+  final int id;
+  final String prayer;
+
+  /// +n when prayers were added, -n when qaza prayers were made up.
+  final int delta;
+  final DateTime at;
+
+  /// `initial`, `added`, `madeUp` or `auto`.
+  final String source;
+
+  /// For `auto` rows: `yyyy-MM-dd|prayer`, so the same missed prayer is never counted twice.
+  final String? autoKey;
+  const QazaHistoryData({
+    required this.id,
+    required this.prayer,
+    required this.delta,
+    required this.at,
+    required this.source,
+    this.autoKey,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['prayer'] = Variable<String>(prayer);
+    map['delta'] = Variable<int>(delta);
+    map['at'] = Variable<DateTime>(at);
+    map['source'] = Variable<String>(source);
+    if (!nullToAbsent || autoKey != null) {
+      map['auto_key'] = Variable<String>(autoKey);
+    }
+    return map;
+  }
+
+  QazaHistoryCompanion toCompanion(bool nullToAbsent) {
+    return QazaHistoryCompanion(
+      id: Value(id),
+      prayer: Value(prayer),
+      delta: Value(delta),
+      at: Value(at),
+      source: Value(source),
+      autoKey: autoKey == null && nullToAbsent
+          ? const Value.absent()
+          : Value(autoKey),
+    );
+  }
+
+  factory QazaHistoryData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return QazaHistoryData(
+      id: serializer.fromJson<int>(json['id']),
+      prayer: serializer.fromJson<String>(json['prayer']),
+      delta: serializer.fromJson<int>(json['delta']),
+      at: serializer.fromJson<DateTime>(json['at']),
+      source: serializer.fromJson<String>(json['source']),
+      autoKey: serializer.fromJson<String?>(json['autoKey']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'prayer': serializer.toJson<String>(prayer),
+      'delta': serializer.toJson<int>(delta),
+      'at': serializer.toJson<DateTime>(at),
+      'source': serializer.toJson<String>(source),
+      'autoKey': serializer.toJson<String?>(autoKey),
+    };
+  }
+
+  QazaHistoryData copyWith({
+    int? id,
+    String? prayer,
+    int? delta,
+    DateTime? at,
+    String? source,
+    Value<String?> autoKey = const Value.absent(),
+  }) => QazaHistoryData(
+    id: id ?? this.id,
+    prayer: prayer ?? this.prayer,
+    delta: delta ?? this.delta,
+    at: at ?? this.at,
+    source: source ?? this.source,
+    autoKey: autoKey.present ? autoKey.value : this.autoKey,
+  );
+  QazaHistoryData copyWithCompanion(QazaHistoryCompanion data) {
+    return QazaHistoryData(
+      id: data.id.present ? data.id.value : this.id,
+      prayer: data.prayer.present ? data.prayer.value : this.prayer,
+      delta: data.delta.present ? data.delta.value : this.delta,
+      at: data.at.present ? data.at.value : this.at,
+      source: data.source.present ? data.source.value : this.source,
+      autoKey: data.autoKey.present ? data.autoKey.value : this.autoKey,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('QazaHistoryData(')
+          ..write('id: $id, ')
+          ..write('prayer: $prayer, ')
+          ..write('delta: $delta, ')
+          ..write('at: $at, ')
+          ..write('source: $source, ')
+          ..write('autoKey: $autoKey')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, prayer, delta, at, source, autoKey);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is QazaHistoryData &&
+          other.id == this.id &&
+          other.prayer == this.prayer &&
+          other.delta == this.delta &&
+          other.at == this.at &&
+          other.source == this.source &&
+          other.autoKey == this.autoKey);
+}
+
+class QazaHistoryCompanion extends UpdateCompanion<QazaHistoryData> {
+  final Value<int> id;
+  final Value<String> prayer;
+  final Value<int> delta;
+  final Value<DateTime> at;
+  final Value<String> source;
+  final Value<String?> autoKey;
+  const QazaHistoryCompanion({
+    this.id = const Value.absent(),
+    this.prayer = const Value.absent(),
+    this.delta = const Value.absent(),
+    this.at = const Value.absent(),
+    this.source = const Value.absent(),
+    this.autoKey = const Value.absent(),
+  });
+  QazaHistoryCompanion.insert({
+    this.id = const Value.absent(),
+    required String prayer,
+    required int delta,
+    required DateTime at,
+    required String source,
+    this.autoKey = const Value.absent(),
+  }) : prayer = Value(prayer),
+       delta = Value(delta),
+       at = Value(at),
+       source = Value(source);
+  static Insertable<QazaHistoryData> custom({
+    Expression<int>? id,
+    Expression<String>? prayer,
+    Expression<int>? delta,
+    Expression<DateTime>? at,
+    Expression<String>? source,
+    Expression<String>? autoKey,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (prayer != null) 'prayer': prayer,
+      if (delta != null) 'delta': delta,
+      if (at != null) 'at': at,
+      if (source != null) 'source': source,
+      if (autoKey != null) 'auto_key': autoKey,
+    });
+  }
+
+  QazaHistoryCompanion copyWith({
+    Value<int>? id,
+    Value<String>? prayer,
+    Value<int>? delta,
+    Value<DateTime>? at,
+    Value<String>? source,
+    Value<String?>? autoKey,
+  }) {
+    return QazaHistoryCompanion(
+      id: id ?? this.id,
+      prayer: prayer ?? this.prayer,
+      delta: delta ?? this.delta,
+      at: at ?? this.at,
+      source: source ?? this.source,
+      autoKey: autoKey ?? this.autoKey,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (prayer.present) {
+      map['prayer'] = Variable<String>(prayer.value);
+    }
+    if (delta.present) {
+      map['delta'] = Variable<int>(delta.value);
+    }
+    if (at.present) {
+      map['at'] = Variable<DateTime>(at.value);
+    }
+    if (source.present) {
+      map['source'] = Variable<String>(source.value);
+    }
+    if (autoKey.present) {
+      map['auto_key'] = Variable<String>(autoKey.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('QazaHistoryCompanion(')
+          ..write('id: $id, ')
+          ..write('prayer: $prayer, ')
+          ..write('delta: $delta, ')
+          ..write('at: $at, ')
+          ..write('source: $source, ')
+          ..write('autoKey: $autoKey')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -816,10 +1673,17 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $SettingsHistoryTable settingsHistory = $SettingsHistoryTable(
     this,
   );
+  late final $PauseRangesTable pauseRanges = $PauseRangesTable(this);
+  late final $QazaBalanceTable qazaBalance = $QazaBalanceTable(this);
+  late final $QazaHistoryTable qazaHistory = $QazaHistoryTable(this);
   late final PrayerLogsDao prayerLogsDao = PrayerLogsDao(this as AppDatabase);
   late final SettingsHistoryDao settingsHistoryDao = SettingsHistoryDao(
     this as AppDatabase,
   );
+  late final PauseRangesDao pauseRangesDao = PauseRangesDao(
+    this as AppDatabase,
+  );
+  late final QazaDao qazaDao = QazaDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -827,6 +1691,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   List<DatabaseSchemaEntity> get allSchemaEntities => [
     prayerLogs,
     settingsHistory,
+    pauseRanges,
+    qazaBalance,
+    qazaHistory,
   ];
 }
 
@@ -1283,6 +2150,537 @@ typedef $$SettingsHistoryTableProcessedTableManager =
       SettingsHistoryData,
       PrefetchHooks Function()
     >;
+typedef $$PauseRangesTableCreateCompanionBuilder =
+    PauseRangesCompanion Function({
+      Value<int> id,
+      required String startDate,
+      Value<String?> endDate,
+    });
+typedef $$PauseRangesTableUpdateCompanionBuilder =
+    PauseRangesCompanion Function({
+      Value<int> id,
+      Value<String> startDate,
+      Value<String?> endDate,
+    });
+
+class $$PauseRangesTableFilterComposer
+    extends Composer<_$AppDatabase, $PauseRangesTable> {
+  $$PauseRangesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get startDate => $composableBuilder(
+    column: $table.startDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get endDate => $composableBuilder(
+    column: $table.endDate,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$PauseRangesTableOrderingComposer
+    extends Composer<_$AppDatabase, $PauseRangesTable> {
+  $$PauseRangesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get startDate => $composableBuilder(
+    column: $table.startDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get endDate => $composableBuilder(
+    column: $table.endDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$PauseRangesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $PauseRangesTable> {
+  $$PauseRangesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get startDate =>
+      $composableBuilder(column: $table.startDate, builder: (column) => column);
+
+  GeneratedColumn<String> get endDate =>
+      $composableBuilder(column: $table.endDate, builder: (column) => column);
+}
+
+class $$PauseRangesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $PauseRangesTable,
+          PauseRow,
+          $$PauseRangesTableFilterComposer,
+          $$PauseRangesTableOrderingComposer,
+          $$PauseRangesTableAnnotationComposer,
+          $$PauseRangesTableCreateCompanionBuilder,
+          $$PauseRangesTableUpdateCompanionBuilder,
+          (
+            PauseRow,
+            BaseReferences<_$AppDatabase, $PauseRangesTable, PauseRow>,
+          ),
+          PauseRow,
+          PrefetchHooks Function()
+        > {
+  $$PauseRangesTableTableManager(_$AppDatabase db, $PauseRangesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$PauseRangesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$PauseRangesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$PauseRangesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> startDate = const Value.absent(),
+                Value<String?> endDate = const Value.absent(),
+              }) => PauseRangesCompanion(
+                id: id,
+                startDate: startDate,
+                endDate: endDate,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String startDate,
+                Value<String?> endDate = const Value.absent(),
+              }) => PauseRangesCompanion.insert(
+                id: id,
+                startDate: startDate,
+                endDate: endDate,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$PauseRangesTable, PauseRow>(table),
+                  BaseReferences<_$AppDatabase, $PauseRangesTable, PauseRow>(
+                    db,
+                    table,
+                    e,
+                  ),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$PauseRangesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $PauseRangesTable,
+      PauseRow,
+      $$PauseRangesTableFilterComposer,
+      $$PauseRangesTableOrderingComposer,
+      $$PauseRangesTableAnnotationComposer,
+      $$PauseRangesTableCreateCompanionBuilder,
+      $$PauseRangesTableUpdateCompanionBuilder,
+      (PauseRow, BaseReferences<_$AppDatabase, $PauseRangesTable, PauseRow>),
+      PauseRow,
+      PrefetchHooks Function()
+    >;
+typedef $$QazaBalanceTableCreateCompanionBuilder =
+    QazaBalanceCompanion Function({
+      required String prayer,
+      Value<int> owed,
+      Value<int> rowid,
+    });
+typedef $$QazaBalanceTableUpdateCompanionBuilder =
+    QazaBalanceCompanion Function({
+      Value<String> prayer,
+      Value<int> owed,
+      Value<int> rowid,
+    });
+
+class $$QazaBalanceTableFilterComposer
+    extends Composer<_$AppDatabase, $QazaBalanceTable> {
+  $$QazaBalanceTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get prayer => $composableBuilder(
+    column: $table.prayer,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get owed => $composableBuilder(
+    column: $table.owed,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$QazaBalanceTableOrderingComposer
+    extends Composer<_$AppDatabase, $QazaBalanceTable> {
+  $$QazaBalanceTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get prayer => $composableBuilder(
+    column: $table.prayer,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get owed => $composableBuilder(
+    column: $table.owed,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$QazaBalanceTableAnnotationComposer
+    extends Composer<_$AppDatabase, $QazaBalanceTable> {
+  $$QazaBalanceTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get prayer =>
+      $composableBuilder(column: $table.prayer, builder: (column) => column);
+
+  GeneratedColumn<int> get owed =>
+      $composableBuilder(column: $table.owed, builder: (column) => column);
+}
+
+class $$QazaBalanceTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $QazaBalanceTable,
+          QazaBalanceData,
+          $$QazaBalanceTableFilterComposer,
+          $$QazaBalanceTableOrderingComposer,
+          $$QazaBalanceTableAnnotationComposer,
+          $$QazaBalanceTableCreateCompanionBuilder,
+          $$QazaBalanceTableUpdateCompanionBuilder,
+          (
+            QazaBalanceData,
+            BaseReferences<_$AppDatabase, $QazaBalanceTable, QazaBalanceData>,
+          ),
+          QazaBalanceData,
+          PrefetchHooks Function()
+        > {
+  $$QazaBalanceTableTableManager(_$AppDatabase db, $QazaBalanceTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$QazaBalanceTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$QazaBalanceTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$QazaBalanceTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> prayer = const Value.absent(),
+            Value<int> owed = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) => QazaBalanceCompanion(prayer: prayer, owed: owed, rowid: rowid),
+          createCompanionCallback:
+              ({
+                required String prayer,
+                Value<int> owed = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => QazaBalanceCompanion.insert(
+                prayer: prayer,
+                owed: owed,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$QazaBalanceTable, QazaBalanceData>(table),
+                  BaseReferences<
+                    _$AppDatabase,
+                    $QazaBalanceTable,
+                    QazaBalanceData
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$QazaBalanceTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $QazaBalanceTable,
+      QazaBalanceData,
+      $$QazaBalanceTableFilterComposer,
+      $$QazaBalanceTableOrderingComposer,
+      $$QazaBalanceTableAnnotationComposer,
+      $$QazaBalanceTableCreateCompanionBuilder,
+      $$QazaBalanceTableUpdateCompanionBuilder,
+      (
+        QazaBalanceData,
+        BaseReferences<_$AppDatabase, $QazaBalanceTable, QazaBalanceData>,
+      ),
+      QazaBalanceData,
+      PrefetchHooks Function()
+    >;
+typedef $$QazaHistoryTableCreateCompanionBuilder =
+    QazaHistoryCompanion Function({
+      Value<int> id,
+      required String prayer,
+      required int delta,
+      required DateTime at,
+      required String source,
+      Value<String?> autoKey,
+    });
+typedef $$QazaHistoryTableUpdateCompanionBuilder =
+    QazaHistoryCompanion Function({
+      Value<int> id,
+      Value<String> prayer,
+      Value<int> delta,
+      Value<DateTime> at,
+      Value<String> source,
+      Value<String?> autoKey,
+    });
+
+class $$QazaHistoryTableFilterComposer
+    extends Composer<_$AppDatabase, $QazaHistoryTable> {
+  $$QazaHistoryTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get prayer => $composableBuilder(
+    column: $table.prayer,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get delta => $composableBuilder(
+    column: $table.delta,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get at => $composableBuilder(
+    column: $table.at,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get source => $composableBuilder(
+    column: $table.source,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get autoKey => $composableBuilder(
+    column: $table.autoKey,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$QazaHistoryTableOrderingComposer
+    extends Composer<_$AppDatabase, $QazaHistoryTable> {
+  $$QazaHistoryTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get prayer => $composableBuilder(
+    column: $table.prayer,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get delta => $composableBuilder(
+    column: $table.delta,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get at => $composableBuilder(
+    column: $table.at,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get source => $composableBuilder(
+    column: $table.source,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get autoKey => $composableBuilder(
+    column: $table.autoKey,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$QazaHistoryTableAnnotationComposer
+    extends Composer<_$AppDatabase, $QazaHistoryTable> {
+  $$QazaHistoryTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get prayer =>
+      $composableBuilder(column: $table.prayer, builder: (column) => column);
+
+  GeneratedColumn<int> get delta =>
+      $composableBuilder(column: $table.delta, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get at =>
+      $composableBuilder(column: $table.at, builder: (column) => column);
+
+  GeneratedColumn<String> get source =>
+      $composableBuilder(column: $table.source, builder: (column) => column);
+
+  GeneratedColumn<String> get autoKey =>
+      $composableBuilder(column: $table.autoKey, builder: (column) => column);
+}
+
+class $$QazaHistoryTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $QazaHistoryTable,
+          QazaHistoryData,
+          $$QazaHistoryTableFilterComposer,
+          $$QazaHistoryTableOrderingComposer,
+          $$QazaHistoryTableAnnotationComposer,
+          $$QazaHistoryTableCreateCompanionBuilder,
+          $$QazaHistoryTableUpdateCompanionBuilder,
+          (
+            QazaHistoryData,
+            BaseReferences<_$AppDatabase, $QazaHistoryTable, QazaHistoryData>,
+          ),
+          QazaHistoryData,
+          PrefetchHooks Function()
+        > {
+  $$QazaHistoryTableTableManager(_$AppDatabase db, $QazaHistoryTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$QazaHistoryTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$QazaHistoryTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$QazaHistoryTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> prayer = const Value.absent(),
+                Value<int> delta = const Value.absent(),
+                Value<DateTime> at = const Value.absent(),
+                Value<String> source = const Value.absent(),
+                Value<String?> autoKey = const Value.absent(),
+              }) => QazaHistoryCompanion(
+                id: id,
+                prayer: prayer,
+                delta: delta,
+                at: at,
+                source: source,
+                autoKey: autoKey,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String prayer,
+                required int delta,
+                required DateTime at,
+                required String source,
+                Value<String?> autoKey = const Value.absent(),
+              }) => QazaHistoryCompanion.insert(
+                id: id,
+                prayer: prayer,
+                delta: delta,
+                at: at,
+                source: source,
+                autoKey: autoKey,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$QazaHistoryTable, QazaHistoryData>(table),
+                  BaseReferences<
+                    _$AppDatabase,
+                    $QazaHistoryTable,
+                    QazaHistoryData
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$QazaHistoryTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $QazaHistoryTable,
+      QazaHistoryData,
+      $$QazaHistoryTableFilterComposer,
+      $$QazaHistoryTableOrderingComposer,
+      $$QazaHistoryTableAnnotationComposer,
+      $$QazaHistoryTableCreateCompanionBuilder,
+      $$QazaHistoryTableUpdateCompanionBuilder,
+      (
+        QazaHistoryData,
+        BaseReferences<_$AppDatabase, $QazaHistoryTable, QazaHistoryData>,
+      ),
+      QazaHistoryData,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -1291,4 +2689,10 @@ class $AppDatabaseManager {
       $$PrayerLogsTableTableManager(_db, _db.prayerLogs);
   $$SettingsHistoryTableTableManager get settingsHistory =>
       $$SettingsHistoryTableTableManager(_db, _db.settingsHistory);
+  $$PauseRangesTableTableManager get pauseRanges =>
+      $$PauseRangesTableTableManager(_db, _db.pauseRanges);
+  $$QazaBalanceTableTableManager get qazaBalance =>
+      $$QazaBalanceTableTableManager(_db, _db.qazaBalance);
+  $$QazaHistoryTableTableManager get qazaHistory =>
+      $$QazaHistoryTableTableManager(_db, _db.qazaHistory);
 }

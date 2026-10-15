@@ -36,7 +36,7 @@ final class SyncSettingsProvider
   SyncSettings create() => SyncSettings();
 }
 
-String _$syncSettingsHash() => r'140c4cbf9f00efaaf23e7bc4cc59f58bec15a883';
+String _$syncSettingsHash() => r'bed799aaa1e4249dd4791a4dcc53da94bfb5e222';
 
 /// Cloud sync settings: on/off, server address and key.
 

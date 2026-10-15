@@ -29,3 +29,30 @@ class SettingsHistoryDaoManager {
         _db.settingsHistory,
       );
 }
+
+mixin _$PauseRangesDaoMixin on DatabaseAccessor<AppDatabase> {
+  $PauseRangesTable get pauseRanges => attachedDatabase.pauseRanges;
+  PauseRangesDaoManager get managers => PauseRangesDaoManager(this);
+}
+
+class PauseRangesDaoManager {
+  final _$PauseRangesDaoMixin _db;
+  PauseRangesDaoManager(this._db);
+  $$PauseRangesTableTableManager get pauseRanges =>
+      $$PauseRangesTableTableManager(_db.attachedDatabase, _db.pauseRanges);
+}
+
+mixin _$QazaDaoMixin on DatabaseAccessor<AppDatabase> {
+  $QazaBalanceTable get qazaBalance => attachedDatabase.qazaBalance;
+  $QazaHistoryTable get qazaHistory => attachedDatabase.qazaHistory;
+  QazaDaoManager get managers => QazaDaoManager(this);
+}
+
+class QazaDaoManager {
+  final _$QazaDaoMixin _db;
+  QazaDaoManager(this._db);
+  $$QazaBalanceTableTableManager get qazaBalance =>
+      $$QazaBalanceTableTableManager(_db.attachedDatabase, _db.qazaBalance);
+  $$QazaHistoryTableTableManager get qazaHistory =>
+      $$QazaHistoryTableTableManager(_db.attachedDatabase, _db.qazaHistory);
+}
