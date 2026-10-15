@@ -3,6 +3,7 @@ import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -48,6 +49,7 @@ class Harness {
     PrayerSettings? settings,
     List<GoRoute> extraRoutes = const [],
     Size size = const Size(420, 1800),
+    List<Override> overrides = const [],
   }) async {
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();
@@ -67,6 +69,7 @@ class Harness {
       settingsRepositoryProvider.overrideWithValue(repo),
       notificationSchedulerProvider.overrideWithValue(scheduler),
       appLifecycleProvider.overrideWith(_PausedLifecycle.new),
+      ...overrides,
     ]);
     addTearDown(container.dispose);
 

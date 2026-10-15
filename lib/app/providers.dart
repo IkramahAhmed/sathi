@@ -22,6 +22,9 @@ import '../features/prayer/data/sync/prayer_sync_service.dart';
 import '../features/prayer/domain/repositories/reminder_state.dart';
 import '../features/prayer/domain/usecases/handle_reminder_action.dart';
 import '../features/prayer/data/repositories/settings_repository_impl.dart';
+import '../core/notifications/setup_probe.dart';
+import '../features/prayer/data/verification/mlkit_photo_verifier.dart';
+import '../features/prayer/domain/repositories/photo_verifier.dart';
 import '../features/prayer/domain/repositories/prayer_repository.dart';
 import '../features/prayer/domain/repositories/settings_repository.dart';
 import '../features/prayer/domain/usecases/get_prayer_times_range.dart';
@@ -166,6 +169,17 @@ HandleReminderAction handleReminderAction(Ref ref) => HandleReminderAction(
           ref.read(reminderMuteStoreProvider).mute(date, prayer, today: ref.read(clockProvider)()),
       markPrayed: (date, prayer) => ref.read(prayerRepositoryProvider).setDone(date, prayer, done: true),
     );
+
+@Riverpod(keepAlive: true)
+SetupProbe setupProbe(Ref ref) => PlatformSetupProbe(ref.watch(notificationsPluginProvider));
+
+/// The camera for photo proof. Overridden in tests.
+@Riverpod(keepAlive: true)
+PhotoSource photoSource(Ref ref) => CameraPhotoSource();
+
+/// Checks photos on the phone. Overridden in tests.
+@Riverpod(keepAlive: true)
+PhotoVerifier photoVerifier(Ref ref) => MlKitPhotoVerifier();
 
 /// Where the sync key is stored (Android Keystore / iOS Keychain).
 @Riverpod(keepAlive: true)

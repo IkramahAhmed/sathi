@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:saathi/core/notifications/notification_scheduler.dart';
+import 'package:saathi/core/notifications/permission_service.dart';
+import 'package:saathi/core/notifications/setup_probe.dart';
 import 'package:saathi/core/sync/cloud_api.dart';
 import 'package:saathi/core/sync/sync_config.dart';
 import 'package:saathi/core/sync/sync_models.dart';
@@ -17,6 +19,9 @@ class FakeSettingsRepository implements SettingsRepository {
   FakeSettingsRepository([PrayerSettings? initial]) : _settings = initial ?? PrayerSettings.defaults();
 
   PrayerSettings _settings;
+
+  /// What was last saved.
+  PrayerSettings get current => _settings;
   DateTime? _lastScheduled;
   bool _onboarding = false;
   bool _oem = false;
@@ -243,4 +248,46 @@ class FakeReminderState implements ReminderState {
 
   @override
   Future<bool> isPaused(DateTime date) async => paused.contains(dayKey(date));
+}
+
+
+/// Permissions that never touch the platform.
+class FakePermissionService implements PermissionService {
+  PermissionOutcome notifications = PermissionOutcome.granted;
+  PermissionOutcome exact = PermissionOutcome.granted;
+  int settingsOpened = 0;
+  int exactRequests = 0;
+
+  @override
+  Future<PermissionOutcome> notificationStatus() async => notifications;
+
+  @override
+  Future<PermissionOutcome> requestNotifications() async => notifications;
+
+  @override
+  Future<PermissionOutcome> exactAlarmStatus() async => exact;
+
+  @override
+  Future<PermissionOutcome> requestExactAlarms() async {
+    exactRequests++;
+    exact = PermissionOutcome.granted;
+    return exact;
+  }
+
+  @override
+  Future<bool> openSettings() async {
+    settingsOpened++;
+    return true;
+  }
+}
+
+class FakeSetupProbe implements SetupProbe {
+  bool? battery = true;
+  bool? channel = true;
+
+  @override
+  Future<bool?> batteryUnrestricted() async => battery;
+
+  @override
+  Future<bool?> channelAudible(String channelId) async => channel;
 }

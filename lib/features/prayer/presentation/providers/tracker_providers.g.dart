@@ -174,7 +174,7 @@ final class StreakSummaryProvider
   }
 }
 
-String _$streakSummaryHash() => r'd4740fa52f856233bb9de6bb82399b1b7a979f25';
+String _$streakSummaryHash() => r'61a43cdaf7ffffc426f206e99c0833775d54cf40';
 
 /// Owed qaza prayers per prayer.
 

@@ -94,6 +94,27 @@ class SettingsController extends _$SettingsController {
   Future<void> setLeaveReminder(int minutes) =>
       change((s) => s.copyWith(jamaat: s.jamaat.copyWith(leaveReminderMin: minutes.clamp(0, 120))));
 
+  Future<void> setAzanOnAlarm({required bool alarm}) => change((s) => s.copyWith(azanOnAlarm: alarm));
+
+  Future<void> setEndReminder({
+    bool? enabled,
+    int? leadMin,
+    int? repeatMin,
+    bool? requirePhoto,
+  }) =>
+      change((s) => s.copyWith(
+            endReminder: s.endReminder.copyWith(
+              enabled: enabled,
+              leadMin: leadMin?.clamp(5, 180),
+              repeatMin: repeatMin?.clamp(1, 60),
+              requirePhoto: requirePhoto,
+            ),
+          ));
+
+  Future<void> setEndReminderPrayer(PrayerName prayer, {required bool enabled}) => change((s) => s.copyWith(
+        endReminder: s.endReminder.copyWith(prayers: {...s.endReminder.prayers, prayer: enabled}),
+      ));
+
   Future<void> setHighLat(HighLatitudeRule rule) => change((s) => s.copyWith(highLat: rule));
 
   /// Moves to a manually chosen [city]; turns off "follow me".

@@ -40,7 +40,7 @@ final class SettingsControllerProvider
 }
 
 String _$settingsControllerHash() =>
-    r'2f6604f4c232fc8d37ed3f2b4b760f94f151d738';
+    r'9de3bd798a4215c426d5502dced25591f36972c5';
 
 /// Owns the persisted [PrayerSettings]. Every change is saved and then the
 /// azan notifications are re-scheduled.

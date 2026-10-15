@@ -10,7 +10,9 @@ import '../features/prayer/presentation/screens/permission_guide_screen.dart';
 import '../features/prayer/presentation/screens/qaza_screen.dart';
 import '../features/prayer/presentation/screens/qibla_screen.dart';
 import '../features/prayer/presentation/screens/settings_screen.dart';
+import '../features/prayer/presentation/screens/setup_check_screen.dart';
 import '../features/prayer/presentation/screens/tracker_screen.dart';
+import '../features/prayer/presentation/screens/verify_screen.dart';
 import 'app_shell.dart';
 
 part 'router.g.dart';
@@ -25,6 +27,7 @@ abstract final class Routes {
   static const onboarding = '/onboarding';
   static const oemGuide = '/oem-guide';
   static const verify = '/verify';
+  static const setupCheck = '/setup-check';
 }
 
 /// The first route to show. Overridden in `main()` once onboarding state is known.
@@ -42,6 +45,18 @@ GoRouter router(Ref ref) {
       GoRoute(path: Routes.onboarding, builder: (_, _) => const OnboardingScreen()),
       GoRoute(path: Routes.oemGuide, builder: (_, _) => const PermissionGuideScreen()),
       GoRoute(path: Routes.qaza, builder: (_, _) => const QazaScreen()),
+      GoRoute(path: Routes.setupCheck, builder: (_, _) => const SetupCheckScreen()),
+      GoRoute(
+        path: Routes.verify,
+        builder: (_, state) {
+          final prayer = PrayerName.values
+                  .where((p) => p.name == state.uri.queryParameters['prayer'])
+                  .firstOrNull ??
+              PrayerName.fajr;
+          final date = DateTime.tryParse(state.uri.queryParameters['date'] ?? '') ?? DateTime.now();
+          return VerifyScreen(prayer: prayer, date: DateTime(date.year, date.month, date.day));
+        },
+      ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, shell) => AppShell(shell: shell),
         branches: [

@@ -932,6 +932,139 @@ final class HandleReminderActionProvider
 String _$handleReminderActionHash() =>
     r'9c3c913c15d84dff2f6e012ee8155b031ac30a13';
 
+@ProviderFor(setupProbe)
+final setupProbeProvider = SetupProbeProvider._();
+
+final class SetupProbeProvider
+    extends $FunctionalProvider<SetupProbe, SetupProbe, SetupProbe>
+    with $Provider<SetupProbe> {
+  SetupProbeProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'setupProbeProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$setupProbeHash();
+
+  @$internal
+  @override
+  $ProviderElement<SetupProbe> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  SetupProbe create(Ref ref) {
+    return setupProbe(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(SetupProbe value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<SetupProbe>(value),
+    );
+  }
+}
+
+String _$setupProbeHash() => r'a32fc0f0fa8056dcfd4f764c7c9d45dcbdf8ce7e';
+
+/// The camera for photo proof. Overridden in tests.
+
+@ProviderFor(photoSource)
+final photoSourceProvider = PhotoSourceProvider._();
+
+/// The camera for photo proof. Overridden in tests.
+
+final class PhotoSourceProvider
+    extends $FunctionalProvider<PhotoSource, PhotoSource, PhotoSource>
+    with $Provider<PhotoSource> {
+  /// The camera for photo proof. Overridden in tests.
+  PhotoSourceProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'photoSourceProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$photoSourceHash();
+
+  @$internal
+  @override
+  $ProviderElement<PhotoSource> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  PhotoSource create(Ref ref) {
+    return photoSource(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(PhotoSource value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<PhotoSource>(value),
+    );
+  }
+}
+
+String _$photoSourceHash() => r'181e6ac0157e51b2a8cf1158500d33586707f131';
+
+/// Checks photos on the phone. Overridden in tests.
+
+@ProviderFor(photoVerifier)
+final photoVerifierProvider = PhotoVerifierProvider._();
+
+/// Checks photos on the phone. Overridden in tests.
+
+final class PhotoVerifierProvider
+    extends $FunctionalProvider<PhotoVerifier, PhotoVerifier, PhotoVerifier>
+    with $Provider<PhotoVerifier> {
+  /// Checks photos on the phone. Overridden in tests.
+  PhotoVerifierProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'photoVerifierProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$photoVerifierHash();
+
+  @$internal
+  @override
+  $ProviderElement<PhotoVerifier> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  PhotoVerifier create(Ref ref) {
+    return photoVerifier(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(PhotoVerifier value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<PhotoVerifier>(value),
+    );
+  }
+}
+
+String _$photoVerifierHash() => r'bb7de3cd55f1b7455981da06fa87e40d6c0f4af2';
+
 /// Where the sync key is stored (Android Keystore / iOS Keychain).
 
 @ProviderFor(secretStore)

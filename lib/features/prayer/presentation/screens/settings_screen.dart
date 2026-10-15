@@ -15,6 +15,7 @@ import '../providers/reschedule_controller.dart';
 import '../providers/settings_controller.dart';
 import '../widgets/city_picker.dart';
 import '../widgets/cloud_sync_section.dart';
+import '../widgets/end_reminder_section.dart';
 import '../widgets/jamaat_section.dart';
 
 const List<int> _reminderChoices = [0, 5, 10, 15, 20, 30];
@@ -128,6 +129,7 @@ class SettingsScreen extends ConsumerWidget {
           for (final prayer in PrayerName.values)
             _PrayerSettingsCard(prayer: prayer, key: ValueKey('prayer-settings-${prayer.name}')),
           const JamaatSection(),
+          const EndReminderSection(),
           _Section(l10n.azanSound),
           for (final sound in AzanSound.values)
             ListTile(
@@ -146,6 +148,14 @@ class SettingsScreen extends ConsumerWidget {
                     ),
               onTap: () => controller.setSound(sound),
             ),
+          SwitchListTile(
+            key: const ValueKey('azan-alarm'),
+            secondary: const Icon(Icons.alarm),
+            title: Text(l10n.azanAlarmVolume),
+            subtitle: Text(l10n.azanAlarmHelp),
+            value: settings.azanOnAlarm,
+            onChanged: (v) => controller.setAzanOnAlarm(alarm: v),
+          ),
           _Section(l10n.secHijri),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -188,6 +198,13 @@ class SettingsScreen extends ConsumerWidget {
             title: Text(l10n.testNotification),
             subtitle: pending == null ? null : Text(l10n.pendingCount(pending)),
             onTap: () => _scheduleTest(context, ref),
+          ),
+          ListTile(
+            key: const ValueKey('check-setup'),
+            leading: const Icon(Icons.fact_check_outlined),
+            title: Text(l10n.checkSetupTitle),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.push(Routes.setupCheck),
           ),
           ListTile(
             leading: const Icon(Icons.battery_alert_outlined),
@@ -241,12 +258,12 @@ class SettingsScreen extends ConsumerWidget {
   Future<void> _scheduleTest(BuildContext context, WidgetRef ref) async {
     final l10n = AppLocalizations.of(context);
     final messenger = ScaffoldMessenger.of(context);
-    final sound = ref.read(currentSettingsProvider).sound;
+    final settings = ref.read(currentSettingsProvider);
     await ref.read(localNotificationsProvider).scheduleTest(
           id: 9002,
           title: l10n.testTitle,
           body: l10n.testBody,
-          channelId: sound.channelId,
+          channelId: NotificationChannels.azanChannelFor(settings.sound, alarm: settings.azanOnAlarm),
         );
     messenger.showSnackBar(SnackBar(content: Text(l10n.testScheduled)));
   }
