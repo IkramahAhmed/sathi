@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:saathi/app/providers.dart';
 import 'package:saathi/features/prayer/domain/entities/jamaat.dart';
 import 'package:saathi/features/prayer/domain/entities/prayer_name.dart';
 import 'package:saathi/features/prayer/domain/entities/prayer_settings.dart';
 import 'package:saathi/features/prayer/presentation/screens/home_screen.dart';
 import 'package:saathi/features/prayer/presentation/widgets/jamaat_section.dart';
 
+import '../../../support/fakes.dart';
 import '../../../support/harness.dart';
 
 void main() {
@@ -142,5 +144,79 @@ void main() {
       ),
     );
     expect(tester.widget<Text>(find.byKey(const ValueKey('jamaat-text-dhuhr'))).data, "Jama'at 1:45 PM");
+  });
+
+  group('silent during jama\'at', () {
+    final configured = PrayerSettings.defaults().copyWith(
+      jamaat: const JamaatSettings(offsetMin: {PrayerName.asr: 10}),
+    );
+
+    Future<(Harness, RecordingBridge)> pumpSilent(WidgetTester tester, {bool access = false, PrayerSettings? settings}) async {
+      final bridge = RecordingBridge()..access = access;
+      final h = await Harness.pump(
+        tester,
+        home: const Scaffold(body: SingleChildScrollView(child: JamaatSection())),
+        now: now,
+        settings: settings ?? configured,
+        size: const Size(420, 2200),
+        overrides: [nativeBridgeProvider.overrideWithValue(bridge)],
+      );
+      await Harness.settle(tester);
+      return (h, bridge);
+    }
+
+    testWidgets('is hidden until a jama\'at time is set', (tester) async {
+      await Harness.pump(
+        tester,
+        home: const Scaffold(body: SingleChildScrollView(child: JamaatSection())),
+        now: now,
+        size: const Size(420, 2200),
+      );
+      expect(find.byKey(const ValueKey('jamaat-silent')), findsNothing);
+    });
+
+    testWidgets('turning it on saves and shows the length and the access request', (tester) async {
+      final (h, _) = await pumpSilent(tester);
+      expect(find.byKey(const ValueKey('jamaat-silent-minutes')), findsNothing);
+
+      await tester.tap(find.byKey(const ValueKey('jamaat-silent')));
+      await Harness.settle(tester);
+
+      expect(h.settingsRepo.current.jamaat.silentDuringJamaat, isTrue);
+      expect(find.byKey(const ValueKey('jamaat-silent-minutes')), findsOneWidget);
+      expect(find.byKey(const ValueKey('jamaat-silent-access')), findsOneWidget);
+    });
+
+    testWidgets('the grant button opens the system page', (tester) async {
+      final (_, bridge) = await pumpSilent(
+        tester,
+        settings: configured.copyWith(jamaat: configured.jamaat.copyWith(silentDuringJamaat: true)),
+      );
+      await tester.tap(find.byKey(const ValueKey('jamaat-silent-grant')));
+      await Harness.settle(tester);
+      expect(bridge.accessSettingsOpened, 1);
+    });
+
+    testWidgets('no access request once access is granted', (tester) async {
+      await pumpSilent(
+        tester,
+        access: true,
+        settings: configured.copyWith(jamaat: configured.jamaat.copyWith(silentDuringJamaat: true)),
+      );
+      expect(find.byKey(const ValueKey('jamaat-silent-access')), findsNothing);
+    });
+
+    testWidgets('the silent length can be changed', (tester) async {
+      final (h, _) = await pumpSilent(
+        tester,
+        access: true,
+        settings: configured.copyWith(jamaat: configured.jamaat.copyWith(silentDuringJamaat: true)),
+      );
+      await tester.tap(find.byKey(const ValueKey('jamaat-silent-minutes')));
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.tap(find.text('30 min').last);
+      await Harness.settle(tester);
+      expect(h.settingsRepo.current.jamaat.silentMinutes, 30);
+    });
   });
 }

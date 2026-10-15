@@ -251,6 +251,7 @@ add("silentDuring", "Silence my phone during jama'at", "جماعت کے دورا
 add("silentHelp", "Needs Do Not Disturb access. The phone returns to normal afterwards.",
     "ڈسٹرب نہ کریں کی رسائی درکار ہے۔ بعد میں فون پہلے جیسا ہو جاتا ہے۔",
     "Disturb na karein ki rasai darkar hai. Baad mein phone pehle jaisa ho jata hai.")
+add("silentLength", "Stay silent for", "خاموش رہے", "Khamosh rahe")
 add("silentGrantAccess", "Allow Do Not Disturb access", "ڈسٹرب نہ کریں کی رسائی دیں", "Disturb na karein ki rasai dein")
 
 # ---- Azan reliability and setup check

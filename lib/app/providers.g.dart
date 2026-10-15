@@ -742,6 +742,94 @@ final class ReminderStateProvider
 
 String _$reminderStateHash() => r'39cdeaea663c4e9275ac9a7f1a7021b878195fee';
 
+/// Do Not Disturb during jama'at and the home-screen widget (Android).
+
+@ProviderFor(nativeBridge)
+final nativeBridgeProvider = NativeBridgeProvider._();
+
+/// Do Not Disturb during jama'at and the home-screen widget (Android).
+
+final class NativeBridgeProvider
+    extends $FunctionalProvider<NativeBridge, NativeBridge, NativeBridge>
+    with $Provider<NativeBridge> {
+  /// Do Not Disturb during jama'at and the home-screen widget (Android).
+  NativeBridgeProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'nativeBridgeProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$nativeBridgeHash();
+
+  @$internal
+  @override
+  $ProviderElement<NativeBridge> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  NativeBridge create(Ref ref) {
+    return nativeBridge(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(NativeBridge value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<NativeBridge>(value),
+    );
+  }
+}
+
+String _$nativeBridgeHash() => r'30492e9920de53bd15b4f482bd01e98473387dcd';
+
+@ProviderFor(syncNativeState)
+final syncNativeStateProvider = SyncNativeStateProvider._();
+
+final class SyncNativeStateProvider
+    extends
+        $FunctionalProvider<SyncNativeState, SyncNativeState, SyncNativeState>
+    with $Provider<SyncNativeState> {
+  SyncNativeStateProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'syncNativeStateProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$syncNativeStateHash();
+
+  @$internal
+  @override
+  $ProviderElement<SyncNativeState> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  SyncNativeState create(Ref ref) {
+    return syncNativeState(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(SyncNativeState value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<SyncNativeState>(value),
+    );
+  }
+}
+
+String _$syncNativeStateHash() => r'c74c71e629946349fc3a6f0ea7323456d624c674';
+
 @ProviderFor(scheduleUpcomingAzans)
 final scheduleUpcomingAzansProvider = ScheduleUpcomingAzansProvider._();
 
@@ -788,7 +876,7 @@ final class ScheduleUpcomingAzansProvider
 }
 
 String _$scheduleUpcomingAzansHash() =>
-    r'9f429cda65daafe4dc33f15dc26f22b60aa271a5';
+    r'f933394bd5a4496e2fa93ccc0b236904d4cef18c';
 
 @ProviderFor(qazaService)
 final qazaServiceProvider = QazaServiceProvider._();

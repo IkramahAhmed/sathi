@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../app/providers.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/prayer_name.dart';
 import '../l10n_helpers.dart';
@@ -9,6 +10,7 @@ import '../providers/prayer_providers.dart';
 import '../providers/settings_controller.dart';
 
 const List<int> _leaveChoices = [0, 5, 10, 15, 20, 30];
+const List<int> _silentChoices = [10, 15, 20, 30, 45];
 
 /// Mosque jama'at times and the "time to leave" reminder, in Settings.
 class JamaatSection extends ConsumerWidget {
@@ -102,6 +104,33 @@ class JamaatSection extends ConsumerWidget {
               },
             ),
           ),
+        if (jamaat.isConfigured) ...[
+          SwitchListTile(
+            key: const ValueKey('jamaat-silent'),
+            secondary: const Icon(Icons.volume_off_outlined),
+            title: Text(l10n.silentDuring),
+            subtitle: Text(l10n.silentHelp),
+            value: jamaat.silentDuringJamaat,
+            onChanged: (v) => controller.setSilentJamaat(enabled: v),
+          ),
+          if (jamaat.silentDuringJamaat) ...[
+            ListTile(
+              key: const ValueKey('jamaat-silent-length'),
+              leading: const Icon(Icons.timelapse),
+              title: Text(l10n.silentLength),
+              trailing: DropdownButton<int>(
+                key: const ValueKey('jamaat-silent-minutes'),
+                value: _silentChoices.contains(jamaat.silentMinutes) ? jamaat.silentMinutes : 15,
+                underline: const SizedBox.shrink(),
+                items: [for (final m in _silentChoices) DropdownMenuItem(value: m, child: Text(l10n.minutesValue(m)))],
+                onChanged: (m) {
+                  if (m != null) controller.setSilentMinutes(m);
+                },
+              ),
+            ),
+            const _SilentAccessTile(),
+          ],
+        ],
       ],
     );
   }
@@ -184,6 +213,61 @@ class JamaatSection extends ConsumerWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// Asks for Do Not Disturb access until it is granted. Checks again when the user
+/// comes back from the system page.
+class _SilentAccessTile extends ConsumerStatefulWidget {
+  const _SilentAccessTile();
+
+  @override
+  ConsumerState<_SilentAccessTile> createState() => _SilentAccessTileState();
+}
+
+class _SilentAccessTileState extends ConsumerState<_SilentAccessTile> with WidgetsBindingObserver {
+  bool? _granted;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _check();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) _check();
+  }
+
+  Future<void> _check() async {
+    final granted = await ref.read(nativeBridgeProvider).silentAccessGranted();
+    if (!mounted) return;
+    setState(() => _granted = granted);
+    // Access just arrived: arm the silent windows now rather than at the next start.
+    if (granted) await ref.read(syncNativeStateProvider)();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_granted != false) return const SizedBox.shrink();
+    final l10n = AppLocalizations.of(context);
+    return ListTile(
+      key: const ValueKey('jamaat-silent-access'),
+      leading: Icon(Icons.warning_amber_rounded, color: Theme.of(context).colorScheme.error),
+      title: Text(l10n.silentGrantAccess),
+      trailing: FilledButton.tonal(
+        key: const ValueKey('jamaat-silent-grant'),
+        onPressed: () => ref.read(nativeBridgeProvider).openSilentAccessSettings(),
+        child: Text(l10n.checkFix),
       ),
     );
   }

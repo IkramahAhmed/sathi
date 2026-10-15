@@ -94,6 +94,12 @@ class SettingsController extends _$SettingsController {
   Future<void> setLeaveReminder(int minutes) =>
       change((s) => s.copyWith(jamaat: s.jamaat.copyWith(leaveReminderMin: minutes.clamp(0, 120))));
 
+  Future<void> setSilentJamaat({required bool enabled}) =>
+      change((s) => s.copyWith(jamaat: s.jamaat.copyWith(silentDuringJamaat: enabled)));
+
+  Future<void> setSilentMinutes(int minutes) =>
+      change((s) => s.copyWith(jamaat: s.jamaat.copyWith(silentMinutes: minutes.clamp(5, 120))));
+
   Future<void> setAzanOnAlarm({required bool alarm}) => change((s) => s.copyWith(azanOnAlarm: alarm));
 
   Future<void> setEndReminder({

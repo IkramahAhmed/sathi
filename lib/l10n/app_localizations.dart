@@ -1149,6 +1149,12 @@ abstract class AppLocalizations {
   /// **'Needs Do Not Disturb access. The phone returns to normal afterwards.'**
   String get silentHelp;
 
+  /// No description provided for @silentLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay silent for'**
+  String get silentLength;
+
   /// No description provided for @silentGrantAccess.
   ///
   /// In en, this message translates to:

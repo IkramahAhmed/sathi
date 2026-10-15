@@ -1,0 +1,21 @@
+group 'com.ikramah.saathi.nativebridge'
+version '0.1.0'
+
+// Written for AGP 9 / Gradle 9: no buildscript block. The Kotlin plugin version
+// comes from the host app (android/settings.gradle.kts).
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+android {
+    namespace "com.ikramah.saathi.nativebridge"
+    compileSdk 36
+
+    defaultConfig {
+        minSdk 24
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}

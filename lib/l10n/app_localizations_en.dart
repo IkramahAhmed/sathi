@@ -597,6 +597,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Needs Do Not Disturb access. The phone returns to normal afterwards.';
 
   @override
+  String get silentLength => 'Stay silent for';
+
+  @override
   String get silentGrantAccess => 'Allow Do Not Disturb access';
 
   @override
@@ -1483,6 +1486,9 @@ class AppLocalizationsEnPk extends AppLocalizationsEn {
   @override
   String get silentHelp =>
       'Disturb na karein ki rasai darkar hai. Baad mein phone pehle jaisa ho jata hai.';
+
+  @override
+  String get silentLength => 'Khamosh rahe';
 
   @override
   String get silentGrantAccess => 'Disturb na karein ki rasai dein';

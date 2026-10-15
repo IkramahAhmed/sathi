@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../core/native/method_channel_bridge.dart';
 import '../core/notifications/local_notification_scheduler.dart';
 import '../core/storage/app_database.dart';
 import '../core/sync/sync_config.dart';
@@ -17,6 +18,7 @@ import '../features/prayer/data/repositories/prayer_repository_impl.dart';
 import '../features/prayer/data/repositories/settings_repository_impl.dart';
 import '../features/prayer/domain/usecases/handle_reminder_action.dart';
 import '../features/prayer/domain/usecases/schedule_upcoming_azans.dart';
+import '../features/prayer/domain/usecases/sync_native_state.dart';
 import 'providers.dart' show maxPendingNotificationsForPlatform;
 
 /// Re-schedules the azans with no UI and no Riverpod. Used by the background
@@ -37,8 +39,9 @@ Future<Result<ScheduleReport>> runHeadlessReschedule() async {
   // The reminders need to know what is already prayed, so open the database.
   final db = AppDatabase();
   try {
+    final settingsRepo = SettingsRepositoryImpl(SettingsLocalDataSource(prefs));
     final useCase = ScheduleUpcomingAzans(
-      SettingsRepositoryImpl(SettingsLocalDataSource(prefs)),
+      settingsRepo,
       const AdhanCalculator(),
       LocalNotificationScheduler(plugin),
       systemClock,
@@ -48,6 +51,7 @@ Future<Result<ScheduleReport>> runHeadlessReschedule() async {
         mutes: ReminderMuteStore(PrefsKeyValueStore(prefs)),
       ),
       maxPending: maxPendingNotificationsForPlatform,
+      nativeSync: SyncNativeState(settingsRepo, const AdhanCalculator(), const MethodChannelNativeBridge(), systemClock),
     );
     final result = await useCase();
     appLog.info(result.when(

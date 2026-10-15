@@ -596,6 +596,9 @@ class AppLocalizationsUr extends AppLocalizations {
       'ڈسٹرب نہ کریں کی رسائی درکار ہے۔ بعد میں فون پہلے جیسا ہو جاتا ہے۔';
 
   @override
+  String get silentLength => 'خاموش رہے';
+
+  @override
   String get silentGrantAccess => 'ڈسٹرب نہ کریں کی رسائی دیں';
 
   @override

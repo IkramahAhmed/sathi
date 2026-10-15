@@ -104,6 +104,13 @@ class NotificationTexts {
         _ => requirePhoto ? 'Pray, then take a photo of your prayer place to confirm' : 'Time to pray',
       };
 
+  /// Heading on the home-screen widget.
+  String get widgetNext => switch (_tag) {
+        'ur' => 'اگلی نماز',
+        'en_PK' => 'Agli namaz',
+        _ => 'Next prayer',
+      };
+
   String get actionTakePhoto => switch (_tag) {
         'ur' => 'تصویر لیں',
         'en_PK' => 'Tasveer lein',

@@ -1,0 +1,19 @@
+name: saathi_native
+description: Android-only pieces of Saathi that need native code - Do Not Disturb during jama'at and the home-screen widget.
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: ^3.13.5
+  flutter: '>=3.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: com.ikramah.saathi.nativebridge
+        pluginClass: SaathiNativePlugin

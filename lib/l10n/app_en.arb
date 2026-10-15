@@ -361,6 +361,7 @@
   },
   "silentDuring": "Silence my phone during jama'at",
   "silentHelp": "Needs Do Not Disturb access. The phone returns to normal afterwards.",
+  "silentLength": "Stay silent for",
   "silentGrantAccess": "Allow Do Not Disturb access",
   "azanAlarmVolume": "Play azan on the alarm volume",
   "azanAlarmHelp": "Heard even in silent mode, and not affected by the media volume.",

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="saathi_widget_label">Saathi prayer times</string>
+    <string name="saathi_widget_description">The next prayer and how long until it.</string>
+    <string name="saathi_widget_empty">Open Saathi to set up</string>
+</resources>

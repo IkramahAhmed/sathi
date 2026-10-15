@@ -16,6 +16,7 @@ import '../entities/prayer_window.dart';
 import '../repositories/prayer_repository.dart';
 import '../repositories/reminder_state.dart';
 import '../repositories/settings_repository.dart';
+import 'sync_native_state.dart';
 
 /// iOS keeps only 64 pending local notifications; stay safely below that.
 const int kMaxPendingNotifications = 60;
@@ -90,6 +91,7 @@ class ScheduleUpcomingAzans {
     this._clock, {
     this._reminderState = const NoReminderState(),
     this._maxPending = kMaxPendingNotifications,
+    this._nativeSync,
   });
 
   final SettingsRepository _settings;
@@ -99,10 +101,19 @@ class ScheduleUpcomingAzans {
   final ReminderState _reminderState;
   final int _maxPending;
 
+  /// Also refreshes the silent windows and the widget after scheduling.
+  final SyncNativeState? _nativeSync;
+
   static String _isoDate(DateTime d) =>
       '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
 
-  Future<Result<ScheduleReport>> call() => guard(() async {
+  Future<Result<ScheduleReport>> call() async {
+    final result = await _schedule();
+    await _nativeSync?.call();
+    return result;
+  }
+
+  Future<Result<ScheduleReport>> _schedule() => guard(() async {
         final settings = await _settings.load();
         final now = _clock();
         await _scheduler.cancelAll();

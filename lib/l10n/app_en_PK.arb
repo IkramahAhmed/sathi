@@ -175,6 +175,7 @@
   "leaveMinutes": "Jamaat se {minutes} minute pehle",
   "silentDuring": "Jamaat ke dauran phone khamosh karein",
   "silentHelp": "Disturb na karein ki rasai darkar hai. Baad mein phone pehle jaisa ho jata hai.",
+  "silentLength": "Khamosh rahe",
   "silentGrantAccess": "Disturb na karein ki rasai dein",
   "azanAlarmVolume": "Azan alarm ki awaz par chalayein",
   "azanAlarmHelp": "Khamosh mode mein bhi sunai deti hai aur media volume se mutasir nahi hoti.",

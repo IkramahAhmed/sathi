@@ -22,9 +22,12 @@ import '../features/prayer/data/sync/prayer_sync_service.dart';
 import '../features/prayer/domain/repositories/reminder_state.dart';
 import '../features/prayer/domain/usecases/handle_reminder_action.dart';
 import '../features/prayer/data/repositories/settings_repository_impl.dart';
+import '../core/native/method_channel_bridge.dart';
 import '../core/notifications/setup_probe.dart';
 import '../features/prayer/data/verification/mlkit_photo_verifier.dart';
+import '../features/prayer/domain/repositories/native_bridge.dart';
 import '../features/prayer/domain/repositories/photo_verifier.dart';
+import '../features/prayer/domain/usecases/sync_native_state.dart';
 import '../features/prayer/domain/repositories/prayer_repository.dart';
 import '../features/prayer/domain/repositories/settings_repository.dart';
 import '../features/prayer/domain/usecases/get_prayer_times_range.dart';
@@ -117,6 +120,18 @@ ReminderState reminderState(Ref ref) {
   );
 }
 
+/// Do Not Disturb during jama'at and the home-screen widget (Android).
+@Riverpod(keepAlive: true)
+NativeBridge nativeBridge(Ref ref) => const MethodChannelNativeBridge();
+
+@Riverpod(keepAlive: true)
+SyncNativeState syncNativeState(Ref ref) => SyncNativeState(
+      ref.watch(settingsRepositoryProvider),
+      ref.watch(prayerRepositoryProvider),
+      ref.watch(nativeBridgeProvider),
+      ref.watch(clockProvider),
+    );
+
 @Riverpod(keepAlive: true)
 ScheduleUpcomingAzans scheduleUpcomingAzans(Ref ref) => ScheduleUpcomingAzans(
       ref.watch(settingsRepositoryProvider),
@@ -125,6 +140,7 @@ ScheduleUpcomingAzans scheduleUpcomingAzans(Ref ref) => ScheduleUpcomingAzans(
       ref.watch(clockProvider),
       reminderState: ref.watch(reminderStateProvider),
       maxPending: maxPendingNotificationsForPlatform,
+      nativeSync: ref.watch(syncNativeStateProvider),
     );
 
 @Riverpod(keepAlive: true)

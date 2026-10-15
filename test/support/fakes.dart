@@ -7,9 +7,11 @@ import 'package:saathi/core/sync/cloud_api.dart';
 import 'package:saathi/core/sync/sync_config.dart';
 import 'package:saathi/core/sync/sync_models.dart';
 import 'package:saathi/features/prayer/data/datasources/adhan_calculator.dart';
+import 'package:saathi/features/prayer/domain/entities/native_state.dart';
 import 'package:saathi/features/prayer/domain/entities/prayer_name.dart';
 import 'package:saathi/features/prayer/domain/entities/prayer_settings.dart';
 import 'package:saathi/features/prayer/domain/entities/prayer_times_day.dart';
+import 'package:saathi/features/prayer/domain/repositories/native_bridge.dart';
 import 'package:saathi/features/prayer/domain/repositories/prayer_repository.dart';
 import 'package:saathi/features/prayer/domain/repositories/reminder_state.dart';
 import 'package:saathi/features/prayer/domain/repositories/settings_repository.dart';
@@ -290,4 +292,32 @@ class FakeSetupProbe implements SetupProbe {
 
   @override
   Future<bool?> channelAudible(String channelId) async => channel;
+}
+
+
+/// Remembers what the phone-side features were told.
+class RecordingBridge implements NativeBridge {
+  bool access = false;
+  int accessSettingsOpened = 0;
+  List<SilentWindow>? windows;
+  WidgetSnapshot? widget;
+  bool failing = false;
+
+  @override
+  Future<bool> silentAccessGranted() async => access;
+
+  @override
+  Future<void> openSilentAccessSettings() async => accessSettingsOpened++;
+
+  @override
+  Future<void> setSilentWindows(List<SilentWindow> windows) async {
+    if (failing) throw StateError('boom');
+    this.windows = windows;
+  }
+
+  @override
+  Future<void> setWidgetData(WidgetSnapshot snapshot) async {
+    if (failing) throw StateError('boom');
+    widget = snapshot;
+  }
 }
