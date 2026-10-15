@@ -1,6 +1,33 @@
 # Changelog
 
-## v0.2.0 — Cloud backup
+## v0.3.0 - Daily habit tools
+
+### Added
+- **Tracker tab.** Tick prayers for today or edit past days. Current and best streaks, a week
+  strip, and a pause for illness or a woman's period so those days never count as missed.
+- **Qaza tracker.** Missed prayers are counted per prayer, with a starting balance (or an
+  estimate from years), make-up buttons, a history, and optional automatic counting from today.
+- **Jama'at times.** Set minutes after the azan or a fixed time per prayer, plus a Friday time.
+  Shown on Home. Optional "time to leave" reminder before jama'at.
+- **Silent during jama'at (Android).** The phone goes to alarms only for the chosen minutes and
+  returns afterwards. Needs Do Not Disturb access, which the app asks for. A phone already in
+  Do Not Disturb is never touched.
+- **Prayer time ending reminders.** Before a prayer's time ends, and repeated until it is done.
+  Choose the first reminder, the repeat gap and which prayers. Buttons on the notification:
+  Prayed or Take photo, and Stop reminders.
+- **Photo proof (optional).** With it on, only a photo of the prayer place stops the reminders.
+  The photo is checked on the phone with Google ML Kit, is never saved or sent, and a
+  "Stop reminding me" button is always there. This is a nudge, not proof that a prayer happened.
+- **Azan on the alarm volume.** Heard in silent mode and not tied to the media volume.
+- **Check my setup** screen: notifications, exact alarms, battery, azan sound and the number of
+  scheduled alerts, each with a fix button, plus a test azan.
+- **Home-screen widget** with the next prayer and a live countdown.
+
+### Changed
+- The local database is now version 3 (pauses and qaza tables). Existing data is kept.
+- Android gains a small local plugin, `packages/saathi_native`, for Do Not Disturb and the widget.
+
+## v0.2.0 - Cloud backup
 
 ### Added
 - Optional cloud backup of the prayed log to a free Neon database through the new

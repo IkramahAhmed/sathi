@@ -70,6 +70,20 @@ run is best effort; the foreground triggers are what keep it reliable.
 Without the exact-alarm permission it falls back to inexact alarms and the Home
 screen shows a banner.
 
+## Habit tools
+
+- **Tracker, Qaza, pauses, streaks:** `features/prayer/domain/entities/streaks.dart`,
+  `pause_range.dart`, `data/qaza/qaza_service.dart`. Missed prayers are counted by an idempotent
+  reconcile that runs on start and after edits.
+- **Ending reminders:** `entities/end_reminder.dart` plans the times; `schedule_upcoming_azans.dart`
+  schedules today and tomorrow only. Notification buttons are handled by
+  `usecases/handle_reminder_action.dart`, in the app and in a background isolate.
+- **Photo proof:** `presentation/screens/verify_screen.dart`. `domain/repositories/photo_verifier.dart`
+  holds the label rule (one strong label such as mosque, or two supporting ones such as carpet and
+  pattern). `data/verification/mlkit_photo_verifier.dart` runs ML Kit on the phone.
+- **Silent during jama'at and the widget:** `usecases/sync_native_state.dart` plans windows and the
+  widget data and sends them over a channel to `packages/saathi_native` (Kotlin).
+
 ## Azan sounds
 
 | Option | File | Notes |
