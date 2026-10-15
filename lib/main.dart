@@ -20,11 +20,19 @@ Future<void> main() async {
   await initializeDateFormatting();
 
   final prefs = await SharedPreferences.getInstance();
-  final plugin = FlutterLocalNotificationsPlugin();
-  await LocalNotificationScheduler.initialize(plugin);
-  final launch = await plugin.getNotificationAppLaunchDetails();
-  final launchPayload =
-      (launch?.didNotificationLaunchApp ?? false) ? launch?.notificationResponse?.payload : null;
+
+  // A notification problem must never stop the app from opening: the prayer
+  // times and timetable work without it. Log it and carry on.
+  String? launchPayload;
+  try {
+    final plugin = FlutterLocalNotificationsPlugin();
+    await LocalNotificationScheduler.initialize(plugin);
+    final launch = await plugin.getNotificationAppLaunchDetails();
+    launchPayload =
+        (launch?.didNotificationLaunchApp ?? false) ? launch?.notificationResponse?.payload : null;
+  } catch (error, stackTrace) {
+    appLog.severe('Notifications could not be initialised', error, stackTrace);
+  }
 
   final onboardingDone = SettingsLocalDataSource(prefs).onboardingDone();
   await WorkmanagerBootstrap.init();

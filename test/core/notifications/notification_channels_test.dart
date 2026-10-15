@@ -51,6 +51,16 @@ void main() {
     }
   });
 
+  test('release resource shrinking keeps the icon and every sound referenced by name', () {
+    final keep = File('android/app/src/main/res/raw/keep.xml').readAsStringSync();
+    expect(keep, contains('@drawable/${NotificationChannels.drawableIcon}'));
+    for (final sound in AzanSound.values.where((s) => !s.isSilent)) {
+      expect(keep, contains('@raw/${sound.channelId}'), reason: '${sound.channelId} would be stripped');
+    }
+    expect(File('android/app/src/main/res/drawable/${NotificationChannels.drawableIcon}.xml').existsSync(),
+        isTrue);
+  });
+
   test('notification details use the full-screen-free, max-priority azan settings', () {
     final details = NotificationChannels.detailsFor('azan_full').android!;
     expect(details.channelId, 'azan_full');

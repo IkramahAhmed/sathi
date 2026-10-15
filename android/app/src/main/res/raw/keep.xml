@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Release builds shrink unused resources. The notification icon and the azan
+  sounds are only referenced by name from Dart (flutter_local_notifications),
+  so the shrinker cannot see the use and would delete them. Without the icon,
+  startup fails with `invalid_icon` and the app shows a blank screen.
+  Keep this list in sync with AzanSound and NotificationChannels.drawableIcon;
+  test/core/notifications/notification_channels_test.dart checks it.
+-->
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="@drawable/ic_stat_saathi,@raw/azan_beep,@raw/azan_full,@raw/azan_short"
+    tools:shrinkMode="strict" />
