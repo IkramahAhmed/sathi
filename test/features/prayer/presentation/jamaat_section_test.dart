@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:saathi/app/providers.dart';
 import 'package:saathi/features/prayer/domain/entities/jamaat.dart';
 import 'package:saathi/features/prayer/domain/entities/prayer_name.dart';
 import 'package:saathi/features/prayer/domain/entities/prayer_settings.dart';
@@ -159,7 +158,7 @@ void main() {
         now: now,
         settings: settings ?? configured,
         size: const Size(420, 2200),
-        overrides: [nativeBridgeProvider.overrideWithValue(bridge)],
+        bridge: bridge,
       );
       await Harness.settle(tester);
       return (h, bridge);

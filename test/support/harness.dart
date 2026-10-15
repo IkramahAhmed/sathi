@@ -10,6 +10,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:saathi/app/providers.dart';
 import 'package:saathi/core/storage/app_database.dart';
 import 'package:saathi/features/prayer/domain/entities/prayer_settings.dart';
+import 'package:saathi/features/prayer/domain/repositories/native_bridge.dart';
 import 'package:saathi/features/prayer/presentation/l10n_helpers.dart';
 import 'package:saathi/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -50,6 +51,7 @@ class Harness {
     List<GoRoute> extraRoutes = const [],
     Size size = const Size(420, 1800),
     List<Override> overrides = const [],
+    NativeBridge? bridge,
   }) async {
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();
@@ -69,6 +71,8 @@ class Harness {
       settingsRepositoryProvider.overrideWithValue(repo),
       notificationSchedulerProvider.overrideWithValue(scheduler),
       appLifecycleProvider.overrideWith(_PausedLifecycle.new),
+      // Unless a test brings its own, the phone-side features do nothing.
+      nativeBridgeProvider.overrideWithValue(bridge ?? const NoNativeBridge()),
       ...overrides,
     ]);
     addTearDown(container.dispose);
