@@ -70,8 +70,11 @@ class Harness {
     ]);
     addTearDown(container.dispose);
 
-    await tester.binding.setSurfaceSize(size);
-    addTearDown(() => tester.binding.setSurfaceSize(null));
+    // Size the view itself (not just the surface) so MediaQuery, and therefore
+    // dialogs like the time picker, see a portrait phone.
+    tester.view.physicalSize = size;
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,

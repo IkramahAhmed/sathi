@@ -235,12 +235,12 @@ class _DayDetail extends ConsumerWidget {
                 onChanged: isFuture
                     ? null
                     : (value) async {
-                        final router = GoRouter.of(context);
+                        final router = GoRouter.maybeOf(context);
                         final result = await ref
                             .read(prayerActionsProvider)
                             .setDone(date, prayer, done: value ?? false);
                         if (result == TickResult.needsProof) {
-                          router.push('${Routes.verify}?prayer=${prayer.name}&date=${dateKey(date)}');
+                          router?.push('${Routes.verify}?prayer=${prayer.name}&date=${dateKey(date)}');
                         }
                       },
               ),

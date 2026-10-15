@@ -71,6 +71,29 @@ class SettingsController extends _$SettingsController {
   Future<void> setFollowMe({required bool follow}) =>
       change((s) => s.copyWith(followMeLocation: follow));
 
+  /// Sets a jama'at rule for [prayer]. Pass [offsetMin] (minutes after the
+  /// azan) or [fixedMinuteOfDay] (for example 13:30 is 810), or neither to clear it.
+  Future<void> setJamaat(PrayerName prayer, {int? offsetMin, int? fixedMinuteOfDay}) => change((s) {
+        final offsets = {...s.jamaat.offsetMin}..remove(prayer);
+        final fixed = {...s.jamaat.fixedMin}..remove(prayer);
+        if (fixedMinuteOfDay != null) {
+          fixed[prayer] = fixedMinuteOfDay.clamp(0, 1439);
+        } else if (offsetMin != null && offsetMin > 0) {
+          offsets[prayer] = offsetMin.clamp(1, 120);
+        }
+        return s.copyWith(jamaat: s.jamaat.copyWith(offsetMin: offsets, fixedMin: fixed));
+      });
+
+  /// Sets or clears (null) the Friday jama'at time.
+  Future<void> setJummaTime(int? minuteOfDay) => change((s) => s.copyWith(
+        jamaat: minuteOfDay == null
+            ? s.jamaat.copyWith(clearJumma: true)
+            : s.jamaat.copyWith(jummaFixedMin: minuteOfDay.clamp(0, 1439)),
+      ));
+
+  Future<void> setLeaveReminder(int minutes) =>
+      change((s) => s.copyWith(jamaat: s.jamaat.copyWith(leaveReminderMin: minutes.clamp(0, 120))));
+
   Future<void> setHighLat(HighLatitudeRule rule) => change((s) => s.copyWith(highLat: rule));
 
   /// Moves to a manually chosen [city]; turns off "follow me".

@@ -18,6 +18,7 @@ class PrayerRow extends StatelessWidget {
     this.isNext = false,
     this.isHighlighted = false,
     this.isPast = false,
+    this.jamaatText,
     super.key,
   });
 
@@ -29,6 +30,9 @@ class PrayerRow extends StatelessWidget {
   final bool isNext;
   final bool isHighlighted;
   final bool isPast;
+
+  /// For example "Jama'at 1:20 PM". Shown under the name when set.
+  final String? jamaatText;
   final ValueChanged<bool> onToggleAzan;
   final ValueChanged<bool> onTogglePrayed;
 
@@ -68,12 +72,25 @@ class PrayerRow extends StatelessWidget {
               Icon(iconFor(prayer), color: emphasised ? scheme.onPrimaryContainer : scheme.primary),
               const SizedBox(width: 12),
               Expanded(
-                child: Text(
-                  name,
-                  style: text.titleMedium?.copyWith(
-                    fontWeight: emphasised ? FontWeight.w700 : FontWeight.w500,
-                    color: emphasised ? scheme.onPrimaryContainer : null,
-                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      name,
+                      style: text.titleMedium?.copyWith(
+                        fontWeight: emphasised ? FontWeight.w700 : FontWeight.w500,
+                        color: emphasised ? scheme.onPrimaryContainer : null,
+                      ),
+                    ),
+                    if (jamaatText != null)
+                      Text(
+                        jamaatText!,
+                        key: ValueKey('jamaat-text-${prayer.name}'),
+                        style: text.bodySmall?.copyWith(
+                          color: emphasised ? scheme.onPrimaryContainer : scheme.onSurfaceVariant,
+                        ),
+                      ),
+                  ],
                 ),
               ),
               Text(

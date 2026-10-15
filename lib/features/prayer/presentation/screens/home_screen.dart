@@ -6,6 +6,9 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../app/router.dart';
 import '../../domain/entities/prayer_name.dart';
+import '../../domain/entities/jamaat.dart';
+import '../../domain/entities/prayer_settings.dart';
+import '../../domain/entities/prayer_times_day.dart';
 import '../../domain/entities/streaks.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../l10n_helpers.dart';
@@ -119,13 +122,14 @@ class HomeScreen extends ConsumerWidget {
               isNext: next != null && next.prayer == prayer && next.date == today.date,
               isHighlighted: highlight == prayer,
               isPast: today.times[prayer]!.isBefore(now),
+              jamaatText: _jamaatText(l10n, settings, today, prayer, locale),
               onToggleAzan: (enabled) =>
                   ref.read(settingsControllerProvider.notifier).setAzanEnabled(prayer, enabled: enabled),
               onTogglePrayed: (done) async {
-                final router = GoRouter.of(context);
+                final router = GoRouter.maybeOf(context);
                 final result = await ref.read(prayerActionsProvider).setDone(today.date, prayer, done: done);
                 if (result == TickResult.needsProof) {
-                  router.push('${Routes.verify}?prayer=${prayer.name}&date=${dateKey(today.date)}');
+                  router?.push('${Routes.verify}?prayer=${prayer.name}&date=${dateKey(today.date)}');
                 }
               },
             ),
@@ -151,4 +155,21 @@ class HomeScreen extends ConsumerWidget {
       ),
     );
   }
+}
+
+/// "Jama'at 1:20 PM", or null when the mosque time is not set for [prayer].
+String? _jamaatText(
+  AppLocalizations l10n,
+  PrayerSettings settings,
+  PrayerTimesDay day,
+  PrayerName prayer,
+  Locale locale,
+) {
+  final at = jamaatTime(
+    prayer: prayer,
+    day: day,
+    settings: settings.jamaat,
+    timezoneId: settings.timezoneId,
+  );
+  return at == null ? null : l10n.jamaatAt(formatClock(at, settings.timezoneId, locale));
 }

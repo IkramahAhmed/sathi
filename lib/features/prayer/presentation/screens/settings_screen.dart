@@ -15,6 +15,7 @@ import '../providers/reschedule_controller.dart';
 import '../providers/settings_controller.dart';
 import '../widgets/city_picker.dart';
 import '../widgets/cloud_sync_section.dart';
+import '../widgets/jamaat_section.dart';
 
 const List<int> _reminderChoices = [0, 5, 10, 15, 20, 30];
 
@@ -126,6 +127,7 @@ class SettingsScreen extends ConsumerWidget {
           _Section(l10n.secPrayers),
           for (final prayer in PrayerName.values)
             _PrayerSettingsCard(prayer: prayer, key: ValueKey('prayer-settings-${prayer.name}')),
+          const JamaatSection(),
           _Section(l10n.azanSound),
           for (final sound in AzanSound.values)
             ListTile(
