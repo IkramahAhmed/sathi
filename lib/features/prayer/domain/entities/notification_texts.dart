@@ -1,3 +1,4 @@
+// ignore_for_file: lines_longer_than_80_chars
 import 'prayer_name.dart';
 
 /// Notification copy. Kept in pure Dart because notifications are also built
@@ -40,6 +41,49 @@ class NotificationTexts {
 
   static const Map<String, String> _jumma = {'en': 'Jumma', 'ur': 'جمعہ', 'en_PK': 'Jumma'};
 
+  // ── Authentic Hadith pool (Sahih al-Bukhari & Sahih Muslim only) ──────────
+  // Each entry: [English, Urdu, Roman-Urdu, source]
+  // Source shown as short reference so the user can verify on sunnah.com.
+  static const List<List<String>> _hadithPool = [
+    [
+      '"The most beloved deed to Allah is to offer prayers at their early stated times." — Bukhari 527',
+      '"اللہ کے نزدیک سب سے پسندیدہ عمل نماز کو اس کے وقت پر ادا کرنا ہے۔" — بخاری 527',
+      '"Allah ke nazdik sab se pasandeeda amal namaz ko us ke waqt par ada karna hai." — Bukhari 527',
+    ],
+    [
+      '"The five prayers are like a river at your door — bathing five times daily leaves no dirt. Likewise, Allah wipes away sins with five prayers." — Bukhari 528',
+      '"پانچ نمازیں گھر کے دروازے پر بہتی نہر کی مانند ہیں۔ پانچ بار غسل کرنے سے کوئی میل نہیں رہتی۔ اسی طرح اللہ پانچ نمازوں سے گناہ مٹا دیتا ہے۔" — بخاری 528',
+      '"Panch namazein ghar ke darwaze par behti neher ki maanand hain. Panch baar ghusl karne se koi mail nahi rehti. Isi tarah Allah panch namazon se gunah mita deta hai." — Bukhari 528',
+    ],
+    [
+      '"Pray as you have seen me praying." — Bukhari 631',
+      '"نماز اس طرح پڑھو جیسے تم نے مجھے پڑھتے دیکھا ہے۔" — بخاری 631',
+      '"Namaz us tarah parho jaise tum ne mujhe parhte dekha hai." — Bukhari 631',
+    ],
+    [
+      '"Between a man and shirk and kufr is the abandonment of salah." — Muslim 82',
+      '"انسان اور شرک و کفر کے درمیان نماز کا ترک کرنا ہے۔" — مسلم 82',
+      '"Insan aur shirk-o-kufr ke darmiyan namaz ka tark karna hai." — Muslim 82',
+    ],
+    [
+      '"There is no prayer harder for the hypocrites than Fajr and Isha. If they knew the reward, they would attend even crawling." — Bukhari 657',
+      '"منافقوں پر فجر اور عشاء سے زیادہ کوئی نماز بھاری نہیں۔ اگر وہ ان کا ثواب جانتے تو گھٹنوں کے بل آتے۔" — بخاری 657',
+      '"Munafiqon par Fajr aur Isha se zyada koi namaz bhari nahi. Agar wo in ka sawab jante to ghutno ke bal aate." — Bukhari 657',
+    ],
+  ];
+
+  /// Returns a different authentic hadith each calendar day (cycles every 5 days).
+  /// Pass [dayOfYear] so tests can pin a value; defaults to today's day.
+  String hadithForDay({int? dayOfYear}) {
+    final day = dayOfYear ?? DateTime.now().difference(DateTime(DateTime.now().year)).inDays;
+    final row = _hadithPool[day % _hadithPool.length];
+    return switch (_tag) {
+      'ur' => row[1],
+      'en_PK' => row[2],
+      _ => row[0],
+    };
+  }
+
   /// Localised prayer name; Dhuhr becomes Jumma on Fridays.
   String prayerName(PrayerName prayer, {bool isFriday = false}) {
     if (isFriday && prayer == PrayerName.dhuhr) return _jumma[_tag]!;
@@ -55,7 +99,7 @@ class NotificationTexts {
     };
   }
 
-  String azanBody(PrayerName prayer, String city, {bool isFriday = false}) {
+  String azanBody(PrayerName prayer, String city, {bool isFriday = false, int? dayOfYear}) {
     final name = prayerName(prayer, isFriday: isFriday);
     return switch (_tag) {
       'ur' => '$city میں $name کا وقت ہو گیا ہے',
@@ -102,6 +146,13 @@ class NotificationTexts {
         'ur' => requirePhoto ? 'نماز پڑھیں، پھر جائے نماز کی تصویر لے کر تصدیق کریں' : 'نماز پڑھ لیں',
         'en_PK' => requirePhoto ? 'Namaz parhein, phir jaye-namaz ki tasveer le kar tasdeeq karein' : 'Namaz parh lein',
         _ => requirePhoto ? 'Pray, then take a photo of your prayer place to confirm' : 'Time to pray',
+      };
+
+  /// Put in front of the title of a test reminder.
+  String get testPrefix => switch (_tag) {
+        'ur' => '[آزمائش] ',
+        'en_PK' => '[Test] ',
+        _ => '[Test] ',
       };
 
   /// Heading on the home-screen widget.

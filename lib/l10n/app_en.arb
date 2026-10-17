@@ -412,6 +412,10 @@
   "endPrayers": "Which prayers",
   "endRequirePhoto": "Photo proof",
   "endRequirePhotoHelp": "Keep reminding until you take a photo of your prayer place, such as your prayer mat or the mosque. The photo is checked on this phone and is never saved or sent anywhere.",
+  "endTestTitle": "Try the ending reminder",
+  "endTestHelp": "Sends 3 test notifications spaced 1 minute apart so you can experience the full flow.",
+  "endTestSend": "Send",
+  "endTestScheduled": "3 test reminders sent — first arrives in 10 seconds.",
   "verifyTitle": "Prayer photo check",
   "verifyIntro": "After you pray, take a photo of your prayer place, such as your prayer mat or the mosque. It is checked on this phone only and is never saved.",
   "verifyPrayer": "{prayer} · {date}",
@@ -428,6 +432,7 @@
   "verifyTake": "Take photo",
   "verifyChecking": "Checking…",
   "verifySuccess": "Verified. May Allah accept your prayer.",
+  "verifyTestNote": "This was a test reminder — your prayer log was not changed.",
   "verifyFail": "That does not look like a prayer place. Try again with your prayer mat or the mosque in view.",
   "verifyTryAgain": "Try again",
   "verifyStop": "Stop reminding me",
@@ -471,6 +476,40 @@
     }
   },
   "qiblaNoSensor": "This phone has no compass sensor. Use the bearing above with a compass.",
+  "qiblaTurnRight": "Turn right {degrees}°",
+  "@qiblaTurnRight": {
+    "placeholders": {
+      "degrees": {
+        "type": "int"
+      }
+    }
+  },
+  "qiblaTurnLeft": "Turn left {degrees}°",
+  "@qiblaTurnLeft": {
+    "placeholders": {
+      "degrees": {
+        "type": "int"
+      }
+    }
+  },
+  "qiblaFacing": "You are facing the Qibla",
+  "qiblaHeading": "Phone points {degrees}°",
+  "@qiblaHeading": {
+    "placeholders": {
+      "degrees": {
+        "type": "int"
+      }
+    }
+  },
+  "qiblaDistance": "{km} km to the Kaaba",
+  "@qiblaDistance": {
+    "placeholders": {
+      "km": {
+        "type": "String"
+      }
+    }
+  },
+  "qiblaCalibrate": "Compass needs calibrating. Move the phone in a figure 8, away from metal and magnets.",
   "qiblaFace": "Turn until the arrow points up",
   "stepOf": "Step {current} of {total}",
   "@stepOf": {

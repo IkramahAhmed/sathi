@@ -38,7 +38,7 @@ _PrayerSettingsDto _$PrayerSettingsDtoFromJson(
             MapEntry($enumDecode(_$PrayerNameEnumMap, k), (e as num).toInt()),
       ) ??
       const <PrayerName, int>{},
-  sound: json['sound'] == null ? AzanSound.beep : _soundFromJson(json['sound']),
+  sound: json['sound'] == null ? AzanSound.full : _soundFromJson(json['sound']),
   hijriAdjustDays: (json['hijriAdjustDays'] as num?)?.toInt() ?? 0,
   followMeLocation: json['followMeLocation'] as bool? ?? true,
   methodIsManual: json['methodIsManual'] as bool? ?? false,
@@ -69,7 +69,7 @@ _PrayerSettingsDto _$PrayerSettingsDtoFromJson(
   endLeadMin: (json['endLeadMin'] as num?)?.toInt() ?? 30,
   endRepeatMin: (json['endRepeatMin'] as num?)?.toInt() ?? 10,
   endRequirePhoto: json['endRequirePhoto'] as bool? ?? false,
-  azanOnAlarm: json['azanOnAlarm'] as bool? ?? false,
+  azanOnAlarm: json['azanOnAlarm'] as bool? ?? true,
   autoQazaFrom: json['autoQazaFrom'] as String?,
 );
 

@@ -1,12 +1,15 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:flutter_compass_v2/flutter_compass_v2.dart';
-import 'package:flutter_qiblah/flutter_qiblah.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:intl/intl.dart' hide TextDirection;
+
 import '../../../../l10n/app_localizations.dart';
+import '../../data/compass/compass_source.dart';
+import '../../domain/entities/qibla.dart';
 import '../providers/prayer_providers.dart';
+import '../providers/qibla_providers.dart';
 
 /// Live Qibla compass, with a text bearing as the fallback when the phone has
 /// no compass sensor.
@@ -22,35 +25,33 @@ class QiblaScreen extends ConsumerStatefulWidget {
 }
 
 class _QiblaScreenState extends ConsumerState<QiblaScreen> {
-  late final Future<bool> _sensorSupport = _checkSensors();
+  late final Future<bool> _sensorSupport = ref.read(compassSourceProvider).available();
+  Stream<CompassReading>? _readings;
+  DateTime? _firstReading;
 
-  Future<bool> _checkSensors() async {
-    try {
-      if (FlutterCompass.events == null) return false;
-      return await FlutterQiblah.androidDeviceSensorSupport() ?? true;
-    } catch (_) {
-      return false;
-    }
+  Stream<CompassReading> _stream() => _readings ??= ref.read(compassSourceProvider).readings();
+
+  /// The accuracy is unknown for the first moments after start; only call a reading
+  /// poor when it says so, or has stayed unknown for a few seconds.
+  bool _needsCalibration(CompassReading reading) {
+    final accuracy = reading.accuracy;
+    if (accuracy != null) return accuracy >= 45;
+    final first = _firstReading ??= DateTime.now();
+    return DateTime.now().difference(first) > const Duration(seconds: 4);
   }
-
-  /// Combines the sensor heading with the fixed bearing to the Kaaba.
-  Stream<QiblahDirection> _directions(double bearing) =>
-      FlutterCompass.events!.where((e) => e.heading != null).map((e) {
-        final heading = (e.heading! + 360) % 360;
-        // Same convention as flutter_qiblah: 0 means the phone faces the Kaaba.
-        return QiblahDirection((heading + (360 - bearing)) % 360, heading, bearing);
-      });
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final bearing = ref.watch(qiblaBearingProvider);
+    final declination = ref.watch(magneticDeclinationProvider).value ?? 0;
+    final km = ref.watch(kaabaDistanceKmProvider);
     final text = Theme.of(context).textTheme;
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.qiblaTitle)),
       body: Center(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -61,6 +62,12 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
                 textAlign: TextAlign.center,
                 style: text.titleLarge,
               ),
+              const SizedBox(height: 4),
+              Text(
+                l10n.qiblaDistance(NumberFormat.decimalPattern('en').format(km.round())),
+                key: const ValueKey('qibla-distance'),
+                style: text.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
+              ),
               const SizedBox(height: 24),
               FutureBuilder<bool>(
                 future: _sensorSupport,
@@ -69,14 +76,20 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
                   if (snapshot.data == false) {
                     return _Fallback(message: l10n.qiblaNoSensor, bearing: bearing);
                   }
-                  return StreamBuilder<QiblahDirection>(
-                    stream: _directions(bearing),
+                  return StreamBuilder<CompassReading>(
+                    stream: _stream(),
                     builder: (context, snap) {
                       if (snap.hasError) {
                         return _Fallback(message: l10n.qiblaNoSensor, bearing: bearing);
                       }
-                      if (!snap.hasData) return const CircularProgressIndicator();
-                      return _Compass(direction: snap.data!, hint: l10n.qiblaFace);
+                      final reading = snap.data;
+                      if (reading == null) return const CircularProgressIndicator();
+                      final heading = trueHeading(reading.magneticHeading, declination);
+                      return _Compass(
+                        heading: heading,
+                        bearing: bearing,
+                        calibrate: _needsCalibration(reading),
+                      );
                     },
                   );
                 },
@@ -122,19 +135,26 @@ class _Fallback extends StatelessWidget {
 }
 
 class _Compass extends StatelessWidget {
-  const _Compass({required this.direction, required this.hint});
+  const _Compass({required this.heading, required this.bearing, required this.calibrate});
 
-  final QiblahDirection direction;
-  final String hint;
+  /// Where the top of the phone points, degrees from true north.
+  final double heading;
+
+  /// Where the Kaaba is, degrees from true north.
+  final double bearing;
+  final bool calibrate;
 
   static double _rad(double degrees) => degrees * math.pi / 180;
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
-    // `qiblah` is (heading - bearing) mod 360: 0 means the phone faces the Kaaba.
-    final offByDegrees = direction.qiblah % 360;
-    final aligned = offByDegrees < 4 || offByDegrees > 356;
+    final turn = turnToQibla(heading: heading, bearing: bearing);
+    final facing = isFacingQibla(turn);
+    final guidance = facing
+        ? l10n.qiblaFacing
+        : (turn > 0 ? l10n.qiblaTurnRight(turn.round()) : l10n.qiblaTurnLeft(turn.abs().round()));
     return Column(
       children: [
         SizedBox(
@@ -145,26 +165,51 @@ class _Compass extends StatelessWidget {
             children: [
               // The dial turns opposite to the phone so "N" stays on true north.
               Transform.rotate(
-                angle: -_rad(direction.direction),
+                key: const ValueKey('qibla-dial'),
+                angle: -_rad(heading),
                 child: CustomPaint(
                   size: const Size.square(260),
                   painter: _DialPainter(scheme.outline, scheme.onSurface),
                 ),
               ),
-              // The needle points at the Kaaba relative to the phone.
+              // The needle points at the Kaaba relative to the top of the phone.
               Transform.rotate(
-                angle: -_rad(direction.qiblah),
+                key: const ValueKey('qibla-needle'),
+                angle: _rad(bearing - heading),
                 child: Icon(
                   Icons.navigation,
                   size: 110,
-                  color: aligned ? Colors.green : scheme.primary,
+                  color: facing ? Colors.green : scheme.primary,
                 ),
               ),
             ],
           ),
         ),
         const SizedBox(height: 16),
-        Text(hint, textAlign: TextAlign.center),
+        Text(
+          guidance,
+          key: const ValueKey('qibla-guidance'),
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                color: facing ? Colors.green.shade700 : null,
+                fontWeight: facing ? FontWeight.w700 : null,
+              ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          l10n.qiblaHeading(heading.round() % 360),
+          key: const ValueKey('qibla-heading'),
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
+        ),
+        if (calibrate) ...[
+          const SizedBox(height: 12),
+          Text(
+            l10n.qiblaCalibrate,
+            key: const ValueKey('qibla-calibrate'),
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: scheme.error),
+          ),
+        ],
       ],
     );
   }

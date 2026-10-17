@@ -1,0 +1,20 @@
+{
+  "name": "saathi-sync-server",
+  "version": "1.0.0",
+  "description": "Saathi prayer-log sync API backed by Neon Postgres",
+  "type": "module",
+  "main": "index.mjs",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "start": "node index.mjs",
+    "dev": "node --env-file=.env index.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@hono/node-server": "^2.1.5",
+    "hono": "^4.13.13",
+    "pg": "^8.23.1"
+  }
+}

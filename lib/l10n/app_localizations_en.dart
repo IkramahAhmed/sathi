@@ -699,6 +699,20 @@ class AppLocalizationsEn extends AppLocalizations {
       'Keep reminding until you take a photo of your prayer place, such as your prayer mat or the mosque. The photo is checked on this phone and is never saved or sent anywhere.';
 
   @override
+  String get endTestTitle => 'Try the ending reminder';
+
+  @override
+  String get endTestHelp =>
+      'Sends 3 test notifications spaced 1 minute apart so you can experience the full flow.';
+
+  @override
+  String get endTestSend => 'Send';
+
+  @override
+  String get endTestScheduled =>
+      '3 test reminders sent — first arrives in 10 seconds.';
+
+  @override
   String get verifyTitle => 'Prayer photo check';
 
   @override
@@ -718,6 +732,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get verifySuccess => 'Verified. May Allah accept your prayer.';
+
+  @override
+  String get verifyTestNote =>
+      'This was a test reminder — your prayer log was not changed.';
 
   @override
   String get verifyFail =>
@@ -795,6 +813,33 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get qiblaNoSensor =>
       'This phone has no compass sensor. Use the bearing above with a compass.';
+
+  @override
+  String qiblaTurnRight(int degrees) {
+    return 'Turn right $degrees°';
+  }
+
+  @override
+  String qiblaTurnLeft(int degrees) {
+    return 'Turn left $degrees°';
+  }
+
+  @override
+  String get qiblaFacing => 'You are facing the Qibla';
+
+  @override
+  String qiblaHeading(int degrees) {
+    return 'Phone points $degrees°';
+  }
+
+  @override
+  String qiblaDistance(String km) {
+    return '$km km to the Kaaba';
+  }
+
+  @override
+  String get qiblaCalibrate =>
+      'Compass needs calibrating. Move the phone in a figure 8, away from metal and magnets.';
 
   @override
   String get qiblaFace => 'Turn until the arrow points up';
@@ -1590,6 +1635,20 @@ class AppLocalizationsEnPk extends AppLocalizationsEn {
       'Jab tak aap apni namaz ki jagah, jaise jaye-namaz ya masjid, ki tasveer na lein yaad-dehani jari rahegi. Tasveer isi phone par janchi jati hai aur kahin mehfooz ya irsal nahi hoti.';
 
   @override
+  String get endTestTitle => 'Yaad-dehani aazmayen';
+
+  @override
+  String get endTestHelp =>
+      '3 aazmaishi ittila\'at bhejta hai jo 1 minute ke waqfe se aati hain taake aap poora amal dekh sakein.';
+
+  @override
+  String get endTestSend => 'Bhejein';
+
+  @override
+  String get endTestScheduled =>
+      '3 aazmaishi yaad-dehaniyan bheji gayin — pehli 10 seconds mein aaye gi.';
+
+  @override
   String get verifyTitle => 'Namaz ki tasveer ki janch';
 
   @override
@@ -1610,6 +1669,10 @@ class AppLocalizationsEnPk extends AppLocalizationsEn {
   @override
   String get verifySuccess =>
       'Tasdeeq ho gayi. Allah aap ki namaz qabool farmaye.';
+
+  @override
+  String get verifyTestNote =>
+      'Yeh aik aazmaishi yaad-dehani thi — aap ka namaz log tabdeel nahi kiya gaya.';
 
   @override
   String get verifyFail =>
@@ -1687,6 +1750,33 @@ class AppLocalizationsEnPk extends AppLocalizationsEn {
   @override
   String get qiblaNoSensor =>
       'Is phone mein compass sensor nahi. Upar di gayi degree compass ke saath istemal karein.';
+
+  @override
+  String qiblaTurnRight(int degrees) {
+    return 'Daayen $degrees° ghoomein';
+  }
+
+  @override
+  String qiblaTurnLeft(int degrees) {
+    return 'Baayen $degrees° ghoomein';
+  }
+
+  @override
+  String get qiblaFacing => 'Aap ka rukh Qibla ki taraf hai';
+
+  @override
+  String qiblaHeading(int degrees) {
+    return 'Phone ka rukh $degrees°';
+  }
+
+  @override
+  String qiblaDistance(String km) {
+    return 'Kaaba tak $km km';
+  }
+
+  @override
+  String get qiblaCalibrate =>
+      'Compass ki calibration zaroori hai. Phone ko dhaat aur maqnatees se door 8 ki shakal mein ghumayein.';
 
   @override
   String get qiblaFace => 'Teer ke upar ki taraf hone tak ghumayein';

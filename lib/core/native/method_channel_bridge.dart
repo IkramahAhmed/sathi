@@ -48,4 +48,10 @@ class MethodChannelNativeBridge implements NativeBridge {
             {'label': e.label, 'at': e.at.millisecondsSinceEpoch, 'timeText': e.timeText},
         ],
       });
+
+  @override
+  Future<double?> magneticDeclination(double lat, double lng) async {
+    final value = await _call<double>('declination', {'lat': lat, 'lng': lng});
+    return value;
+  }
 }

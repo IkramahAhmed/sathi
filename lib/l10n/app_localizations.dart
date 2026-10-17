@@ -1329,6 +1329,30 @@ abstract class AppLocalizations {
   /// **'Keep reminding until you take a photo of your prayer place, such as your prayer mat or the mosque. The photo is checked on this phone and is never saved or sent anywhere.'**
   String get endRequirePhotoHelp;
 
+  /// No description provided for @endTestTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Try the ending reminder'**
+  String get endTestTitle;
+
+  /// No description provided for @endTestHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Sends 3 test notifications spaced 1 minute apart so you can experience the full flow.'**
+  String get endTestHelp;
+
+  /// No description provided for @endTestSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get endTestSend;
+
+  /// No description provided for @endTestScheduled.
+  ///
+  /// In en, this message translates to:
+  /// **'3 test reminders sent — first arrives in 10 seconds.'**
+  String get endTestScheduled;
+
   /// No description provided for @verifyTitle.
   ///
   /// In en, this message translates to:
@@ -1364,6 +1388,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Verified. May Allah accept your prayer.'**
   String get verifySuccess;
+
+  /// No description provided for @verifyTestNote.
+  ///
+  /// In en, this message translates to:
+  /// **'This was a test reminder — your prayer log was not changed.'**
+  String get verifyTestNote;
 
   /// No description provided for @verifyFail.
   ///
@@ -1496,6 +1526,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This phone has no compass sensor. Use the bearing above with a compass.'**
   String get qiblaNoSensor;
+
+  /// No description provided for @qiblaTurnRight.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn right {degrees}°'**
+  String qiblaTurnRight(int degrees);
+
+  /// No description provided for @qiblaTurnLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn left {degrees}°'**
+  String qiblaTurnLeft(int degrees);
+
+  /// No description provided for @qiblaFacing.
+  ///
+  /// In en, this message translates to:
+  /// **'You are facing the Qibla'**
+  String get qiblaFacing;
+
+  /// No description provided for @qiblaHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone points {degrees}°'**
+  String qiblaHeading(int degrees);
+
+  /// No description provided for @qiblaDistance.
+  ///
+  /// In en, this message translates to:
+  /// **'{km} km to the Kaaba'**
+  String qiblaDistance(String km);
+
+  /// No description provided for @qiblaCalibrate.
+  ///
+  /// In en, this message translates to:
+  /// **'Compass needs calibrating. Move the phone in a figure 8, away from metal and magnets.'**
+  String get qiblaCalibrate;
 
   /// No description provided for @qiblaFace.
   ///

@@ -39,7 +39,7 @@ class HandleReminderAction {
   final Future<void> Function(DateTime date, PrayerName prayer) markPrayed;
 
   /// Decodes a reminder payload. Null if it is not a prayer-ending payload.
-  static ({PrayerName prayer, DateTime date, bool photo})? parse(String? payload) {
+  static ({PrayerName prayer, DateTime date, bool photo, bool test})? parse(String? payload) {
     if (payload == null || payload.isEmpty) return null;
     try {
       final json = jsonDecode(payload) as Map<String, dynamic>;
@@ -47,7 +47,12 @@ class HandleReminderAction {
       final prayer = PrayerName.values.where((p) => p.name == json['prayer']).firstOrNull;
       final date = DateTime.tryParse(json['date'] as String? ?? '');
       if (prayer == null || date == null || !prayer.hasAzan) return null;
-      return (prayer: prayer, date: DateTime(date.year, date.month, date.day), photo: json['photo'] == true);
+      return (
+        prayer: prayer,
+        date: DateTime(date.year, date.month, date.day),
+        photo: json['photo'] == true,
+        test: json['test'] == true,
+      );
     } catch (_) {
       return null;
     }
@@ -57,16 +62,19 @@ class HandleReminderAction {
     final info = parse(payload);
     if (info == null) return ReminderOutcome.ignored;
 
+    // A test reminder never touches the real log or the real mute list.
+    final cancelIds = info.test ? testEndReminderIds : endReminderIds(info.date, info.prayer);
+
     switch (actionId) {
       case ReminderActions.stop:
-        await mute(info.date, info.prayer);
-        await scheduler.cancel(endReminderIds(info.date, info.prayer));
+        if (!info.test) await mute(info.date, info.prayer);
+        await scheduler.cancel(cancelIds);
         return ReminderOutcome.stopped;
       case ReminderActions.prayed:
         // Photo proof was asked for: a button must not bypass it.
         if (info.photo) return ReminderOutcome.needsPhoto;
-        await markPrayed(info.date, info.prayer);
-        await scheduler.cancel(endReminderIds(info.date, info.prayer));
+        if (!info.test) await markPrayed(info.date, info.prayer);
+        await scheduler.cancel(cancelIds);
         return ReminderOutcome.prayed;
       case ReminderActions.takePhoto:
         return ReminderOutcome.needsPhoto;

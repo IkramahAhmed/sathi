@@ -17,10 +17,13 @@ enum _Phase { idle, checking, rejected, accepted, cameraFailed }
 /// Photo proof for a prayer: take a picture of the prayer place, it is checked
 /// on the phone, and the prayer is ticked when it looks right.
 class VerifyScreen extends ConsumerStatefulWidget {
-  const VerifyScreen({super.key, required this.prayer, required this.date});
+  const VerifyScreen({super.key, required this.prayer, required this.date, this.isTest = false});
 
   final PrayerName prayer;
   final DateTime date;
+
+  /// A test reminder: the check runs for real but nothing is ticked or muted.
+  final bool isTest;
 
   @override
   ConsumerState<VerifyScreen> createState() => _VerifyScreenState();
@@ -47,7 +50,11 @@ class _VerifyScreenState extends ConsumerState<VerifyScreen> {
       final verdict = await ref.read(photoVerifierProvider).check(path);
       if (!mounted) return;
       if (verdict.accepted) {
-        await ref.read(prayerActionsProvider).markVerified(widget.date, widget.prayer);
+        if (widget.isTest) {
+          await ref.read(notificationSchedulerProvider).cancel(testEndReminderIds);
+        } else {
+          await ref.read(prayerActionsProvider).markVerified(widget.date, widget.prayer);
+        }
         if (mounted) setState(() => _phase = _Phase.accepted);
       } else {
         setState(() {
@@ -65,9 +72,13 @@ class _VerifyScreenState extends ConsumerState<VerifyScreen> {
   }
 
   Future<void> _stopReminding() async {
-    final now = ref.read(clockProvider)();
-    await ref.read(reminderMuteStoreProvider).mute(widget.date, widget.prayer, today: now);
-    await ref.read(notificationSchedulerProvider).cancel(endReminderIds(widget.date, widget.prayer));
+    if (widget.isTest) {
+      await ref.read(notificationSchedulerProvider).cancel(testEndReminderIds);
+    } else {
+      final now = ref.read(clockProvider)();
+      await ref.read(reminderMuteStoreProvider).mute(widget.date, widget.prayer, today: now);
+      await ref.read(notificationSchedulerProvider).cancel(endReminderIds(widget.date, widget.prayer));
+    }
     if (mounted) _leave();
   }
 
@@ -111,8 +122,11 @@ class _VerifyScreenState extends ConsumerState<VerifyScreen> {
             ),
             const SizedBox(height: 16),
             if (accepted)
-              Text(l10n.verifySuccess, key: const ValueKey('verify-success'), textAlign: TextAlign.center, style: text.titleMedium)
-            else ...[
+              Text(l10n.verifySuccess, key: const ValueKey('verify-success'), textAlign: TextAlign.center, style: text.titleMedium),
+            if (accepted && widget.isTest) ...[
+              const SizedBox(height: 8),
+              Text(l10n.verifyTestNote, key: const ValueKey('verify-test-note'), textAlign: TextAlign.center),
+            ] else if (!accepted) ...[
               Text(l10n.verifyIntro, textAlign: TextAlign.center),
               const SizedBox(height: 8),
               Text(l10n.verifyChecklistHint,

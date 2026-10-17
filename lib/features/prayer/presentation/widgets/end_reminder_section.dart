@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../app/providers.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/prayer_name.dart';
 import '../l10n_helpers.dart';
@@ -95,8 +96,54 @@ class EndReminderSection extends ConsumerWidget {
             value: end.requirePhoto,
             onChanged: (v) => controller.setEndReminder(requirePhoto: v),
           ),
+          const _TestReminderTile(),
         ],
       ],
     );
+  }
+}
+
+/// A tile that fires 3 test "prayer ending" notifications so the user can
+/// experience the flow without waiting for a real prayer window.
+class _TestReminderTile extends ConsumerStatefulWidget {
+  const _TestReminderTile();
+
+  @override
+  ConsumerState<_TestReminderTile> createState() => _TestReminderTileState();
+}
+
+class _TestReminderTileState extends ConsumerState<_TestReminderTile> {
+  bool _sending = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return ListTile(
+      key: const ValueKey('end-test'),
+      leading: const Icon(Icons.send_outlined),
+      title: Text(l10n.endTestTitle),
+      subtitle: Text(l10n.endTestHelp),
+      trailing: _sending
+          ? const SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2))
+          : FilledButton.tonal(
+              key: const ValueKey('end-test-send'),
+              onPressed: _send,
+              child: Text(l10n.endTestSend),
+            ),
+    );
+  }
+
+  Future<void> _send() async {
+    setState(() => _sending = true);
+    try {
+      await ref.read(scheduleTestEndRemindersProvider)();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(AppLocalizations.of(context).endTestScheduled)),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _sending = false);
+    }
   }
 }

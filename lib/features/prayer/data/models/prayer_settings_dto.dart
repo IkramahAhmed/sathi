@@ -32,7 +32,7 @@ abstract class PrayerSettingsDto with _$PrayerSettingsDto {
     @Default(<PrayerName, bool>{}) Map<PrayerName, bool> azanEnabled,
     @Default(<PrayerName, int>{}) Map<PrayerName, int> preReminderMin,
     @JsonKey(fromJson: _soundFromJson, toJson: _soundToJson)
-    @Default(AzanSound.beep)
+    @Default(AzanSound.full)
     AzanSound sound,
     @Default(0) int hijriAdjustDays,
     @Default(true) bool followMeLocation,
@@ -50,7 +50,7 @@ abstract class PrayerSettingsDto with _$PrayerSettingsDto {
     @Default(30) int endLeadMin,
     @Default(10) int endRepeatMin,
     @Default(false) bool endRequirePhoto,
-    @Default(false) bool azanOnAlarm,
+    @Default(true) bool azanOnAlarm,
     String? autoQazaFrom,
   }) = _PrayerSettingsDto;
 

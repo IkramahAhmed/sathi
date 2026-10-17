@@ -349,6 +349,14 @@ add("qiblaBearing", "Qibla is {degrees}° from north", "قبلہ شمال سے {
 add("qiblaNoSensor", "This phone has no compass sensor. Use the bearing above with a compass.",
     "اس فون میں کمپاس سینسر نہیں۔ اوپر دی گئی ڈگری کمپاس کے ساتھ استعمال کریں۔",
     "Is phone mein compass sensor nahi. Upar di gayi degree compass ke saath istemal karein.")
+add("qiblaTurnRight", "Turn right {degrees}°", "دائیں {degrees}° گھومیں", "Daayen {degrees}° ghoomein", {"degrees": "int"})
+add("qiblaTurnLeft", "Turn left {degrees}°", "بائیں {degrees}° گھومیں", "Baayen {degrees}° ghoomein", {"degrees": "int"})
+add("qiblaFacing", "You are facing the Qibla", "آپ کا رخ قبلہ کی طرف ہے", "Aap ka rukh Qibla ki taraf hai")
+add("qiblaHeading", "Phone points {degrees}°", "فون کا رخ {degrees}°", "Phone ka rukh {degrees}°", {"degrees": "int"})
+add("qiblaDistance", "{km} km to the Kaaba", "کعبہ تک {km} کلومیٹر", "Kaaba tak {km} km", {"km": "String"})
+add("qiblaCalibrate", "Compass needs calibrating. Move the phone in a figure 8, away from metal and magnets.",
+    "کمپاس کی درستی ضروری ہے۔ فون کو دھات اور مقناطیس سے دور آٹھ کے ہندسے کی شکل میں گھمائیں۔",
+    "Compass ki calibration zaroori hai. Phone ko dhaat aur maqnatees se door 8 ki shakal mein ghumayein.")
 add("qiblaFace", "Turn until the arrow points up", "تیر کے اوپر کی طرف ہونے تک گھمائیں",
     "Teer ke upar ki taraf hone tak ghumayein")
 

@@ -33,6 +33,7 @@ import '../features/prayer/domain/repositories/settings_repository.dart';
 import '../features/prayer/domain/usecases/get_prayer_times_range.dart';
 import '../features/prayer/domain/usecases/get_today_prayer_times.dart';
 import '../features/prayer/domain/usecases/mark_prayer_done.dart';
+import '../features/prayer/domain/usecases/schedule_test_end_reminders.dart';
 import '../features/prayer/domain/usecases/schedule_upcoming_azans.dart';
 
 part 'providers.g.dart';
@@ -141,6 +142,14 @@ ScheduleUpcomingAzans scheduleUpcomingAzans(Ref ref) => ScheduleUpcomingAzans(
       reminderState: ref.watch(reminderStateProvider),
       maxPending: maxPendingNotificationsForPlatform,
       nativeSync: ref.watch(syncNativeStateProvider),
+    );
+
+@Riverpod(keepAlive: true)
+ScheduleTestEndReminders scheduleTestEndReminders(Ref ref) => ScheduleTestEndReminders(
+      ref.watch(settingsRepositoryProvider),
+      ref.watch(prayerRepositoryProvider),
+      ref.watch(notificationSchedulerProvider),
+      ref.watch(clockProvider),
     );
 
 @Riverpod(keepAlive: true)

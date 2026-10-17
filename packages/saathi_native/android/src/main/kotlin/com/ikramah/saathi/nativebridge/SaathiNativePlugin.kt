@@ -1,6 +1,7 @@
 package com.ikramah.saathi.nativebridge
 
 import android.content.Context
+import android.hardware.GeomagneticField
 import android.content.Intent
 import android.provider.Settings
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -61,6 +62,13 @@ class SaathiNativePlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
                     WidgetStore.save(ctx, data.toString())
                     PrayerWidgetProvider.refresh(ctx)
                     result.success(null)
+                }
+                "declination" -> {
+                    val lat = (call.argument<Number>("lat") ?: 0).toFloat()
+                    val lng = (call.argument<Number>("lng") ?: 0).toFloat()
+                    // Android's built-in World Magnetic Model, accurate to about a degree.
+                    val field = GeomagneticField(lat, lng, 0f, System.currentTimeMillis())
+                    result.success(field.declination.toDouble())
                 }
                 else -> result.notImplemented()
             }

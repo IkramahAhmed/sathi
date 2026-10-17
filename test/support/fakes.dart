@@ -7,6 +7,7 @@ import 'package:saathi/core/sync/cloud_api.dart';
 import 'package:saathi/core/sync/sync_config.dart';
 import 'package:saathi/core/sync/sync_models.dart';
 import 'package:saathi/features/prayer/data/datasources/adhan_calculator.dart';
+import 'package:saathi/features/prayer/data/compass/compass_source.dart';
 import 'package:saathi/features/prayer/domain/entities/native_state.dart';
 import 'package:saathi/features/prayer/domain/entities/prayer_name.dart';
 import 'package:saathi/features/prayer/domain/entities/prayer_settings.dart';
@@ -302,6 +303,7 @@ class RecordingBridge implements NativeBridge {
   List<SilentWindow>? windows;
   WidgetSnapshot? widget;
   bool failing = false;
+  double? declination;
 
   @override
   Future<bool> silentAccessGranted() async => access;
@@ -320,4 +322,25 @@ class RecordingBridge implements NativeBridge {
     if (failing) throw StateError('boom');
     widget = snapshot;
   }
+
+  @override
+  Future<double?> magneticDeclination(double lat, double lng) async => declination;
+}
+
+
+/// A compass the test drives by hand.
+class FakeCompassSource implements CompassSource {
+  FakeCompassSource({this.hasCompass = true});
+
+  final bool hasCompass;
+  final StreamController<CompassReading> controller = StreamController<CompassReading>.broadcast();
+
+  void emit(double magneticHeading, {double? accuracy = 15}) =>
+      controller.add(CompassReading(magneticHeading: magneticHeading, accuracy: accuracy));
+
+  @override
+  Future<bool> available() async => hasCompass;
+
+  @override
+  Stream<CompassReading> readings() => controller.stream;
 }

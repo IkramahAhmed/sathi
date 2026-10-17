@@ -15,6 +15,9 @@ abstract interface class NativeBridge {
 
   /// Gives the widget what it needs to draw and count down.
   Future<void> setWidgetData(WidgetSnapshot snapshot);
+
+  /// Magnetic declination at a place in degrees, east positive. Null when unknown.
+  Future<double?> magneticDeclination(double lat, double lng);
 }
 
 /// Does nothing. The default, and used on iOS and in tests.
@@ -32,4 +35,7 @@ class NoNativeBridge implements NativeBridge {
 
   @override
   Future<void> setWidgetData(WidgetSnapshot snapshot) async {}
+
+  @override
+  Future<double?> magneticDeclination(double lat, double lng) async => null;
 }

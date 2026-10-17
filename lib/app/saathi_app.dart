@@ -78,7 +78,9 @@ class _SaathiAppState extends ConsumerState<SaathiApp> with WidgetsBindingObserv
         final info = HandleReminderAction.parse(tap.payload);
         if (info != null) {
           final date = '${info.date.year}-${info.date.month.toString().padLeft(2, '0')}-${info.date.day.toString().padLeft(2, '0')}';
-          ref.read(routerProvider).go('${Routes.verify}?prayer=${info.prayer.name}&date=$date');
+          ref
+              .read(routerProvider)
+              .go('${Routes.verify}?prayer=${info.prayer.name}&date=$date${info.test ? '&test=1' : ''}');
         }
       case ReminderOutcome.stopped || ReminderOutcome.prayed:
         // The prayed log or the mute list changed: plan again from the new state.

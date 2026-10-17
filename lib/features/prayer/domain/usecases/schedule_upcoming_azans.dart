@@ -49,6 +49,9 @@ int endReminderId(DateTime date, PrayerName prayer, int index) {
 List<int> endReminderIds(DateTime date, PrayerName prayer) =>
     [for (var i = 0; i < 10; i++) endReminderId(date, prayer, i)];
 
+/// Ids of the "send a test reminder" notifications. Never used by real reminders.
+const List<int> testEndReminderIds = [9100, 9101, 9102];
+
 /// Notification action ids (see the tap handler).
 abstract final class ReminderActions {
   static const takePhoto = 'take_photo';

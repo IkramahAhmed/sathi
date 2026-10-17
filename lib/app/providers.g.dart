@@ -878,6 +878,54 @@ final class ScheduleUpcomingAzansProvider
 String _$scheduleUpcomingAzansHash() =>
     r'f933394bd5a4496e2fa93ccc0b236904d4cef18c';
 
+@ProviderFor(scheduleTestEndReminders)
+final scheduleTestEndRemindersProvider = ScheduleTestEndRemindersProvider._();
+
+final class ScheduleTestEndRemindersProvider
+    extends
+        $FunctionalProvider<
+          ScheduleTestEndReminders,
+          ScheduleTestEndReminders,
+          ScheduleTestEndReminders
+        >
+    with $Provider<ScheduleTestEndReminders> {
+  ScheduleTestEndRemindersProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'scheduleTestEndRemindersProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$scheduleTestEndRemindersHash();
+
+  @$internal
+  @override
+  $ProviderElement<ScheduleTestEndReminders> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  ScheduleTestEndReminders create(Ref ref) {
+    return scheduleTestEndReminders(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(ScheduleTestEndReminders value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<ScheduleTestEndReminders>(value),
+    );
+  }
+}
+
+String _$scheduleTestEndRemindersHash() =>
+    r'191a4fb6f670e959f0d0c0e4cdfa4fa98a4a9f06';
+
 @ProviderFor(qazaService)
 final qazaServiceProvider = QazaServiceProvider._();
 

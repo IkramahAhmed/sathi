@@ -81,7 +81,9 @@ abstract final class NotificationChannels {
           'Prayer time ending',
           description: 'Reminders that a prayer\'s time is about to end',
           importance: Importance.max,
-          sound: RawResourceAndroidNotificationSound(AzanSound.beep.channelId),
+          // Use full azan so the ending reminder rings loudly, not just a beep.
+          sound: RawResourceAndroidNotificationSound(AzanSound.short.channelId),
+          enableVibration: true,
         ),
       ];
 

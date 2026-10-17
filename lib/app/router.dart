@@ -54,7 +54,11 @@ GoRouter router(Ref ref) {
                   .firstOrNull ??
               PrayerName.fajr;
           final date = DateTime.tryParse(state.uri.queryParameters['date'] ?? '') ?? DateTime.now();
-          return VerifyScreen(prayer: prayer, date: DateTime(date.year, date.month, date.day));
+          return VerifyScreen(
+            prayer: prayer,
+            date: DateTime(date.year, date.month, date.day),
+            isTest: state.uri.queryParameters['test'] == '1',
+          );
         },
       ),
       StatefulShellRoute.indexedStack(
