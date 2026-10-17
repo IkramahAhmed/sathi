@@ -56,7 +56,7 @@ home-screen widget.
 
 ## Graphics checklist
 - App icon 512 x 512: `store/play-icon-512.png` (done)
-- Feature graphic 1024 x 500: still to make
+- Feature graphic 1024 x 500: `store/feature-graphic.png` (done)
 - Phone screenshots, at least 2 (aim for 5 to 8): Home, Tracker, Qaza, Settings, Qibla, Setup check
 - Privacy policy URL: host `privacy-policy.md` as a web page (for example GitHub Pages or Cloudflare
   Pages) and paste the link
