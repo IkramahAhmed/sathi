@@ -70,6 +70,18 @@ run is best effort; the foreground triggers are what keep it reliable.
 Without the exact-alarm permission it falls back to inexact alarms and the Home
 screen shows a banner.
 
+## Release signing and the app icon
+
+- The upload keystore is `~/Documents/saathi-keys/saathi-upload.jks`, outside the repository. Its
+  passwords are in `android/key.properties`, which git ignores. Without that file the release build
+  falls back to the debug key.
+- **Back up the keystore and `key.properties` somewhere safe.** Enrol in Play App Signing when you
+  create the app, so Google holds the real signing key and a lost upload key can be reset.
+- Build for the Play Store with `flutter build appbundle --release`. For sharing with friends,
+  `flutter build apk --release --split-per-abi` gives a 40 MB arm64 file.
+- The icon is drawn by `tool/make_icon.py` (Pillow). Run it to rewrite the Android adaptive icon,
+  the themed (monochrome) icon, the iOS set, `assets/icon/icon.png` and `store/play-icon-512.png`.
+
 ## Habit tools
 
 - **Tracker, Qaza, pauses, streaks:** `features/prayer/domain/entities/streaks.dart`,

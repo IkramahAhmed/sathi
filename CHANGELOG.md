@@ -24,6 +24,9 @@
 - **Home-screen widget** with the next prayer and a live countdown.
 
 ### Changed
+- A new app icon: a mosque with a gold crescent on green, with an Android adaptive and themed version.
+- Release builds are signed with a proper upload key. Phones that have an earlier Saathi build
+  must uninstall it first, because the signature changed.
 - The local database is now version 3 (pauses and qaza tables). Existing data is kept.
 - Android gains a small local plugin, `packages/saathi_native`, for Do Not Disturb and the widget.
 
