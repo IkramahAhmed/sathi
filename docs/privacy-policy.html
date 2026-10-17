@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Saathi – Privacy Policy</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 720px; margin: 40px auto; padding: 0 20px; color: #222; line-height: 1.7; }
+    h1 { color: #1a5c3a; }
+    h2 { color: #1a5c3a; margin-top: 2em; }
+    table { border-collapse: collapse; width: 100%; }
+    td, th { border: 1px solid #ddd; padding: 8px 12px; text-align: left; }
+    th { background: #f4f4f4; }
+    a { color: #1a5c3a; }
+  </style>
+</head>
+<body>
+<h1>Saathi Privacy Policy</h1>
+<p><em>Last updated: 17 October 2026</em></p>
+<p>Saathi is a prayer times and azan app. This page explains what it does with your information.
+The short version: <strong>your data stays on your phone unless you turn on cloud backup, and we do not
+run ads, analytics or tracking.</strong></p>
+<p>Developer: Ikramah Ahmed<br>
+Contact: <a href="mailto:ikramahahmed177@gmail.com">ikramahahmed177@gmail.com</a></p>
+
+<h2>What stays on your phone</h2>
+<p>Saathi works fully offline. These are stored only on your phone:</p>
+<ul>
+  <li><strong>Your settings:</strong> city, calculation method, language, azan sound, reminder choices.</li>
+  <li><strong>Your location.</strong> Saathi asks for location once to choose your city and calculation method, and
+    again if you turn on "follow me" to notice when you travel. The coordinates are used to work out
+    prayer times on the phone. They are not sent to us. To turn coordinates into a city name, Android's
+    built-in geocoder may contact Google, as it does for any app that uses it. You can skip location
+    and choose a city by hand.</li>
+  <li><strong>Your prayer log:</strong> which prayers you ticked on which days, your streaks, your qaza (missed
+    prayers) balance and history, and any pause you set for illness or a woman's period. Pauses
+    can reveal health information, so they are kept on your phone only and are never uploaded.</li>
+  <li><strong>Jama'at times</strong> you enter for your mosque.</li>
+</ul>
+<p>Uninstalling the app deletes all of this.</p>
+
+<h2>Photo proof (optional)</h2>
+<p>If you turn on "Photo proof" under prayer-ending reminders, the app asks you to take a picture of your
+prayer place. The picture is checked on your phone by Google ML Kit's on-device image labelling. It is
+<strong>never uploaded, shared or kept</strong>: the app deletes the file after the check. The check is only a
+friendly nudge. It cannot know whether you prayed. You can always choose "Stop reminding me".</p>
+
+<h2>Cloud backup (optional, off by default)</h2>
+<p>If you turn on cloud backup, Saathi uploads <strong>only your prayer ticks</strong>: the date, the prayer name,
+whether it is ticked, and when you changed it. Nothing else is uploaded: no location, no settings, no
+qaza, no pauses and no photos.</p>
+<ul>
+  <li>There is no account, email or name. The phone creates a random <strong>sync key</strong> and keeps it in the
+    Android Keystore. The server stores only a one-way hash of the key, never the key itself.</li>
+  <li>The data is held in a database at Neon (a hosted PostgreSQL service) behind a small server run by
+    the developer. Data travels over HTTPS.</li>
+  <li>Anyone who has your sync key can read and change your prayer ticks, so keep it private. Entering
+    the same key on a second phone shares your log between the two.</li>
+  <li>You can delete your cloud data at any time with <strong>Settings → Cloud backup → Delete my cloud data</strong>.
+    This removes your ticks and your key hash from the server.</li>
+</ul>
+
+<h2>Permissions and why</h2>
+<table>
+  <tr><th>Permission</th><th>Why</th></tr>
+  <tr><td>Notifications</td><td>Azan, reminders and prayer-ending alerts</td></tr>
+  <tr><td>Alarms and reminders (exact alarms)</td><td>So the azan sounds at the exact minute</td></tr>
+  <tr><td>Location (approximate and precise)</td><td>Choose your city and the calculation method; optional "follow me"</td></tr>
+  <tr><td>Do Not Disturb access</td><td>Optional: silence the phone during jama'at and restore it afterwards</td></tr>
+  <tr><td>Camera (through the phone's camera app)</td><td>Optional photo proof</td></tr>
+  <tr><td>Run after restart</td><td>Put your azans back after the phone restarts</td></tr>
+  <tr><td>Internet</td><td>Optional cloud backup and city names</td></tr>
+  <tr><td>Vibrate, keep awake</td><td>Azan alerts</td></tr>
+</table>
+<p>You can turn any of these off in the phone's settings. The app keeps working with whatever you allow.</p>
+
+<h2>What we do not do</h2>
+<ul>
+  <li>No ads. No analytics. No crash-reporting service. No third-party trackers.</li>
+  <li>We do not sell or share your data.</li>
+  <li>We do not collect your name, email, phone number or contacts.</li>
+</ul>
+
+<h2>Children</h2>
+<p>Saathi is a general-audience app and does not knowingly collect personal information from children.</p>
+
+<h2>Your choices</h2>
+<p>You can delete cloud data in the app, clear the app's storage or uninstall to remove everything on
+the phone, and withdraw any permission in system settings.</p>
+
+<h2>Changes</h2>
+<p>If this policy changes, the new version will be posted at this address with a new date.</p>
+
+<h2>Contact</h2>
+<p>Questions or deletion help: <a href="mailto:ikramahahmed177@gmail.com">ikramahahmed177@gmail.com</a></p>
+</body>
+</html>

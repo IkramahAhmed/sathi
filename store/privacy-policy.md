@@ -6,8 +6,8 @@ Saathi is a prayer times and azan app. This page explains what it does with your
 The short version: **your data stays on your phone unless you turn on cloud backup, and we do not
 run ads, analytics or tracking.**
 
-Developer: [YOUR NAME]
-Contact: [YOUR EMAIL]
+Developer: Ikramah Ahmed
+Contact: ikramahahmed177@gmail.com
 
 ## What stays on your phone
 
@@ -84,4 +84,4 @@ If this policy changes, the new version will be posted at this address with a ne
 
 ## Contact
 
-Questions or deletion help: [YOUR EMAIL]
+Questions or deletion help: ikramahahmed177@gmail.com
