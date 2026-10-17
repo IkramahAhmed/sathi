@@ -120,7 +120,7 @@ app.post('/v1/sync', async (c) => {
 
     const hasMore = pulled.rows.length > PAGE;
     const rows = pulled.rows.slice(0, PAGE);
-    const newCursor = rows.length > 0 ? rows[rows.length - 1].id : cursor;
+    const newCursor = rows.length > 0 ? Number(rows[rows.length - 1].id) : cursor;
 
     return c.json({
       serverTime: new Date().toISOString(),
