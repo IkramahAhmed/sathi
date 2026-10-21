@@ -20,6 +20,8 @@ void main() {
       'pre_reminder',
       'jamaat_reminder',
       'prayer_ending',
+      'prayer_ending_alarm',
+      'sehri_reminder',
     ]);
     expect(ids.toSet().length, ids.length, reason: 'channel ids are unique');
   });
@@ -60,6 +62,17 @@ void main() {
     expect(c.importance, Importance.max);
     expect(c.bypassDnd, isFalse);
     expect(c.sound, isNotNull);
+  });
+
+  test('the ending alarm channel uses alarm volume and plays on the alarm stream', () {
+    final c = NotificationChannels.all().firstWhere((c) => c.id == NotificationChannels.prayerEndingAlarm);
+    expect(c.importance, Importance.max);
+    expect(c.audioAttributesUsage, AudioAttributesUsage.alarm);
+    expect(c.sound, isNotNull);
+    expect(c.enableVibration, isTrue);
+    expect(c.bypassDnd, isFalse);
+    final details = NotificationChannels.detailsFor(NotificationChannels.prayerEndingAlarm);
+    expect(details.android!.audioAttributesUsage, AudioAttributesUsage.alarm);
   });
 
   test('notification buttons are built from the alarm actions', () {

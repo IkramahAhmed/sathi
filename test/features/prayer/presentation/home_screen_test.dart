@@ -51,6 +51,7 @@ void main() {
           settingsRepositoryProvider.overrideWithValue(settingsRepo),
           prayerRepositoryProvider.overrideWithValue(prayerRepo),
           notificationSchedulerProvider.overrideWithValue(scheduler),
+          reminderStateProvider.overrideWithValue(FakeReminderState()),
         ],
         child: Consumer(
           builder: (context, ref, _) => MaterialApp(
@@ -185,9 +186,10 @@ void main() {
 
     expect((await settingsRepo.load()).azanFor(PrayerName.asr), isFalse);
     expect(scheduler.cancelAllCalls, greaterThanOrEqualTo(1));
-    // No Asr notification should remain scheduled (Asr is index 3).
-    expect(scheduler.scheduled.any((a) => a.payload.contains('"asr"')), isFalse);
-    expect(scheduler.scheduled.any((a) => a.payload.contains('"maghrib"')), isTrue);
+    // No Asr AZAN should remain scheduled (ending reminders still include Asr).
+    final azanOnly = scheduler.scheduled.where((a) => a.channelId != 'prayer_ending_alarm');
+    expect(azanOnly.any((a) => a.payload.contains('"asr"')), isFalse);
+    expect(azanOnly.any((a) => a.payload.contains('"maghrib"')), isTrue);
     await dispose(tester);
   });
 

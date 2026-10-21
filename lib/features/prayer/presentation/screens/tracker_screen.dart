@@ -7,6 +7,7 @@ import 'package:intl/intl.dart' hide TextDirection;
 
 import '../../../../app/providers.dart';
 import '../../../../app/router.dart';
+import '../../../../app/theme.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/pause_range.dart';
 import '../../domain/entities/prayer_name.dart';
@@ -55,12 +56,17 @@ class _StreakCard extends ConsumerWidget {
     final text = Theme.of(context).textTheme;
     final streak = ref.watch(streakSummaryProvider);
     return Card(
-      color: scheme.primaryContainer,
+      color: scheme.primary,
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Icon(Icons.local_fire_department, size: 48, color: streak.current > 0 ? Colors.deepOrange : scheme.outline),
+            Icon(
+              Icons.local_fire_department,
+              size: 48,
+              color: streak.current > 0 ? AppTheme.gold : scheme.onPrimary.withValues(alpha: 0.4),
+            ),
             const SizedBox(width: 16),
             Expanded(
               child: Column(
@@ -69,10 +75,19 @@ class _StreakCard extends ConsumerWidget {
                   Text(
                     streak.current > 0 ? l10n.streakCurrent(streak.current) : l10n.streakNone,
                     key: const ValueKey('streak-current'),
-                    style: streak.current > 0 ? text.headlineSmall : text.titleMedium,
+                    style: (streak.current > 0 ? text.headlineSmall : text.titleMedium)?.copyWith(
+                      color: scheme.onPrimary,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                   if (streak.best > 0)
-                    Text(l10n.streakBest(streak.best), key: const ValueKey('streak-best'), style: text.bodyMedium),
+                    Text(
+                      l10n.streakBest(streak.best),
+                      key: const ValueKey('streak-best'),
+                      style: text.bodyMedium?.copyWith(
+                        color: scheme.onPrimary.withValues(alpha: 0.65),
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -224,14 +239,15 @@ class _DayDetail extends ConsumerWidget {
                 child: Text(l10n.trackerFuture, key: const ValueKey('future-note')),
               ),
             for (final prayer in PrayerName.obligatory)
-              CheckboxListTile(
-                key: ValueKey('tracker-${prayer.name}'),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 8),
-                controlAffinity: ListTileControlAffinity.trailing,
-                title: Text(prayerLabel(l10n, prayer, jumma: times.isFriday)),
-                subtitle: Text(formatClock(times.times[prayer]!, settings.timezoneId, locale)),
-                secondary: Icon(Icons.access_time, color: scheme.outline),
-                value: ticked.contains(prayer),
+              if (times.times[prayer] != null)
+                CheckboxListTile(
+                  key: ValueKey('tracker-${prayer.name}'),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+                  controlAffinity: ListTileControlAffinity.trailing,
+                  title: Text(prayerLabel(l10n, prayer, jumma: times.isFriday)),
+                  subtitle: Text(formatClock(times.times[prayer]!, settings.timezoneId, locale)),
+                  secondary: Icon(Icons.access_time, color: scheme.outline),
+                  value: ticked.contains(prayer),
                 onChanged: isFuture
                     ? null
                     : (value) async {
@@ -287,7 +303,6 @@ class _PauseCard extends ConsumerWidget {
     final scheme = Theme.of(context).colorScheme;
     final today = ref.watch(todayDateProvider);
     final pauses = ref.watch(pausesProvider).value ?? const <PauseRange>[];
-    final dao = ref.read(appDatabaseProvider).pauseRangesDao;
     final ongoing = pauses.where((p) => p.isOngoing).firstOrNull;
     String fmt(DateTime d) => DateFormat.MMMd(dateLocale(locale)).format(d);
 
@@ -311,7 +326,7 @@ class _PauseCard extends ConsumerWidget {
               FilledButton(
                 key: const ValueKey('pause-end'),
                 onPressed: () async {
-                  await dao.endOngoing(dateKey(today));
+                  await ref.read(appDatabaseProvider).pauseRangesDao.endOngoing(dateKey(today));
                   await _changed(ref);
                 },
                 child: Text(l10n.pauseEnd),
@@ -324,7 +339,7 @@ class _PauseCard extends ConsumerWidget {
                   FilledButton.tonal(
                     key: const ValueKey('pause-start'),
                     onPressed: () async {
-                      await dao.startPause(dateKey(today));
+                      await ref.read(appDatabaseProvider).pauseRangesDao.startPause(dateKey(today));
                       await _changed(ref);
                     },
                     child: Text(l10n.pauseStart),
@@ -338,14 +353,14 @@ class _PauseCard extends ConsumerWidget {
                         lastDate: today,
                       );
                       if (range == null) return;
-                      await dao.addRange(dateKey(range.start), dateKey(range.end));
+                      await ref.read(appDatabaseProvider).pauseRangesDao.addRange(dateKey(range.start), dateKey(range.end));
                       await _changed(ref);
                     },
                     child: Text(l10n.pauseAddPast),
                   ),
                 ],
               ),
-            for (final p in pauses.where((p) => !p.isOngoing).take(5))
+            for (final p in pauses.where((p) => !p.isOngoing && p.end != null && p.id != null).take(5))
               ListTile(
                 key: ValueKey('pause-range-${p.id}'),
                 contentPadding: EdgeInsets.zero,
@@ -355,7 +370,7 @@ class _PauseCard extends ConsumerWidget {
                   tooltip: l10n.pauseRemove,
                   icon: const Icon(Icons.delete_outline),
                   onPressed: () async {
-                    await dao.remove(p.id!);
+                    await ref.read(appDatabaseProvider).pauseRangesDao.remove(p.id!);
                     await _changed(ref);
                   },
                 ),

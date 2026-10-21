@@ -94,6 +94,10 @@ List<PrayerTimesDay> monthTimes(Ref ref, int year, int month) {
   return [for (var d = 1; d <= days; d++) repo.timesFor(DateTime(year, month, d), settings)];
 }
 
+/// True while the current Hijri month is Ramadan (month 9).
+@Riverpod(keepAlive: true)
+bool isRamadan(Ref ref) => ref.watch(hijriTodayProvider).hMonth == 9;
+
 /// Bearing to the Kaaba from the current location, degrees from true north.
 @riverpod
 double qiblaBearing(Ref ref) {

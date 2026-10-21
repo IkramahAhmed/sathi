@@ -173,8 +173,14 @@ void main() {
       expect(await h.db.prayerLogsDao.doneFor('2026-10-14'), {'fajr'});
     });
 
-    testWidgets('ticking a prayer cancels its remaining reminders', (tester) async {
-      final h = await pump(tester, at: dhuhrOpen);
+    testWidgets('ticking a prayer (no photo required) cancels its remaining reminders', (tester) async {
+      final h = await pump(
+        tester,
+        at: dhuhrOpen,
+        settings: PrayerSettings.defaults().copyWith(
+          endReminder: const EndReminderSettings(enabled: true, requirePhoto: false),
+        ),
+      );
       await tester.tap(find.byKey(const ValueKey('tracker-dhuhr')));
       await Harness.settle(tester);
       expect(h.scheduler.cancelled, isNotEmpty);

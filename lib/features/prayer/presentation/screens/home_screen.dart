@@ -17,6 +17,7 @@ import '../providers/settings_controller.dart';
 import '../providers/tracker_providers.dart';
 import '../widgets/next_prayer_countdown.dart';
 import '../widgets/prayer_row.dart';
+import '../widgets/ramadan_banner.dart';
 import '../widgets/status_banners.dart';
 import '../widgets/tasbeeh_counter.dart';
 
@@ -33,10 +34,12 @@ class HomeScreen extends ConsumerWidget {
     final locale = Localizations.localeOf(context);
     final settings = ref.watch(currentSettingsProvider);
     final today = ref.watch(todayTimesProvider);
+    final tomorrow = ref.watch(tomorrowTimesProvider);
     final now = ref.watch(nowTickProvider);
     final next = ref.watch(nextPrayerProvider);
     final prayed = ref.watch(prayedTodayProvider).value ?? const <PrayerName>{};
     final hijri = ref.watch(hijriTodayProvider);
+    final inRamadan = ref.watch(isRamadanProvider);
     final scheme = Theme.of(context).colorScheme;
     final text = Theme.of(context).textTheme;
 
@@ -73,16 +76,34 @@ class HomeScreen extends ConsumerWidget {
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
         children: [
           const StatusBanners(),
+          if (inRamadan) ...[
+            RamadanBanner(
+              today: today,
+              tomorrow: tomorrow,
+              now: now,
+              timezoneId: settings.timezoneId,
+            ),
+            const SizedBox(height: 4),
+          ],
           Card(
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    l10n.hijriDate(hijri.hDay, hijri.longMonthName, hijri.hYear),
-                    key: const ValueKey('hijri-date'),
-                    style: text.titleLarge,
+                  Row(
+                    children: [
+                      Icon(Icons.nights_stay_outlined, size: 20, color: scheme.primary),
+                      const SizedBox(width: 6),
+                      Flexible(
+                        child: Text(
+                          l10n.hijriDate(hijri.hDay, hijri.longMonthName, hijri.hYear),
+                          key: const ValueKey('hijri-date'),
+                          style: text.titleLarge,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 4),
                   Text(
@@ -112,27 +133,41 @@ class HomeScreen extends ConsumerWidget {
           const NextPrayerCountdown(),
           const SizedBox(height: 12),
           for (final prayer in PrayerName.obligatory) ...[
-            PrayerRow(
-              key: ValueKey('prayer-row-${prayer.name}'),
-              prayer: prayer,
-              name: prayerLabel(l10n, prayer, jumma: isFriday),
-              time: formatClock(today.times[prayer]!, settings.timezoneId, locale),
-              azanEnabled: settings.azanFor(prayer),
-              prayed: prayed.contains(prayer),
-              isNext: next != null && next.prayer == prayer && next.date == today.date,
-              isHighlighted: highlight == prayer,
-              isPast: today.times[prayer]!.isBefore(now),
-              jamaatText: _jamaatText(l10n, settings, today, prayer, locale),
-              onToggleAzan: (enabled) =>
-                  ref.read(settingsControllerProvider.notifier).setAzanEnabled(prayer, enabled: enabled),
-              onTogglePrayed: (done) async {
-                final router = GoRouter.maybeOf(context);
-                final result = await ref.read(prayerActionsProvider).setDone(today.date, prayer, done: done);
-                if (result == TickResult.needsProof) {
-                  router?.push('${Routes.verify}?prayer=${prayer.name}&date=${dateKey(today.date)}');
-                }
-              },
-            ),
+            Builder(builder: (_) {
+              final prayerTime = today.times[prayer];
+              // Prayer time can be null at extreme latitudes (polar day/night).
+              if (prayerTime == null) return const SizedBox.shrink();
+              final ramadanSuffix = inRamadan
+                  ? (prayer == PrayerName.fajr
+                      ? ' · Sehri ends'
+                      : prayer == PrayerName.maghrib
+                          ? ' · Iftar'
+                          : null)
+                  : null;
+              return PrayerRow(
+                key: ValueKey('prayer-row-${prayer.name}'),
+                prayer: prayer,
+                name: ramadanSuffix != null
+                    ? '${prayerLabel(l10n, prayer, jumma: isFriday)}$ramadanSuffix'
+                    : prayerLabel(l10n, prayer, jumma: isFriday),
+                time: formatClock(prayerTime, settings.timezoneId, locale),
+                azanEnabled: settings.azanFor(prayer),
+                prayed: prayed.contains(prayer),
+                isNext: next != null && next.prayer == prayer && next.date == today.date,
+                isHighlighted: highlight == prayer,
+                isPast: prayerTime.isBefore(now),
+                jamaatText: _jamaatText(l10n, settings, today, prayer, locale),
+                onToggleAzan: (enabled) =>
+                    ref.read(settingsControllerProvider.notifier).setAzanEnabled(prayer, enabled: enabled),
+                onTogglePrayed: (done) async {
+                  final router = GoRouter.maybeOf(context);
+                  final result = await ref.read(prayerActionsProvider).setDone(today.date, prayer, done: done);
+                  if (result == TickResult.needsProof) {
+                    router?.push('${Routes.verify}?prayer=${prayer.name}&date=${dateKey(today.date)}');
+                  }
+                },
+              );
+            }),
             const SizedBox(height: 8),
           ],
         ],

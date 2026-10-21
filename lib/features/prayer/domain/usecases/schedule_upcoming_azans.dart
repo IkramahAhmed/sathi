@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math' as math;
 
+import 'package:hijri/hijri_calendar.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/notifications/notification_channels.dart';
@@ -37,6 +38,9 @@ int stableId(DateTime date, PrayerName prayer, {bool pre = false}) =>
 
 /// Id for the "time to leave for jama'at" reminder. In the range 10000-19999.
 int leaveId(DateTime date, PrayerName prayer) => 10000 + dayOfYear(date) * 10 + prayer.index;
+
+/// Id for the sehri (pre-Fajr) Ramadan reminder. Range 70000-70999.
+int sehriId(DateTime date) => 70000 + dayOfYear(date);
 
 /// Id for the [index]th (0-9) "prayer ending" reminder. In the range 20000-59999.
 int endReminderId(DateTime date, PrayerName prayer, int index) {
@@ -149,7 +153,7 @@ class ScheduleUpcomingAzans {
                   timezoneId: settings.timezoneId,
                   title: texts.endingTitle(window.prayer, slot.minutesLeft, last: last, isFriday: day.isFriday),
                   body: texts.endingBody(requirePhoto: settings.endReminder.requirePhoto),
-                  channelId: NotificationChannels.prayerEnding,
+                  channelId: NotificationChannels.prayerEndingAlarm,
                   payload: jsonEncode({
                     'kind': 'ending',
                     'prayer': window.prayer.name,
@@ -196,17 +200,47 @@ class ScheduleUpcomingAzans {
             final date = dayAt(i);
             final day = _prayers.timesFor(date, settings);
             final dateText = _isoDate(date);
+            // Ramadan detection for this day.
+            final hijri = HijriCalendar.fromDate(
+                date.add(Duration(days: settings.hijriAdjustDays)));
+            final isRamadanDay = hijri.hMonth == 9;
+
+            // Sehri reminder: 15 min before Fajr during Ramadan.
+            if (isRamadanDay) {
+              final fajrAt = day.times[PrayerName.fajr];
+              if (fajrAt != null) {
+                final sehriAt = fajrAt.subtract(const Duration(minutes: 15));
+                if (sehriAt.isAfter(now)) {
+                  alarms.add(ScheduledAlarm(
+                    id: sehriId(date),
+                    at: sehriAt,
+                    timezoneId: settings.timezoneId,
+                    title: texts.sehriReminderTitle(),
+                    body: texts.sehriReminderBody(),
+                    channelId: NotificationChannels.sehriReminder,
+                    payload: jsonEncode({'kind': 'sehri', 'date': dateText}),
+                  ));
+                }
+              }
+            }
+
             for (final prayer in enabled) {
               final at = day.times[prayer];
               if (at == null) continue;
               final payload = jsonEncode({'prayer': prayer.name, 'date': dateText});
               if (at.isAfter(now)) {
+                final title = (isRamadanDay && prayer == PrayerName.maghrib)
+                    ? texts.iftarTitle()
+                    : texts.azanTitle(prayer, isFriday: day.isFriday);
+                final body = (isRamadanDay && prayer == PrayerName.maghrib)
+                    ? texts.iftarBody(settings.cityName)
+                    : texts.azanBody(prayer, settings.cityName, isFriday: day.isFriday);
                 alarms.add(ScheduledAlarm(
                   id: stableId(date, prayer),
                   at: at,
                   timezoneId: settings.timezoneId,
-                  title: texts.azanTitle(prayer, isFriday: day.isFriday),
-                  body: texts.azanBody(prayer, settings.cityName, isFriday: day.isFriday),
+                  title: title,
+                  body: body,
                   channelId: azanChannel,
                   payload: payload,
                 ));
@@ -268,7 +302,7 @@ class ScheduleUpcomingAzans {
           days: days,
           exactAlarms: exact,
           scheduledAt: now,
-          endReminders: capped.where((a) => a.channelId == NotificationChannels.prayerEnding).length,
+          endReminders: capped.where((a) => a.channelId == NotificationChannels.prayerEndingAlarm).length,
           leaveReminders: capped.where((a) => a.channelId == NotificationChannels.jamaatReminder).length,
         );
       }, message: 'Could not schedule azan notifications');

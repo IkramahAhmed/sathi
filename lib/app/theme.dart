@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
-/// Material 3 theme. A deep green seed, light and dark.
 abstract final class AppTheme {
   static const Color seed = Color(0xFF0B6E4F);
+
+  /// Warm gold — used only for the "next prayer" time and countdown progress bar.
+  static const Color gold = Color(0xFFC8952A);
 
   static ThemeData light() => _build(Brightness.light);
   static ThemeData dark() => _build(Brightness.dark);
@@ -26,6 +28,9 @@ abstract final class AppTheme {
         color: scheme.surfaceContainerHigh,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         margin: EdgeInsets.zero,
+      ),
+      checkboxTheme: CheckboxThemeData(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
       ),
       listTileTheme: const ListTileThemeData(minVerticalPadding: 8),
       filledButtonTheme: FilledButtonThemeData(

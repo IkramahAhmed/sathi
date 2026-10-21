@@ -936,6 +936,44 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get oemGotIt => 'Got it';
+
+  @override
+  String get scanTimetableButton => 'Scan mosque timetable';
+
+  @override
+  String get scanTimetableTitle => 'Mosque timetable';
+
+  @override
+  String get scanTimetableScanning => 'Reading timetable…';
+
+  @override
+  String get scanTimetableError =>
+      'Could not read the photo. Try again in better lighting.';
+
+  @override
+  String scanTimetableFound(int count) {
+    return '$count of 5 prayers detected. Tap any row to adjust.';
+  }
+
+  @override
+  String get scanTimetableNoneFound =>
+      'No prayer times found. Try a clearer photo.';
+
+  @override
+  String get scanTimetableHint =>
+      'Detected times are highlighted in gold. Tap any row to correct a time.';
+
+  @override
+  String get scanTimetableSave => 'Save jama\'at times';
+
+  @override
+  String get scanAutoDetected => 'Auto-detected';
+
+  @override
+  String get scanTapToAdjust => 'Tap to adjust';
+
+  @override
+  String get scanNotDetected => 'Not detected — tap to set';
 }
 
 /// The translations for English, as used in Pakistan (`en_PK`).

@@ -271,5 +271,22 @@
   "oemStep4": "نوٹیفکیشن اور نوٹیفکیشن کی آواز آن رکھیں۔",
   "oemOpenSettings": "ایپ کی ترتیبات کھولیں",
   "oemDontShow": "دوبارہ نہ دکھائیں",
-  "oemGotIt": "سمجھ گیا"
+  "oemGotIt": "سمجھ گیا",
+
+  "scanTimetableButton": "مسجد کا ٹائم ٹیبل اسکین کریں",
+  "scanTimetableTitle": "مسجد ٹائم ٹیبل",
+  "scanTimetableScanning": "ٹائم ٹیبل پڑھا جا رہا ہے…",
+  "scanTimetableError": "تصویر نہیں پڑھی گئی۔ اچھی روشنی میں دوبارہ کوشش کریں۔",
+  "scanTimetableFound": "{count} میں سے 5 نمازیں ملیں۔ ترمیم کے لیے قطار پر ٹیپ کریں۔",
+  "@scanTimetableFound": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "scanTimetableNoneFound": "نماز کے اوقات نہیں ملے۔ واضح تصویر لیں۔",
+  "scanTimetableHint": "سنہری رنگ میں دکھائے گئے اوقات خودکار ملے ہیں۔ ترمیم کے لیے ٹیپ کریں۔",
+  "scanTimetableSave": "جماعت کے اوقات محفوظ کریں",
+  "scanAutoDetected": "خودکار پتہ چلا",
+  "scanTapToAdjust": "ترمیم کے لیے ٹیپ کریں",
+  "scanNotDetected": "نہیں ملا — ٹیپ کر کے سیٹ کریں"
 }

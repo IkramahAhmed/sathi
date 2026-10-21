@@ -934,4 +934,42 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get oemGotIt => 'سمجھ گیا';
+
+  @override
+  String get scanTimetableButton => 'مسجد کا ٹائم ٹیبل اسکین کریں';
+
+  @override
+  String get scanTimetableTitle => 'مسجد ٹائم ٹیبل';
+
+  @override
+  String get scanTimetableScanning => 'ٹائم ٹیبل پڑھا جا رہا ہے…';
+
+  @override
+  String get scanTimetableError =>
+      'تصویر نہیں پڑھی گئی۔ اچھی روشنی میں دوبارہ کوشش کریں۔';
+
+  @override
+  String scanTimetableFound(int count) {
+    return '$count میں سے 5 نمازیں ملیں۔ ترمیم کے لیے قطار پر ٹیپ کریں۔';
+  }
+
+  @override
+  String get scanTimetableNoneFound =>
+      'نماز کے اوقات نہیں ملے۔ واضح تصویر لیں۔';
+
+  @override
+  String get scanTimetableHint =>
+      'سنہری رنگ میں دکھائے گئے اوقات خودکار ملے ہیں۔ ترمیم کے لیے ٹیپ کریں۔';
+
+  @override
+  String get scanTimetableSave => 'جماعت کے اوقات محفوظ کریں';
+
+  @override
+  String get scanAutoDetected => 'خودکار پتہ چلا';
+
+  @override
+  String get scanTapToAdjust => 'ترمیم کے لیے ٹیپ کریں';
+
+  @override
+  String get scanNotDetected => 'نہیں ملا — ٹیپ کر کے سیٹ کریں';
 }

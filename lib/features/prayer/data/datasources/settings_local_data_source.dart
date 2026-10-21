@@ -16,17 +16,32 @@ class SettingsLocalDataSource {
   static const _lastScheduledKey = 'last_scheduled_at';
   static const _onboardingKey = 'onboarding_done';
   static const _oemKey = 'oem_guide_shown';
+  // One-time migration: force-enable persistent prayer reminders for existing
+  // users who had the old default (endReminderEnabled=false).
+  static const _endReminderV2Key = 'end_reminder_v2_migrated';
 
   PrayerSettings loadSettings() {
     final raw = _prefs.getString(_settingsKey);
     if (raw == null) return PrayerSettings.defaults();
     try {
       final json = jsonDecode(raw) as Map<String, dynamic>;
+      _migrateEndReminderV2(json);
       return PrayerSettingsDto.fromJson(json).toEntity();
     } catch (error, stackTrace) {
       appLog.warning('Stored settings were unreadable; using defaults', error, stackTrace);
       return PrayerSettings.defaults();
     }
+  }
+
+  /// Upgrades stored settings to enable persistent prayer reminders with
+  /// alarm-volume sound and photo proof — the new defaults from v2 onwards.
+  void _migrateEndReminderV2(Map<String, dynamic> json) {
+    if (_prefs.getBool(_endReminderV2Key) ?? false) return;
+    json['endReminderEnabled'] = true;
+    json['endLeadMin'] = 999;
+    json['endRepeatMin'] = 5;
+    json['endRequirePhoto'] = true;
+    _prefs.setBool(_endReminderV2Key, true); // fire-and-forget
   }
 
   Future<void> saveSettings(PrayerSettings settings) => _prefs.setString(

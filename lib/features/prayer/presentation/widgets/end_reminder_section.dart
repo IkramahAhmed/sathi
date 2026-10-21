@@ -3,12 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../app/providers.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../domain/entities/end_reminder.dart';
 import '../../domain/entities/prayer_name.dart';
 import '../l10n_helpers.dart';
 import '../providers/prayer_providers.dart';
 import '../providers/settings_controller.dart';
 
-const List<int> _leadChoices = [15, 30, 45, 60];
+const List<int> _leadChoices = [kLeadAtPrayerTime, 15, 30, 45, 60];
 const List<int> _repeatChoices = [5, 10, 15];
 
 /// "Prayer time is ending" reminders, with an optional photo proof, in Settings.
@@ -47,9 +48,15 @@ class EndReminderSection extends ConsumerWidget {
             title: Text(l10n.endLead),
             trailing: DropdownButton<int>(
               key: const ValueKey('end-lead-dropdown'),
-              value: _leadChoices.contains(end.leadMin) ? end.leadMin : 30,
+              value: _leadChoices.contains(end.leadMin) ? end.leadMin : kLeadAtPrayerTime,
               underline: const SizedBox.shrink(),
-              items: [for (final m in _leadChoices) DropdownMenuItem(value: m, child: Text(l10n.endLeadValue(m)))],
+              items: [
+                for (final m in _leadChoices)
+                  DropdownMenuItem(
+                    value: m,
+                    child: Text(m == kLeadAtPrayerTime ? 'At prayer time' : l10n.endLeadValue(m)),
+                  ),
+              ],
               onChanged: (m) {
                 if (m != null) controller.setEndReminder(leadMin: m);
               },

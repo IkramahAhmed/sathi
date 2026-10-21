@@ -1730,6 +1730,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Got it'**
   String get oemGotIt;
+
+  /// No description provided for @scanTimetableButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan mosque timetable'**
+  String get scanTimetableButton;
+
+  /// No description provided for @scanTimetableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Mosque timetable'**
+  String get scanTimetableTitle;
+
+  /// No description provided for @scanTimetableScanning.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading timetable…'**
+  String get scanTimetableScanning;
+
+  /// No description provided for @scanTimetableError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not read the photo. Try again in better lighting.'**
+  String get scanTimetableError;
+
+  /// No description provided for @scanTimetableFound.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} of 5 prayers detected. Tap any row to adjust.'**
+  String scanTimetableFound(int count);
+
+  /// No description provided for @scanTimetableNoneFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No prayer times found. Try a clearer photo.'**
+  String get scanTimetableNoneFound;
+
+  /// No description provided for @scanTimetableHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Detected times are highlighted in gold. Tap any row to correct a time.'**
+  String get scanTimetableHint;
+
+  /// No description provided for @scanTimetableSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save jama\'at times'**
+  String get scanTimetableSave;
+
+  /// No description provided for @scanAutoDetected.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-detected'**
+  String get scanAutoDetected;
+
+  /// No description provided for @scanTapToAdjust.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to adjust'**
+  String get scanTapToAdjust;
+
+  /// No description provided for @scanNotDetected.
+  ///
+  /// In en, this message translates to:
+  /// **'Not detected — tap to set'**
+  String get scanNotDetected;
 }
 
 class _AppLocalizationsDelegate

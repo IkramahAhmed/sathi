@@ -185,4 +185,30 @@ class NotificationTexts {
         'en_PK' => '$city: tayari kar lein',
         _ => 'Get ready — $city',
       };
+
+  // ── Ramadan ───────────────────────────────────────────────────────────────
+
+  String sehriReminderTitle() => switch (_tag) {
+        'ur' => 'سحری ختم ہونے والی ہے',
+        'en_PK' => 'Sehri khatam hone wali hai',
+        _ => 'Sehri ends in 15 minutes',
+      };
+
+  String sehriReminderBody() => switch (_tag) {
+        'ur' => 'فجر سے پہلے کھانا پینا بند کر لیں',
+        'en_PK' => 'Fajr se pehle khana peena band kar lein',
+        _ => 'Stop eating before Fajr begins',
+      };
+
+  String iftarTitle() => switch (_tag) {
+        'ur' => 'افطار کا وقت!',
+        'en_PK' => 'Iftar ka waqt!',
+        _ => 'Iftar time!',
+      };
+
+  String iftarBody(String city) => switch (_tag) {
+        'ur' => '$city میں روزہ افطار کریں — مغرب کا وقت ہو گیا',
+        'en_PK' => '$city mein roza iftar karein — Maghrib ka waqt ho gaya',
+        _ => 'Break your fast in $city — Maghrib has begun',
+      };
 }

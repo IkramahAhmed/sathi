@@ -25,7 +25,7 @@ class PrayerSettings {
     required this.localeTag,
     this.jamaat = const JamaatSettings(),
     this.endReminder = const EndReminderSettings(),
-    this.azanOnAlarm = true,
+    this.azanOnAlarm = false,
     this.autoQazaFrom,
   });
 
@@ -44,7 +44,7 @@ class PrayerSettings {
           for (final p in PrayerName.values) p: p.hasAzan,
         },
         preReminderMin: {for (final p in PrayerName.values) p: 0},
-        sound: AzanSound.full,
+        sound: AzanSound.beep,
         hijriAdjustDays: 0,
         followMeLocation: true,
         methodIsManual: false,

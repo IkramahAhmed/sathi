@@ -471,6 +471,51 @@ final class MonthTimesFamily extends $Family
   String toString() => r'monthTimesProvider';
 }
 
+/// True while the current Hijri month is Ramadan (month 9).
+
+@ProviderFor(isRamadan)
+final isRamadanProvider = IsRamadanProvider._();
+
+/// True while the current Hijri month is Ramadan (month 9).
+
+final class IsRamadanProvider extends $FunctionalProvider<bool, bool, bool>
+    with $Provider<bool> {
+  /// True while the current Hijri month is Ramadan (month 9).
+  IsRamadanProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'isRamadanProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$isRamadanHash();
+
+  @$internal
+  @override
+  $ProviderElement<bool> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  bool create(Ref ref) {
+    return isRamadan(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(bool value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<bool>(value),
+    );
+  }
+}
+
+String _$isRamadanHash() => r'18fa853dd7d25c286b3e795c58f87e0c9e9bc3e0';
+
 /// Bearing to the Kaaba from the current location, degrees from true north.
 
 @ProviderFor(qiblaBearing)

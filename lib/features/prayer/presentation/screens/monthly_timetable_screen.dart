@@ -7,6 +7,9 @@ import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
+import 'package:go_router/go_router.dart';
+
+import '../../../../app/router.dart';
 import '../../../../core/utils/logger.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/prayer_name.dart';
@@ -57,6 +60,7 @@ class _MonthlyTimetableScreenState extends ConsumerState<MonthlyTimetableScreen>
     final locale = Localizations.localeOf(context);
     final settings = ref.watch(currentSettingsProvider);
     final today = ref.watch(todayDateProvider);
+    final inRamadan = ref.watch(isRamadanProvider);
     final month = _month ?? DateTime(today.year, today.month);
     final days = ref.watch(monthTimesProvider(month.year, month.month));
     final scheme = Theme.of(context).colorScheme;
@@ -69,6 +73,12 @@ class _MonthlyTimetableScreenState extends ConsumerState<MonthlyTimetableScreen>
       appBar: AppBar(
         title: Text(l10n.timetableTitle),
         actions: [
+          if (inRamadan)
+            IconButton(
+              tooltip: 'Ramadan Imsakiya',
+              icon: const Icon(Icons.nightlight_outlined),
+              onPressed: () => context.push(Routes.imsakiya),
+            ),
           IconButton(
             tooltip: l10n.shareImage,
             icon: const Icon(Icons.ios_share),

@@ -10,6 +10,8 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!-- Camera — used to photograph the mosque timetable for OCR scanning. -->
+    <uses-permission android:name="android.permission.CAMERA" />
     <!-- Location is used once to pick the calculation method and city. -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />

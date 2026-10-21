@@ -12,6 +12,7 @@ import '../features/prayer/presentation/screens/qibla_screen.dart';
 import '../features/prayer/presentation/screens/settings_screen.dart';
 import '../features/prayer/presentation/screens/setup_check_screen.dart';
 import '../features/prayer/presentation/screens/tracker_screen.dart';
+import '../features/prayer/presentation/screens/ramadan_imsakiya_screen.dart';
 import '../features/prayer/presentation/screens/verify_screen.dart';
 import 'app_shell.dart';
 
@@ -28,6 +29,7 @@ abstract final class Routes {
   static const oemGuide = '/oem-guide';
   static const verify = '/verify';
   static const setupCheck = '/setup-check';
+  static const imsakiya = '/imsakiya';
 }
 
 /// The first route to show. Overridden in `main()` once onboarding state is known.
@@ -45,6 +47,7 @@ GoRouter router(Ref ref) {
       GoRoute(path: Routes.onboarding, builder: (_, _) => const OnboardingScreen()),
       GoRoute(path: Routes.oemGuide, builder: (_, _) => const PermissionGuideScreen()),
       GoRoute(path: Routes.qaza, builder: (_, _) => const QazaScreen()),
+      GoRoute(path: Routes.imsakiya, builder: (_, _) => const RamadanImsakiyaScreen()),
       GoRoute(path: Routes.setupCheck, builder: (_, _) => const SetupCheckScreen()),
       GoRoute(
         path: Routes.verify,

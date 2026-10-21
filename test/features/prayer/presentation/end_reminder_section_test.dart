@@ -16,31 +16,30 @@ void main() {
         now: now,
       );
 
-  testWidgets('only the switch shows while it is off', (tester) async {
+  testWidgets('options show by default since reminders are enabled', (tester) async {
     final h = await pump(tester);
-    expect(h.settingsRepo.current.endReminder.enabled, isFalse);
+    expect(h.settingsRepo.current.endReminder.enabled, isTrue);
     expect(find.byKey(const ValueKey('end-enable')), findsOneWidget);
-    expect(find.byKey(const ValueKey('end-lead-dropdown')), findsNothing);
-    expect(find.byKey(const ValueKey('end-photo')), findsNothing);
+    expect(find.byKey(const ValueKey('end-lead-dropdown')), findsOneWidget);
+    expect(find.byKey(const ValueKey('end-photo')), findsOneWidget);
   });
 
-  testWidgets('turning it on shows the options and saves', (tester) async {
+  testWidgets('turning it off hides the options', (tester) async {
     final h = await pump(tester);
     await tester.tap(find.byKey(const ValueKey('end-enable')));
     await Harness.settle(tester);
 
-    expect(h.settingsRepo.current.endReminder.enabled, isTrue);
-    expect(find.byKey(const ValueKey('end-lead-dropdown')), findsOneWidget);
-    expect(find.byKey(const ValueKey('end-repeat-dropdown')), findsOneWidget);
+    expect(h.settingsRepo.current.endReminder.enabled, isFalse);
+    expect(find.byKey(const ValueKey('end-lead-dropdown')), findsNothing);
+    expect(find.byKey(const ValueKey('end-repeat-dropdown')), findsNothing);
     for (final p in PrayerName.obligatory) {
-      expect(find.byKey(ValueKey('end-prayer-${p.name}')), findsOneWidget);
+      expect(find.byKey(ValueKey('end-prayer-${p.name}')), findsNothing);
     }
   });
 
   testWidgets('a prayer can be left out', (tester) async {
     final h = await pump(tester);
-    await tester.tap(find.byKey(const ValueKey('end-enable')));
-    await Harness.settle(tester);
+    // Enabled by default; tap a prayer chip to deselect it.
     await tester.tap(find.byKey(const ValueKey('end-prayer-fajr')));
     await Harness.settle(tester);
 
@@ -52,8 +51,7 @@ void main() {
 
   testWidgets('lead time and repeat gap can be changed', (tester) async {
     final h = await pump(tester);
-    await tester.tap(find.byKey(const ValueKey('end-enable')));
-    await Harness.settle(tester);
+    // Enabled by default; no need to tap the enable switch.
 
     await tester.tap(find.byKey(const ValueKey('end-lead-dropdown')));
     await tester.pump(const Duration(milliseconds: 300));
@@ -68,15 +66,14 @@ void main() {
     expect(h.settingsRepo.current.endReminder.repeatMin, 5);
   });
 
-  testWidgets('photo proof is off until chosen, and explains that the photo stays on the phone', (tester) async {
+  testWidgets('photo proof is on by default and can be toggled off', (tester) async {
     final h = await pump(tester);
-    await tester.tap(find.byKey(const ValueKey('end-enable')));
-    await Harness.settle(tester);
-    expect(h.settingsRepo.current.endReminder.requirePhoto, isFalse);
+    // Enabled and photo required by default.
+    expect(h.settingsRepo.current.endReminder.requirePhoto, isTrue);
     expect(find.textContaining('never saved or sent'), findsOneWidget);
 
     await tester.tap(find.byKey(const ValueKey('end-photo')));
     await Harness.settle(tester);
-    expect(h.settingsRepo.current.endReminder.requirePhoto, isTrue);
+    expect(h.settingsRepo.current.endReminder.requirePhoto, isFalse);
   });
 }

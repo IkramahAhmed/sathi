@@ -72,6 +72,7 @@ class _QiblaScreenState extends ConsumerState<QiblaScreen> {
               FutureBuilder<bool>(
                 future: _sensorSupport,
                 builder: (context, snapshot) {
+                  if (snapshot.hasError) return _Fallback(message: l10n.qiblaNoSensor, bearing: bearing);
                   if (!snapshot.hasData) return const CircularProgressIndicator();
                   if (snapshot.data == false) {
                     return _Fallback(message: l10n.qiblaNoSensor, bearing: bearing);

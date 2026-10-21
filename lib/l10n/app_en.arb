@@ -554,5 +554,22 @@
   "oemStep4": "Keep notifications and notification sound switched on.",
   "oemOpenSettings": "Open app settings",
   "oemDontShow": "Don’t show again",
-  "oemGotIt": "Got it"
+  "oemGotIt": "Got it",
+
+  "scanTimetableButton": "Scan mosque timetable",
+  "scanTimetableTitle": "Mosque timetable",
+  "scanTimetableScanning": "Reading timetable…",
+  "scanTimetableError": "Could not read the photo. Try again in better lighting.",
+  "scanTimetableFound": "{count} of 5 prayers detected. Tap any row to adjust.",
+  "@scanTimetableFound": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "scanTimetableNoneFound": "No prayer times found. Try a clearer photo.",
+  "scanTimetableHint": "Detected times are highlighted in gold. Tap any row to correct a time.",
+  "scanTimetableSave": "Save jama'at times",
+  "scanAutoDetected": "Auto-detected",
+  "scanTapToAdjust": "Tap to adjust",
+  "scanNotDetected": "Not detected — tap to set"
 }

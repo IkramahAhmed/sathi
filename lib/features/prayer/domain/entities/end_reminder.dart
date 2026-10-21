@@ -3,9 +3,13 @@ import 'prayer_window.dart';
 
 /// "This prayer is about to end" reminders, optionally repeated until the user
 /// proves they prayed.
+/// Magic value for [EndReminderSettings.leadMin] meaning "start reminders at
+/// the prayer time itself" (the [endReminderPlan] earliest-clamp handles it).
+const int kLeadAtPrayerTime = 999;
+
 class EndReminderSettings {
   const EndReminderSettings({
-    this.enabled = false,
+    this.enabled = true,
     this.prayers = const {
       PrayerName.fajr: true,
       PrayerName.dhuhr: true,
@@ -13,9 +17,9 @@ class EndReminderSettings {
       PrayerName.maghrib: true,
       PrayerName.isha: true,
     },
-    this.leadMin = 30,
-    this.repeatMin = 10,
-    this.requirePhoto = false,
+    this.leadMin = kLeadAtPrayerTime,
+    this.repeatMin = 5,
+    this.requirePhoto = true,
   });
 
   final bool enabled;
@@ -24,6 +28,7 @@ class EndReminderSettings {
   final Map<PrayerName, bool> prayers;
 
   /// The first reminder comes this many minutes before the window ends.
+  /// Use [kLeadAtPrayerTime] (999) to start reminders at prayer time itself.
   final int leadMin;
 
   /// Gap between repeated reminders.
@@ -82,7 +87,8 @@ const int kMaxEndReminders = 8;
 /// always has time to pray.
 List<EndReminderSlot> endReminderPlan(PrayerWindow window, EndReminderSettings settings) {
   if (!settings.appliesTo(window.prayer)) return const [];
-  final lead = settings.leadMin.clamp(5, 180);
+  // Allow kLeadAtPrayerTime (999) through; the earliest-clamp below handles it.
+  final lead = settings.leadMin.clamp(5, 999);
   final repeat = settings.repeatMin.clamp(1, 60);
 
   // Do not nag in the first minutes of a window that is shorter than the lead.

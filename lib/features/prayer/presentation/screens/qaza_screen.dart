@@ -208,7 +208,7 @@ class _QazaScreenState extends ConsumerState<QazaScreen> {
               dense: true,
               contentPadding: EdgeInsets.zero,
               leading: Icon(h.delta >= 0 ? Icons.add : Icons.remove, color: h.delta >= 0 ? scheme.error : scheme.primary),
-              title: Text('${prayerLabel(l10n, PrayerName.values.firstWhere((p) => p.name == h.prayer))} ${h.delta >= 0 ? '+' : ''}${h.delta}'),
+              title: Text('${prayerLabel(l10n, PrayerName.values.firstWhere((p) => p.name == h.prayer, orElse: () => PrayerName.fajr))} ${h.delta >= 0 ? '+' : ''}${h.delta}'),
               subtitle: Text(
                 '${switch (h.source) {
                   'initial' => l10n.qazaSourceInitial,

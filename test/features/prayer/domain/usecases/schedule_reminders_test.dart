@@ -53,30 +53,39 @@ void main() {
     return (await useCase()).valueOrNull!;
   }
 
-  Iterable<ScheduledAlarm> ending() => scheduled.where((a) => a.channelId == NotificationChannels.prayerEnding);
+  Iterable<ScheduledAlarm> ending() => scheduled.where((a) => a.channelId == NotificationChannels.prayerEndingAlarm);
   Iterable<ScheduledAlarm> leave() => scheduled.where((a) => a.channelId == NotificationChannels.jamaatReminder);
 
   final base = PrayerSettings.defaults();
   final endOn = base.copyWith(endReminder: const EndReminderSettings(enabled: true));
 
+  // Settings with ending reminders disabled so azan-channel tests only see azan notifications.
+  final azanOnly = base.copyWith(endReminder: const EndReminderSettings(enabled: false));
+
   group('azan channel', () {
     test('uses the normal channel by default and the alarm-volume channel when chosen', () async {
-      await run(base.copyWith(sound: AzanSound.full));
+      await run(azanOnly.copyWith(sound: AzanSound.full));
       expect(scheduled.where((a) => !a.isPreReminder).every((a) => a.channelId == 'azan_full'), isTrue);
 
-      await run(base.copyWith(sound: AzanSound.full, azanOnAlarm: true));
+      await run(azanOnly.copyWith(sound: AzanSound.full, azanOnAlarm: true));
       expect(scheduled.every((a) => a.channelId == 'azan_full_alarm'), isTrue);
     });
 
     test('the silent sound has no alarm variant', () async {
-      await run(base.copyWith(sound: AzanSound.silent, azanOnAlarm: true));
+      await run(azanOnly.copyWith(sound: AzanSound.silent, azanOnAlarm: true));
       expect(scheduled.every((a) => a.channelId == 'azan_silent'), isTrue);
     });
   });
 
   group('ending reminders', () {
-    test('are off by default', () async {
+    test('are on by default (new installs get persistent reminders with photo proof)', () async {
       final r = await run(base);
+      expect(ending(), isNotEmpty);
+      expect(r.endReminders, greaterThan(0));
+    });
+
+    test('can be switched off', () async {
+      final r = await run(base.copyWith(endReminder: const EndReminderSettings(enabled: false)));
       expect(ending(), isEmpty);
       expect(r.endReminders, 0);
     });
@@ -118,7 +127,7 @@ void main() {
       for (final a in ending()) {
         expect(a.id, inInclusiveRange(20000, 59999));
       }
-      for (final a in scheduled.where((a) => a.channelId != NotificationChannels.prayerEnding)) {
+      for (final a in scheduled.where((a) => a.channelId != NotificationChannels.prayerEndingAlarm)) {
         expect(a.id, lessThan(20000));
       }
     });
@@ -179,7 +188,9 @@ void main() {
       expect(jsonDecode(photo.payload)['photo'], isTrue);
       expect(jsonDecode(photo.payload)['kind'], 'ending');
 
-      await run(endOn);
+      // Without photo: explicitly opt out.
+      final noPhoto = endOn.copyWith(endReminder: const EndReminderSettings(enabled: true, requirePhoto: false));
+      await run(noPhoto);
       final plain = ending().first;
       expect(plain.actions.map((a) => a.id), [ReminderActions.prayed, ReminderActions.stop]);
       expect(jsonDecode(plain.payload)['photo'], isFalse);

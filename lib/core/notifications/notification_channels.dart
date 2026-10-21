@@ -11,6 +11,10 @@ abstract final class NotificationChannels {
   static const String preReminder = 'pre_reminder';
   static const String jamaatReminder = 'jamaat_reminder';
   static const String prayerEnding = 'prayer_ending';
+  // Alarm-volume variant of the ending channel — plays even in silent mode,
+  // heard at the alarm volume instead of the media volume.
+  static const String prayerEndingAlarm = 'prayer_ending_alarm';
+  static const String sehriReminder = 'sehri_reminder';
   static const String drawableIcon = 'ic_stat_saathi';
 
   /// Channels from earlier versions. They are deleted on start so they do not
@@ -39,7 +43,9 @@ abstract final class NotificationChannels {
       .where((s) => s.channelId == channelId || s.alarmChannelId == channelId)
       .firstOrNull;
 
-  static bool _isAlarmChannel(String id) => AzanSound.values.any((s) => !s.isSilent && s.alarmChannelId == id);
+  static bool _isAlarmChannel(String id) =>
+      AzanSound.values.any((s) => !s.isSilent && s.alarmChannelId == id) ||
+      id == prayerEndingAlarm;
 
   /// Every channel the app uses.
   static List<AndroidNotificationChannel> all() => [
@@ -81,8 +87,24 @@ abstract final class NotificationChannels {
           'Prayer time ending',
           description: 'Reminders that a prayer\'s time is about to end',
           importance: Importance.max,
-          // Use full azan so the ending reminder rings loudly, not just a beep.
           sound: RawResourceAndroidNotificationSound(AzanSound.short.channelId),
+          enableVibration: true,
+        ),
+        // Alarm-volume version: rings at alarm volume, heard even in silent mode.
+        AndroidNotificationChannel(
+          prayerEndingAlarm,
+          'Prayer time ending (alarm volume)',
+          description: 'Persistent prayer reminders that ring at alarm volume until you pray',
+          importance: Importance.max,
+          sound: RawResourceAndroidNotificationSound(AzanSound.short.channelId),
+          enableVibration: true,
+          audioAttributesUsage: AudioAttributesUsage.alarm,
+        ),
+        const AndroidNotificationChannel(
+          sehriReminder,
+          'Sehri reminder',
+          description: 'Alert before sehri time ends during Ramadan',
+          importance: Importance.max,
           enableVibration: true,
         ),
       ];

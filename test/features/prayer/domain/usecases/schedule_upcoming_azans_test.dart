@@ -1,6 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:saathi/core/notifications/notification_channels.dart';
 import 'package:saathi/core/notifications/notification_scheduler.dart';
+import 'package:saathi/features/prayer/domain/entities/end_reminder.dart';
 import 'package:saathi/features/prayer/domain/entities/prayer_name.dart';
 import 'package:saathi/features/prayer/domain/entities/prayer_settings.dart';
 import 'package:saathi/features/prayer/domain/usecases/schedule_upcoming_azans.dart';
@@ -31,6 +33,11 @@ void main() {
 
   // 2026-10-12 12:00 in Karachi (PKT = UTC+5) == 07:00 UTC.
   final noonKarachi = DateTime.utc(2026, 10, 12, 7);
+
+  // Azan-only defaults: no ending reminders, so these tests measure only azans.
+  final azanDefaults = PrayerSettings.defaults().copyWith(
+    endReminder: const EndReminderSettings(enabled: false),
+  );
 
   ScheduleUpcomingAzans build(PrayerSettings settings, DateTime now) => ScheduleUpcomingAzans(
         FakeSettingsRepository(settings),
@@ -72,7 +79,7 @@ void main() {
   });
 
   test('never exceeds 60 pending with 5 azans a day', () async {
-    final report = (await build(PrayerSettings.defaults(), noonKarachi)()).valueOrNull!;
+    final report = (await build(azanDefaults, noonKarachi)()).valueOrNull!;
     expect(captured.length, lessThanOrEqualTo(kMaxPendingNotifications));
     expect(report.days, kMaxScheduleDays);
   });
@@ -107,22 +114,23 @@ void main() {
   });
 
   test('disabled prayers are not scheduled', () async {
-    final noAsr = PrayerSettings.defaults().copyWith(
+    final noAsr = azanDefaults.copyWith(
       azanEnabled: {
         for (final p in PrayerName.values) p: p.hasAzan && p != PrayerName.asr,
       },
     );
     await build(noAsr, noonKarachi)();
-    expect(captured.any((a) => a.id % 20 ~/ 2 == PrayerName.asr.index), isFalse);
+    // Only check ids in the azan range (< 20000) to avoid collision with ending reminders.
+    expect(captured.where((a) => a.id < 20000).any((a) => a.id % 20 ~/ 2 == PrayerName.asr.index), isFalse);
   });
 
   test('uses the selected sound channel', () async {
-    await build(PrayerSettings.defaults(), noonKarachi)();
+    await build(azanDefaults, noonKarachi)();
     expect(captured.every((a) => a.channelId == 'azan_beep'), isTrue);
   });
 
   test('schedules nothing when every azan is off, but still cancels', () async {
-    final off = PrayerSettings.defaults().copyWith(
+    final off = azanDefaults.copyWith(
       azanEnabled: {for (final p in PrayerName.values) p: false},
     );
     final report = (await build(off, noonKarachi)()).valueOrNull!;

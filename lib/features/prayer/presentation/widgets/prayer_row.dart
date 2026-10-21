@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../app/theme.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/prayer_name.dart';
 
@@ -45,13 +46,19 @@ class PrayerRow extends StatelessWidget {
         PrayerName.isha => Icons.dark_mode_outlined,
       };
 
+  Border? _border(ColorScheme scheme) {
+    if (isHighlighted) return Border.all(color: scheme.primary, width: 2);
+    if (isNext) return Border(left: BorderSide(color: AppTheme.gold, width: 3));
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
     final text = Theme.of(context).textTheme;
     final emphasised = isNext || isHighlighted;
-    final fade = isPast && !emphasised ? 0.65 : 1.0;
+    final fade = isPast && !emphasised ? 0.55 : 1.0;
 
     return Semantics(
       container: true,
@@ -61,7 +68,7 @@ class PrayerRow extends StatelessWidget {
         decoration: BoxDecoration(
           color: emphasised ? scheme.primaryContainer : scheme.surfaceContainerHigh,
           borderRadius: BorderRadius.circular(20),
-          border: isHighlighted ? Border.all(color: scheme.primary, width: 2) : null,
+          border: _border(scheme),
         ),
         padding: const EdgeInsetsDirectional.fromSTEB(16, 4, 4, 4),
         constraints: const BoxConstraints(minHeight: 64),
@@ -78,7 +85,7 @@ class PrayerRow extends StatelessWidget {
                     Text(
                       name,
                       style: text.titleMedium?.copyWith(
-                        fontWeight: emphasised ? FontWeight.w700 : FontWeight.w500,
+                        fontWeight: emphasised ? FontWeight.w700 : FontWeight.w600,
                         color: emphasised ? scheme.onPrimaryContainer : null,
                       ),
                     ),
@@ -97,8 +104,9 @@ class PrayerRow extends StatelessWidget {
                 time,
                 key: ValueKey('prayer-time-${prayer.name}'),
                 style: text.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
                   fontFeatures: const [FontFeature.tabularFigures()],
-                  color: emphasised ? scheme.onPrimaryContainer : null,
+                  color: isNext ? AppTheme.gold : (emphasised ? scheme.onPrimaryContainer : null),
                 ),
               ),
               IconButton(

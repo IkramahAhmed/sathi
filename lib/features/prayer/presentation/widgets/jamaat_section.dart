@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:image_picker/image_picker.dart';
+
 import '../../../../app/providers.dart';
+import '../../../../app/theme.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../data/verification/mosque_timetable_scanner.dart';
 import '../../domain/entities/prayer_name.dart';
 import '../l10n_helpers.dart';
 import '../providers/prayer_providers.dart';
 import '../providers/settings_controller.dart';
+import '../screens/timetable_scan_screen.dart';
 
 const List<int> _leaveChoices = [0, 5, 10, 15, 20, 30];
 const List<int> _silentChoices = [10, 15, 20, 30, 45];
@@ -55,6 +60,19 @@ class JamaatSection extends ConsumerWidget {
             style: Theme.of(context).textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
           ),
         ),
+        Padding(
+          padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 12),
+          child: OutlinedButton.icon(
+            key: const ValueKey('jamaat-scan'),
+            icon: const Icon(Icons.document_scanner_outlined),
+            label: Text(l10n.scanTimetableButton),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: AppTheme.gold,
+              side: BorderSide(color: AppTheme.gold.withValues(alpha: 0.6)),
+            ),
+            onPressed: () => _scanTimetable(context, ref, l10n),
+          ),
+        ),
         for (final prayer in PrayerName.obligatory)
           ListTile(
             key: ValueKey('jamaat-${prayer.name}'),
@@ -62,7 +80,7 @@ class JamaatSection extends ConsumerWidget {
             title: Text(prayerLabel(l10n, prayer)),
             subtitle: Text(ruleText(prayer)),
             trailing: const Icon(Icons.chevron_right),
-            onTap: () => _editRule(context, controller, prayer, l10n),
+            onTap: () => _editRule(context, ref, controller, prayer, l10n),
           ),
         ListTile(
           key: const ValueKey('jamaat-jumma'),
@@ -135,13 +153,87 @@ class JamaatSection extends ConsumerWidget {
     );
   }
 
+  Future<void> _scanTimetable(BuildContext context, WidgetRef ref, AppLocalizations l10n) async {
+    final source = await showModalBottomSheet<ImageSource>(
+      context: context,
+      builder: (_) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.camera_alt_outlined),
+              title: const Text('Take a photo'),
+              onTap: () => Navigator.of(context).pop(ImageSource.camera),
+            ),
+            ListTile(
+              leading: const Icon(Icons.photo_library_outlined),
+              title: const Text('Choose from gallery'),
+              onTap: () => Navigator.of(context).pop(ImageSource.gallery),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (source == null || !context.mounted) return;
+
+    final camera = TimetableCameraSource();
+    final scanner = MosqueTimetableScanner();
+
+    // Take photo or pick from gallery
+    final path = source == ImageSource.camera
+        ? await camera.takePhoto()
+        : await camera.pickFromGallery();
+    if (path == null || !context.mounted) return;
+
+    // Show progress while scanning
+    if (context.mounted) {
+      showDialog<void>(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => AlertDialog(
+          content: Row(
+            children: [
+              const CircularProgressIndicator(),
+              const SizedBox(width: 20),
+              Text(l10n.scanTimetableScanning),
+            ],
+          ),
+        ),
+      );
+    }
+
+    TimetableScan scan;
+    try {
+      scan = await scanner.scan(path);
+    } catch (_) {
+      await camera.discard(path);
+      if (context.mounted) {
+        Navigator.of(context).pop(); // dismiss progress
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.scanTimetableError)),
+        );
+      }
+      return;
+    }
+    await camera.discard(path);
+
+    if (!context.mounted) return;
+    Navigator.of(context).pop(); // dismiss progress
+
+    // Open confirmation screen
+    await Navigator.of(context).push<bool>(
+      MaterialPageRoute(builder: (_) => TimetableScanScreen(scan: scan)),
+    );
+  }
+
   Future<void> _editRule(
     BuildContext context,
+    WidgetRef ref,
     SettingsController controller,
     PrayerName prayer,
     AppLocalizations l10n,
   ) async {
-    final settings = ProviderScope.containerOf(context).read(currentSettingsProvider);
+    final settings = ref.read(currentSettingsProvider);
     final jamaat = settings.jamaat;
     var fixed = jamaat.fixedMin.containsKey(prayer);
     final minutes = TextEditingController(text: '${jamaat.offsetMin[prayer] ?? 10}');
