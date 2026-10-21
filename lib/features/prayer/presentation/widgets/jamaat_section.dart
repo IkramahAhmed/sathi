@@ -185,11 +185,12 @@ class JamaatSection extends ConsumerWidget {
         : await camera.pickFromGallery();
     if (path == null || !context.mounted) return;
 
-    // Show progress dialog and wait one frame so it is in the navigator stack
-    // before the scan starts — otherwise Navigator.pop() would dismiss the
-    // wrong route and leave a black screen.
-    if (!context.mounted) return;
-    showDialog<void>(
+    // Push the progress dialog and hold a reference to the route so we can
+    // remove it by identity later. Using removeRoute() instead of pop()
+    // guarantees we only ever dismiss OUR dialog — never the Settings screen
+    // behind it — even if the Android image-picker Activity return triggers
+    // pending navigation events that haven't settled yet.
+    final progressRoute = DialogRoute<void>(
       context: context,
       barrierDismissible: false,
       builder: (_) => AlertDialog(
@@ -202,8 +203,13 @@ class JamaatSection extends ConsumerWidget {
         ),
       ),
     );
-    // One microtask delay so the dialog route is pushed before we await scan.
-    await Future.delayed(Duration.zero);
+    Navigator.of(context).push(progressRoute);
+
+    void dismissDialog() {
+      if (progressRoute.isActive) {
+        Navigator.of(context).removeRoute(progressRoute);
+      }
+    }
 
     TimetableScan scan;
     try {
@@ -211,7 +217,7 @@ class JamaatSection extends ConsumerWidget {
     } catch (e) {
       await camera.discard(path);
       if (context.mounted) {
-        Navigator.of(context).pop(); // dismiss progress dialog
+        dismissDialog();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(l10n.scanTimetableError)),
         );
@@ -221,7 +227,7 @@ class JamaatSection extends ConsumerWidget {
     await camera.discard(path);
 
     if (!context.mounted) return;
-    Navigator.of(context).pop(); // dismiss progress dialog
+    dismissDialog();
 
     // If nothing was detected, tell the user instead of opening an empty screen.
     final detected = scan.values.where((v) => v != null).length;
