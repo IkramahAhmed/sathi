@@ -185,30 +185,33 @@ class JamaatSection extends ConsumerWidget {
         : await camera.pickFromGallery();
     if (path == null || !context.mounted) return;
 
-    // Show progress while scanning
-    if (context.mounted) {
-      showDialog<void>(
-        context: context,
-        barrierDismissible: false,
-        builder: (_) => AlertDialog(
-          content: Row(
-            children: [
-              const CircularProgressIndicator(),
-              const SizedBox(width: 20),
-              Text(l10n.scanTimetableScanning),
-            ],
-          ),
+    // Show progress dialog and wait one frame so it is in the navigator stack
+    // before the scan starts — otherwise Navigator.pop() would dismiss the
+    // wrong route and leave a black screen.
+    if (!context.mounted) return;
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => AlertDialog(
+        content: Row(
+          children: [
+            const CircularProgressIndicator(),
+            const SizedBox(width: 20),
+            Text(l10n.scanTimetableScanning),
+          ],
         ),
-      );
-    }
+      ),
+    );
+    // One microtask delay so the dialog route is pushed before we await scan.
+    await Future.delayed(Duration.zero);
 
     TimetableScan scan;
     try {
       scan = await scanner.scan(path);
-    } catch (_) {
+    } catch (e) {
       await camera.discard(path);
       if (context.mounted) {
-        Navigator.of(context).pop(); // dismiss progress
+        Navigator.of(context).pop(); // dismiss progress dialog
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(l10n.scanTimetableError)),
         );
@@ -218,9 +221,23 @@ class JamaatSection extends ConsumerWidget {
     await camera.discard(path);
 
     if (!context.mounted) return;
-    Navigator.of(context).pop(); // dismiss progress
+    Navigator.of(context).pop(); // dismiss progress dialog
+
+    // If nothing was detected, tell the user instead of opening an empty screen.
+    final detected = scan.values.where((v) => v != null).length;
+    if (detected == 0) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('No prayer times found. Try a clearer photo of a mosque timetable.'),
+          ),
+        );
+      }
+      return;
+    }
 
     // Open confirmation screen
+    if (!context.mounted) return;
     await Navigator.of(context).push<bool>(
       MaterialPageRoute(builder: (_) => TimetableScanScreen(scan: scan)),
     );
