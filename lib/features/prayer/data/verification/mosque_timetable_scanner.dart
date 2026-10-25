@@ -25,8 +25,6 @@ class MosqueTimetableScanner {
   ///            misses prayers because bright-on-dark confuses ML Kit.
   Future<TimetableScan> scan(String imagePath) async {
     final raw1 = await scanRaw(imagePath);
-    // ignore: avoid_print
-    print('SAATHI_OCR: ${raw1.replaceAll('\n', '|')}');
     // Strip "H:MM SS" current-time display (LED clocks show the live clock
     // alongside the timetable; its seconds component distinguishes it from
     // prayer times, which never have a trailing two-digit seconds field).
@@ -41,8 +39,6 @@ class MosqueTimetableScanner {
     try {
       ledPath = await _preprocessForLed(imagePath);
       final raw2 = await _scanRawPng(ledPath);
-      // ignore: avoid_print
-      print('SAATHI_OCR_LED: ${raw2.replaceAll('\n', '|')}');
       final cleaned2 = _stripCurrentTimeDisplay(raw2);
       final result2 = parseText(cleaned2);
       final found1 = result1.values.whereType<int>().length;
