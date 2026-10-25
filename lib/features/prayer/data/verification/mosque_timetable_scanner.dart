@@ -71,13 +71,13 @@ class MosqueTimetableScanner {
       final input = InputImage.fromFilePath(imagePath);
       try {
         final recognised = await recognizer.processImage(input);
-        return recognised.text;
+        return _bodyText(recognised);
       } catch (_) {
         // ML Kit crashed on the file (WebP causes NPE on Android).
         // Decode via Flutter's image codec and retry with a PNG.
         final fallback = await _inputImageFromBytes(imagePath);
         final recognised = await recognizer.processImage(fallback);
-        return recognised.text;
+        return _bodyText(recognised);
       }
     } finally {
       await recognizer.close();
@@ -90,10 +90,41 @@ class MosqueTimetableScanner {
     final recognizer = TextRecognizer(script: TextRecognitionScript.latin);
     try {
       final recognised = await recognizer.processImage(InputImage.fromFilePath(pngPath));
-      return recognised.text;
+      return _bodyText(recognised);
     } finally {
       await recognizer.close();
     }
+  }
+
+  /// Filters out text blocks in the top 15 % (live-clock header) and bottom
+  /// 10 % (countdown footer) of the recognised text area, using ML Kit
+  /// bounding boxes.  On a typical LED display the current-time clock sits in
+  /// the top row (~0–15 % of height), so this prevents "12:17" from being
+  /// assigned to Dhuhr.  Only applied when ≥ 5 blocks are present; simpler
+  /// images with few text regions need no filtering.
+  static String _bodyText(RecognizedText recognised) {
+    final blocks = recognised.blocks;
+    if (blocks.length < 5) return recognised.text;
+
+    var minY = double.infinity, maxY = double.negativeInfinity;
+    for (final b in blocks) {
+      final box = b.boundingBox;
+      if (box == null) continue;
+      if (box.top < minY) minY = box.top;
+      if (box.bottom > maxY) maxY = box.bottom;
+    }
+    if (!minY.isFinite || maxY - minY < 1) return recognised.text;
+
+    final height = maxY - minY;
+    final filtered = blocks.where((b) {
+      final box = b.boundingBox;
+      if (box == null) return true; // keep blocks with no position info
+      final mid = (box.top + box.bottom) / 2;
+      final rel = (mid - minY) / height;
+      return rel > 0.15 && rel < 0.90;
+    }).map((b) => b.text).join('\n');
+
+    return filtered.isEmpty ? recognised.text : filtered;
   }
 
   // Re-encode the image as PNG via Flutter's codec and save it to a temp file,
