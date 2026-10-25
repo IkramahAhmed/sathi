@@ -184,9 +184,8 @@ class MosqueTimetableScanner {
     }
 
     // Last resort: Arabic-only or LED-display timetables where prayer names
-    // can't be OCR'd. If we find 5–6 distinct time values in the image and
-    // no prayer names matched, assign them in chronological order
-    // (Fajr→Dhuhr→Asr→Maghrib→Isha).
+    // can't be OCR'd. Assign times in chronological order with monotonic PM
+    // promotion (Fajr→Dhuhr→Asr→Maghrib→Isha). Requires ≥ 4 unambiguous times.
     final orderResult = _parseByTimeOrder(rawText);
     if (orderResult.values.where((v) => v != null).length >= 3) return orderResult;
 
@@ -236,11 +235,13 @@ class MosqueTimetableScanner {
       }
     }
 
-    if (promoted.length < 5) return empty;
+    // Require at least 4 unambiguous times — fewer than that is too uncertain
+    // for in-order assignment (monotonic promotion could mismatch prayers).
+    if (promoted.length < 4) return empty;
 
     final result = <PrayerName, int?>{for (final p in PrayerName.obligatory) p: null};
     final prayers = PrayerName.obligatory.toList();
-    for (var i = 0; i < prayers.length; i++) {
+    for (var i = 0; i < promoted.length && i < prayers.length; i++) {
       result[prayers[i]] = promoted[i];
     }
     return result;
@@ -249,7 +250,7 @@ class MosqueTimetableScanner {
   /// Window-based fallback for partial LED data: assigns candidate times to
   /// prayers by time-of-day window rather than strictly sequential order.
   /// For each raw time < 12 h, both the AM and PM variants are tried.
-  /// Returns null when fewer than 2 prayers can be assigned.
+  /// Returns null when fewer than 3 prayers can be assigned.
   TimetableScan? _parseByTimeWindows(String rawText) {
     // (lo, hi) in minutes-after-midnight — intentionally generous.
     const windows = <PrayerName, (int, int)>{
@@ -273,19 +274,26 @@ class MosqueTimetableScanner {
       }
     }
 
-    // Assign each candidate to the first prayer window that fits and is empty.
+    // Track which source times (< 720) have been used, so that a single OCR
+    // reading cannot be assigned to two prayers (once as AM, once as PM twin).
+    // Example: "4 42" on an LED counter → 4:42 AM → Fajr, but 4:42 PM must NOT
+    // also be assigned to Asr since it came from the same digit group.
+    final usedSources = <int>{};
     final result = <PrayerName, int?>{for (final p in PrayerName.obligatory) p: null};
     for (final entry in windows.entries) {
       final (lo, hi) = entry.value;
       for (final t in candidates) {
-        if (t >= lo && t <= hi && result[entry.key] == null) {
-          result[entry.key] = t;
-          break;
-        }
+        if (t < lo || t > hi || result[entry.key] != null) continue;
+        final source = t >= 720 ? t - 720 : t;
+        if (usedSources.contains(source)) continue;
+        result[entry.key] = t;
+        usedSources.add(source);
+        break;
       }
     }
 
-    return result;
+    final found = result.values.where((v) => v != null).length;
+    return found >= 3 ? result : null;
   }
 
   TimetableScan _parseRowBased(String rawText) {
