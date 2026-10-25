@@ -292,6 +292,46 @@ class MosqueTimetableScanner {
       }
     }
 
+    // Second pass: partial-time recovery for LED displays where ML Kit drops
+    // individual digits. Applied only to windows still empty after the main pass.
+    //   • Bare single digit H (1–9) → candidate H:00  (e.g. "5 00" read as "5")
+    //   • Bare two-digit MM (01–59) → candidate 1:MM  (e.g. "1 15" read as "15";
+    //     the LED "1" is a single thin bar that ML Kit consistently drops)
+    if (result.values.any((v) => v == null)) {
+      final partSeen = <int>{};
+      final partCandidates = <int>[];
+      for (final line in rawText.split('\n').map((l) => l.trim()).where((l) => l.isNotEmpty)) {
+        // Strip full time matches first so partial patterns don't double-count.
+        final stripped = line.replaceAll(_timePattern, ' ');
+        // Bare single digit 1–9 (not adjacent to another digit) → H:00.
+        for (final m in RegExp(r'(?<!\d)([1-9])(?!\d)').allMatches(stripped)) {
+          final t = int.parse(m.group(1)!) * 60;
+          if (partSeen.add(t)) partCandidates.add(t);
+          if (partSeen.add(t + 720)) partCandidates.add(t + 720);
+        }
+        // Bare two-digit MM (01–59, not adjacent to another digit) → 1:MM.
+        for (final m in RegExp(r'(?<!\d)([0-5]\d)(?!\d)').allMatches(stripped)) {
+          final mm = int.parse(m.group(1)!);
+          if (mm == 0) continue; // bare "00" is pure noise
+          final t = 60 + mm; // 1:MM AM
+          if (partSeen.add(t)) partCandidates.add(t);
+          if (partSeen.add(t + 720)) partCandidates.add(t + 720); // 1:MM PM
+        }
+      }
+      for (final entry in windows.entries) {
+        if (result[entry.key] != null) continue;
+        final (lo, hi) = entry.value;
+        for (final t in partCandidates) {
+          if (t < lo || t > hi) continue;
+          final source = t >= 720 ? t - 720 : t;
+          if (usedSources.contains(source)) continue;
+          result[entry.key] = t;
+          usedSources.add(source);
+          break;
+        }
+      }
+    }
+
     final found = result.values.where((v) => v != null).length;
     return found >= 3 ? result : null;
   }
