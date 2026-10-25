@@ -1,3 +1,8 @@
+# ML Kit — keep all ML Kit and GMS ML Kit internal classes so R8 does not
+# strip or rename classes that the native SDK looks up via reflection at runtime.
+-keep class com.google.mlkit.** { *; }
+-keep class com.google.android.gms.internal.mlkit_** { *; }
+
 # ML Kit text recognition — optional script models not bundled in this app.
 -dontwarn com.google.mlkit.vision.text.chinese.ChineseTextRecognizerOptions$Builder
 -dontwarn com.google.mlkit.vision.text.chinese.ChineseTextRecognizerOptions
