@@ -1,7 +1,10 @@
 import 'dart:io';
+import 'dart:ui' as ui;
 
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
+import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../../domain/entities/prayer_name.dart';
 
@@ -13,20 +16,160 @@ typedef TimetableScan = Map<PrayerName, int?>;
 ///
 /// Uses Google ML Kit Text Recognition on-device — nothing is uploaded.
 class MosqueTimetableScanner {
+  /// Scans [imagePath] and returns prayer→time mappings.
+  ///
+  /// Two-pass strategy:
+  ///   Pass 1 — raw image (handles printed/paper timetables).
+  ///   Pass 2 — LED-optimised preprocessing (grayscale → 2× upscale → invert)
+  ///            for dot-matrix and 7-segment LED displays where the first pass
+  ///            misses prayers because bright-on-dark confuses ML Kit.
   Future<TimetableScan> scan(String imagePath) async {
-    final raw = await scanRaw(imagePath);
-    return parseText(raw);
+    final raw1 = await scanRaw(imagePath);
+    // ignore: avoid_print
+    print('SAATHI_OCR: ${raw1.replaceAll('\n', '|')}');
+    // Strip "H:MM SS" current-time display (LED clocks show the live clock
+    // alongside the timetable; its seconds component distinguishes it from
+    // prayer times, which never have a trailing two-digit seconds field).
+    final cleaned1 = _stripCurrentTimeDisplay(raw1);
+    final result1 = parseText(cleaned1);
+
+    // If all 5 prayers found, no need for the LED pass.
+    if (result1.values.whereType<int>().length >= 5) return result1;
+
+    // LED pass: preprocess to help OCR on dot-matrix / 7-segment displays.
+    String? ledPath;
+    try {
+      ledPath = await _preprocessForLed(imagePath);
+      final raw2 = await _scanRawPng(ledPath);
+      // ignore: avoid_print
+      print('SAATHI_OCR_LED: ${raw2.replaceAll('\n', '|')}');
+      final cleaned2 = _stripCurrentTimeDisplay(raw2);
+      final result2 = parseText(cleaned2);
+      final found1 = result1.values.whereType<int>().length;
+      final found2 = result2.values.whereType<int>().length;
+      if (found2 > found1) return result2;
+    } catch (_) {
+      // Preprocessing failed — fall through and return the first-pass result.
+    } finally {
+      if (ledPath != null) File(ledPath).delete().ignore();
+    }
+    return result1;
+  }
+
+  /// Removes LED clock "current time with seconds" patterns like "3:58 19"
+  /// (H:MM followed by a space and exactly two digits ≤ 59).  These appear
+  /// on dot-matrix displays that show both the live time and the timetable.
+  static String _stripCurrentTimeDisplay(String text) {
+    // Matches "H:MM SS" where SS is a valid seconds field (00-59).
+    return text.replaceAll(RegExp(r'\d{1,2}:\d{2}\s+[0-5]\d(?!\d)'), '');
   }
 
   /// Returns the raw OCR text from the image. Exposed for testing.
+  ///
+  /// Tries [InputImage.fromFilePath] first (best quality for JPEG/PNG).
+  /// Falls back to dart:ui PNG re-encoding when ML Kit throws a
+  /// NullPointerException on WebP and some other formats on Android.
   Future<String> scanRaw(String imagePath) async {
     final recognizer = TextRecognizer(script: TextRecognitionScript.latin);
     try {
       final input = InputImage.fromFilePath(imagePath);
-      final recognised = await recognizer.processImage(input);
+      try {
+        final recognised = await recognizer.processImage(input);
+        return recognised.text;
+      } catch (_) {
+        // ML Kit crashed on the file (WebP causes NPE on Android).
+        // Decode via Flutter's image codec and retry with a PNG.
+        final fallback = await _inputImageFromBytes(imagePath);
+        final recognised = await recognizer.processImage(fallback);
+        return recognised.text;
+      }
+    } finally {
+      await recognizer.close();
+    }
+  }
+
+  /// OCR on a file we already know is a valid PNG — skips the dart:ui
+  /// re-encoding that [scanRaw] needs for WebP and other formats.
+  Future<String> _scanRawPng(String pngPath) async {
+    final recognizer = TextRecognizer(script: TextRecognitionScript.latin);
+    try {
+      final recognised = await recognizer.processImage(InputImage.fromFilePath(pngPath));
       return recognised.text;
     } finally {
       await recognizer.close();
+    }
+  }
+
+  // Re-encode the image as PNG via Flutter's codec and save it to a temp file,
+  // then hand the PNG path to ML Kit. bgra8888 bytes work on iOS but not
+  // Android — PNG is universally supported by InputImage.fromFilePath().
+  static Future<InputImage> _inputImageFromBytes(String imagePath) async {
+    final bytes = await File(imagePath).readAsBytes();
+    final codec = await ui.instantiateImageCodec(bytes);
+    final frame = await codec.getNextFrame();
+    final uiImg = frame.image;
+    try {
+      final pngData = await uiImg.toByteData(format: ui.ImageByteFormat.png);
+      if (pngData == null) throw Exception('Could not re-encode image: $imagePath');
+      final tmpDir = await getTemporaryDirectory();
+      final tmpFile = File('${tmpDir.path}/saathi_mlkit_${DateTime.now().millisecondsSinceEpoch}.png');
+      await tmpFile.writeAsBytes(pngData.buffer.asUint8List());
+      return InputImage.fromFilePath(tmpFile.path);
+    } finally {
+      uiImg.dispose();
+    }
+  }
+
+  /// Preprocesses [imagePath] for LED/dot-matrix mosque timetable displays:
+  ///   1. Grayscale      — removes colour noise
+  ///   2. 2× upscale     — larger characters = more accurate ML Kit recognition
+  ///   3. Invert         — LED text is bright-on-dark; ML Kit (trained on
+  ///                       ink-on-paper) performs better with dark-on-light
+  ///   4. Binary thresh  — snaps every pixel to pure black or white, giving
+  ///                       crisp, alias-free digit outlines the OCR can follow
+  ///
+  /// Returns the path of the preprocessed PNG (caller must delete it).
+  /// On any failure returns the original [imagePath] unchanged.
+  static Future<String> _preprocessForLed(String imagePath) async {
+    try {
+      final bytes = await File(imagePath).readAsBytes();
+      var image = img.decodeImage(bytes);
+      if (image == null) return imagePath;
+
+      // 1. Grayscale
+      image = img.grayscale(image);
+
+      // 2. Upscale 2× (capped at 3000 px wide to avoid OOM on high-res photos)
+      final targetW = (image.width * 2).clamp(image.width, 3000);
+      image = img.copyResize(
+        image,
+        width: targetW,
+        interpolation: img.Interpolation.linear,
+      );
+
+      // 3. Invert: LED bright-on-dark → dark-on-light
+      img.invert(image);
+
+      // 4. Binary threshold at ~47 % luminance: background pixels (now bright)
+      //    snap to pure white; LED digit pixels (now dark) snap to pure black.
+      //    Writing into a fresh RGB image avoids any format ambiguity with the
+      //    single-channel grayscale representation.
+      final w = image.width, h = image.height;
+      final bw = img.Image(width: w, height: h, numChannels: 3);
+      for (final pixel in image) {
+        // After grayscale + invert, r == g == b == inverted luminance.
+        final val = pixel.r.toInt() > 120 ? 255 : 0;
+        bw.setPixelRgb(pixel.x, pixel.y, val, val, val);
+      }
+
+      final tmpDir = await getTemporaryDirectory();
+      final tmpFile = File(
+        '${tmpDir.path}/saathi_led_${DateTime.now().millisecondsSinceEpoch}.png',
+      );
+      await tmpFile.writeAsBytes(img.encodePng(bw));
+      return tmpFile.path;
+    } catch (_) {
+      return imagePath;
     }
   }
 
@@ -39,7 +182,114 @@ class MosqueTimetableScanner {
 
     // Fallback: ML Kit sometimes reads tables column-by-column.
     // Detect that pattern and zip prayer names with jamaat times.
-    return _parseColumnBased(rawText) ?? result;
+    final colResult = _parseColumnBased(rawText);
+    if (colResult != null && colResult.values.where((v) => v != null).length >= 3) {
+      return colResult;
+    }
+
+    // Last resort: Arabic-only or LED-display timetables where prayer names
+    // can't be OCR'd. If we find 5–6 distinct time values in the image and
+    // no prayer names matched, assign them in chronological order
+    // (Fajr→Dhuhr→Asr→Maghrib→Isha).
+    final orderResult = _parseByTimeOrder(rawText);
+    if (orderResult.values.where((v) => v != null).length >= 3) return orderResult;
+
+    // Final fallback: fewer times available than prayers (common for LED
+    // displays where OCR only catches some digits). Try assigning each
+    // candidate time to its most plausible prayer window, trying both the
+    // raw value and its PM counterpart for ambiguous sub-12h times.
+    final windowResult = _parseByTimeWindows(rawText);
+    if (windowResult != null && windowResult.values.where((v) => v != null).length >= 2) {
+      return windowResult;
+    }
+
+    return colResult ?? result;
+  }
+
+  /// Order-based fallback: read times in document order and promote ambiguous
+  /// 12-hour times to PM using the monotonic-increase property of prayer times.
+  /// Used for Arabic LED timetables where ML Kit (Latin recogniser) cannot read
+  /// prayer names, and times lack AM/PM markers.
+  TimetableScan _parseByTimeOrder(String rawText) {
+    final empty = <PrayerName, int?>{for (final p in PrayerName.obligatory) p: null};
+
+    // Collect times in document order (top-to-bottom as OCR reads them).
+    final seen = <int>{};
+    final ordered = <int>[];
+    for (final line in rawText.split('\n').map((l) => l.trim()).where((l) => l.isNotEmpty)) {
+      for (final t in _timesInLine(line)) {
+        if (seen.add(t)) ordered.add(t);
+      }
+    }
+
+    // Prayer times increase monotonically through the day. When a time is ≤ the
+    // previous prayer time, try adding 12 h — this handles 12-hour LED displays
+    // that show "1 30" for Dhuhr (1:30 PM) without an explicit PM marker.
+    final promoted = <int>[];
+    var prev = 0;
+    for (var t in ordered) {
+      if (t <= prev) {
+        final pm = t + 12 * 60;
+        if (pm > prev && pm <= 24 * 60) t = pm;
+      }
+      // Fajr ≥ 2:30 AM; Isha ≤ 11:59 PM; strictly after the previous prayer.
+      if (t > prev && t >= 150 && t <= 1439) {
+        promoted.add(t);
+        prev = t;
+        if (promoted.length == 5) break;
+      }
+    }
+
+    if (promoted.length < 5) return empty;
+
+    final result = <PrayerName, int?>{for (final p in PrayerName.obligatory) p: null};
+    final prayers = PrayerName.obligatory.toList();
+    for (var i = 0; i < prayers.length; i++) {
+      result[prayers[i]] = promoted[i];
+    }
+    return result;
+  }
+
+  /// Window-based fallback for partial LED data: assigns candidate times to
+  /// prayers by time-of-day window rather than strictly sequential order.
+  /// For each raw time < 12 h, both the AM and PM variants are tried.
+  /// Returns null when fewer than 2 prayers can be assigned.
+  TimetableScan? _parseByTimeWindows(String rawText) {
+    // (lo, hi) in minutes-after-midnight — intentionally generous.
+    const windows = <PrayerName, (int, int)>{
+      PrayerName.fajr:    (150,  450),  // 02:30–07:30
+      PrayerName.dhuhr:   (660,  840),  // 11:00–14:00
+      PrayerName.asr:     (840, 1050),  // 14:00–17:30
+      PrayerName.maghrib: (1020, 1170), // 17:00–19:30
+      PrayerName.isha:    (1140, 1380), // 19:00–23:00
+    };
+
+    // Build candidate set: each raw time + its PM twin when < 12 h.
+    final seen = <int>{};
+    final candidates = <int>[];
+    for (final line in rawText.split('\n').map((l) => l.trim()).where((l) => l.isNotEmpty)) {
+      for (final t in _timesInLine(line)) {
+        if (seen.add(t)) candidates.add(t);
+        if (t < 720) {
+          final pm = t + 720;
+          if (seen.add(pm)) candidates.add(pm);
+        }
+      }
+    }
+
+    // Assign each candidate to the first prayer window that fits and is empty.
+    final result = <PrayerName, int?>{for (final p in PrayerName.obligatory) p: null};
+    for (final entry in windows.entries) {
+      final (lo, hi) = entry.value;
+      for (final t in candidates) {
+        if (t >= lo && t <= hi && result[entry.key] == null) {
+          result[entry.key] = t;
+          break;
+        }
+      }
+    }
+
+    return result;
   }
 
   TimetableScan _parseRowBased(String rawText) {
@@ -146,9 +396,10 @@ class MosqueTimetableScanner {
 
   // ── Time extraction ────────────────────────────────────────────────────────
 
-  // Matches "5:30 AM", "05:30", "5.30 pm", and 4-digit "1730"
+  // Matches "5:30 AM", "05:30", "5.30 pm", space-separated "5 30" (LED displays),
+  // and 4-digit 24-hour "1730".
   static final _timePattern = RegExp(
-    r'(\d{1,2})[:.](\d{2})\s*(am|pm)?|(?<!\d)([01]\d|2[0-3])([0-5]\d)(?!\d)',
+    r'(\d{1,2})[:. ]([0-5]\d)\s*(am|pm)?|(?<!\d)([01]\d|2[0-3])([0-5]\d)(?!\d)',
     caseSensitive: false,
   );
 
