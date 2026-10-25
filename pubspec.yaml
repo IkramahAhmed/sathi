@@ -68,8 +68,6 @@ dependencies:
     path: packages/saathi_native
   image_picker: ^1.2.4
   google_mlkit_image_labeling: ^0.16.1
-  google_mlkit_text_recognition: ^0.17.1
-  image: ^4.2.0
 
 dev_dependencies:
   flutter_test:

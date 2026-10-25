@@ -121,6 +121,30 @@ ISHA         8:15 PM   |  Jamaat 8:30 PM
     });
   });
 
+  group('Format F — Arabic LED display (12-h, no AM/PM, space separator)', () {
+    // Simulates OCR output from a typical Arabic mosque LED board.
+    // Prayer names are in Arabic (unreadable by Latin OCR) so only numbers appear.
+    // Current-time display at the bottom ("4 48") must NOT be misidentified.
+    const text = '''
+5 00
+1 30
+5 15
+6 42
+8 30
+1 05
+4 48
+''';
+
+    test('assigns times in monotonic order with PM promotion', () {
+      final scan = scanner.parseText(text);
+      expectTime(scan, PrayerName.fajr, 5, 0);      // 5:00 AM
+      expectTime(scan, PrayerName.dhuhr, 13, 30);   // 1:30 PM
+      expectTime(scan, PrayerName.asr, 17, 15);     // 5:15 PM
+      expectTime(scan, PrayerName.maghrib, 18, 42); // 6:42 PM
+      expectTime(scan, PrayerName.isha, 20, 30);    // 8:30 PM
+    });
+  });
+
   group('Edge cases', () {
     test('empty string returns all nulls', () {
       final scan = scanner.parseText('');

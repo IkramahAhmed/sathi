@@ -2,17 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:image_picker/image_picker.dart';
-
 import '../../../../app/providers.dart';
-import '../../../../app/theme.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../data/verification/mosque_timetable_scanner.dart';
 import '../../domain/entities/prayer_name.dart';
 import '../l10n_helpers.dart';
 import '../providers/prayer_providers.dart';
 import '../providers/settings_controller.dart';
-import '../screens/timetable_scan_screen.dart';
 
 const List<int> _leaveChoices = [0, 5, 10, 15, 20, 30];
 const List<int> _silentChoices = [10, 15, 20, 30, 45];
@@ -58,19 +53,6 @@ class JamaatSection extends ConsumerWidget {
           child: Text(
             l10n.jamaatHelp,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 12),
-          child: OutlinedButton.icon(
-            key: const ValueKey('jamaat-scan'),
-            icon: const Icon(Icons.document_scanner_outlined),
-            label: Text(l10n.scanTimetableButton),
-            style: OutlinedButton.styleFrom(
-              foregroundColor: AppTheme.gold,
-              side: BorderSide(color: AppTheme.gold.withValues(alpha: 0.6)),
-            ),
-            onPressed: () => _scanTimetable(context, ref, l10n),
           ),
         ),
         for (final prayer in PrayerName.obligatory)
@@ -150,102 +132,6 @@ class JamaatSection extends ConsumerWidget {
           ],
         ],
       ],
-    );
-  }
-
-  Future<void> _scanTimetable(BuildContext context, WidgetRef ref, AppLocalizations l10n) async {
-    final source = await showModalBottomSheet<ImageSource>(
-      context: context,
-      builder: (_) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.camera_alt_outlined),
-              title: const Text('Take a photo'),
-              onTap: () => Navigator.of(context).pop(ImageSource.camera),
-            ),
-            ListTile(
-              leading: const Icon(Icons.photo_library_outlined),
-              title: const Text('Choose from gallery'),
-              onTap: () => Navigator.of(context).pop(ImageSource.gallery),
-            ),
-          ],
-        ),
-      ),
-    );
-    if (source == null || !context.mounted) return;
-
-    final camera = TimetableCameraSource();
-    final scanner = MosqueTimetableScanner();
-
-    // Take photo or pick from gallery
-    final path = source == ImageSource.camera
-        ? await camera.takePhoto()
-        : await camera.pickFromGallery();
-    if (path == null || !context.mounted) return;
-
-    // Push the progress dialog and hold a reference to the route so we can
-    // remove it by identity later. Using removeRoute() instead of pop()
-    // guarantees we only ever dismiss OUR dialog — never the Settings screen
-    // behind it — even if the Android image-picker Activity return triggers
-    // pending navigation events that haven't settled yet.
-    final progressRoute = DialogRoute<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) => AlertDialog(
-        content: Row(
-          children: [
-            const CircularProgressIndicator(),
-            const SizedBox(width: 20),
-            Text(l10n.scanTimetableScanning),
-          ],
-        ),
-      ),
-    );
-    Navigator.of(context).push(progressRoute);
-
-    void dismissDialog() {
-      if (progressRoute.isActive) {
-        Navigator.of(context).removeRoute(progressRoute);
-      }
-    }
-
-    TimetableScan scan;
-    try {
-      scan = await scanner.scan(path);
-    } catch (e) {
-      await camera.discard(path);
-      if (context.mounted) {
-        dismissDialog();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.scanTimetableError)),
-        );
-      }
-      return;
-    }
-    await camera.discard(path);
-
-    if (!context.mounted) return;
-    dismissDialog();
-
-    // If nothing was detected, tell the user instead of opening an empty screen.
-    final detected = scan.values.where((v) => v != null).length;
-    if (detected == 0) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('No prayer times found. Try a clearer photo of a mosque timetable.'),
-          ),
-        );
-      }
-      return;
-    }
-
-    // Open confirmation screen
-    if (!context.mounted) return;
-    await Navigator.of(context).push<bool>(
-      MaterialPageRoute(builder: (_) => TimetableScanScreen(scan: scan)),
     );
   }
 

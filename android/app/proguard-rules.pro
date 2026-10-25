@@ -1,14 +1,3 @@
-# ML Kit — keep all ML Kit and GMS ML Kit internal classes so R8 does not
-# strip or rename classes that the native SDK looks up via reflection at runtime.
+# ML Kit image labeling — keep classes that R8 would otherwise strip/rename.
 -keep class com.google.mlkit.** { *; }
 -keep class com.google.android.gms.internal.mlkit_** { *; }
-
-# ML Kit text recognition — optional script models not bundled in this app.
--dontwarn com.google.mlkit.vision.text.chinese.ChineseTextRecognizerOptions$Builder
--dontwarn com.google.mlkit.vision.text.chinese.ChineseTextRecognizerOptions
--dontwarn com.google.mlkit.vision.text.devanagari.DevanagariTextRecognizerOptions$Builder
--dontwarn com.google.mlkit.vision.text.devanagari.DevanagariTextRecognizerOptions
--dontwarn com.google.mlkit.vision.text.japanese.JapaneseTextRecognizerOptions$Builder
--dontwarn com.google.mlkit.vision.text.japanese.JapaneseTextRecognizerOptions
--dontwarn com.google.mlkit.vision.text.korean.KoreanTextRecognizerOptions$Builder
--dontwarn com.google.mlkit.vision.text.korean.KoreanTextRecognizerOptions
