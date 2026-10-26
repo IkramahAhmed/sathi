@@ -56,3 +56,15 @@ class QazaDaoManager {
   $$QazaHistoryTableTableManager get qazaHistory =>
       $$QazaHistoryTableTableManager(_db.attachedDatabase, _db.qazaHistory);
 }
+
+mixin _$ExpensesDaoMixin on DatabaseAccessor<AppDatabase> {
+  $ExpensesTable get expenses => attachedDatabase.expenses;
+  ExpensesDaoManager get managers => ExpensesDaoManager(this);
+}
+
+class ExpensesDaoManager {
+  final _$ExpensesDaoMixin _db;
+  ExpensesDaoManager(this._db);
+  $$ExpensesTableTableManager get expenses =>
+      $$ExpensesTableTableManager(_db.attachedDatabase, _db.expenses);
+}

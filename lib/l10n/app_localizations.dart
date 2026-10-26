@@ -1796,6 +1796,138 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Not detected — tap to set'**
   String get scanNotDetected;
+
+  /// No description provided for @navKhata.
+  ///
+  /// In en, this message translates to:
+  /// **'Khata'**
+  String get navKhata;
+
+  /// No description provided for @khataTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Khata'**
+  String get khataTitle;
+
+  /// No description provided for @khataMonthTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total this month'**
+  String get khataMonthTotal;
+
+  /// No description provided for @khataEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No expenses yet'**
+  String get khataEmpty;
+
+  /// No description provided for @khataEmptyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap + to record your first expense'**
+  String get khataEmptyHint;
+
+  /// No description provided for @khataAddTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Expense'**
+  String get khataAddTitle;
+
+  /// No description provided for @khataAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get khataAmount;
+
+  /// No description provided for @khataAmountInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid amount greater than zero'**
+  String get khataAmountInvalid;
+
+  /// No description provided for @khataCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get khataCategory;
+
+  /// No description provided for @khataNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Note (optional)'**
+  String get khataNote;
+
+  /// No description provided for @khataDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get khataDate;
+
+  /// No description provided for @khataSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get khataSave;
+
+  /// No description provided for @khataDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get khataDelete;
+
+  /// No description provided for @khataToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get khataToday;
+
+  /// No description provided for @khataYesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get khataYesterday;
+
+  /// No description provided for @khataCatFood.
+  ///
+  /// In en, this message translates to:
+  /// **'Food'**
+  String get khataCatFood;
+
+  /// No description provided for @khataCatTransport.
+  ///
+  /// In en, this message translates to:
+  /// **'Transport'**
+  String get khataCatTransport;
+
+  /// No description provided for @khataCatRent.
+  ///
+  /// In en, this message translates to:
+  /// **'Rent'**
+  String get khataCatRent;
+
+  /// No description provided for @khataCatHealth.
+  ///
+  /// In en, this message translates to:
+  /// **'Health'**
+  String get khataCatHealth;
+
+  /// No description provided for @khataCatBills.
+  ///
+  /// In en, this message translates to:
+  /// **'Bills'**
+  String get khataCatBills;
+
+  /// No description provided for @khataCatShopping.
+  ///
+  /// In en, this message translates to:
+  /// **'Shopping'**
+  String get khataCatShopping;
+
+  /// No description provided for @khataCatOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get khataCatOther;
 }
 
 class _AppLocalizationsDelegate

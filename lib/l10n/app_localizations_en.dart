@@ -974,6 +974,72 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get scanNotDetected => 'Not detected — tap to set';
+
+  @override
+  String get navKhata => 'Khata';
+
+  @override
+  String get khataTitle => 'Khata';
+
+  @override
+  String get khataMonthTotal => 'Total this month';
+
+  @override
+  String get khataEmpty => 'No expenses yet';
+
+  @override
+  String get khataEmptyHint => 'Tap + to record your first expense';
+
+  @override
+  String get khataAddTitle => 'Add Expense';
+
+  @override
+  String get khataAmount => 'Amount';
+
+  @override
+  String get khataAmountInvalid => 'Enter a valid amount greater than zero';
+
+  @override
+  String get khataCategory => 'Category';
+
+  @override
+  String get khataNote => 'Note (optional)';
+
+  @override
+  String get khataDate => 'Date';
+
+  @override
+  String get khataSave => 'Save';
+
+  @override
+  String get khataDelete => 'Delete';
+
+  @override
+  String get khataToday => 'Today';
+
+  @override
+  String get khataYesterday => 'Yesterday';
+
+  @override
+  String get khataCatFood => 'Food';
+
+  @override
+  String get khataCatTransport => 'Transport';
+
+  @override
+  String get khataCatRent => 'Rent';
+
+  @override
+  String get khataCatHealth => 'Health';
+
+  @override
+  String get khataCatBills => 'Bills';
+
+  @override
+  String get khataCatShopping => 'Shopping';
+
+  @override
+  String get khataCatOther => 'Other';
 }
 
 /// The translations for English, as used in Pakistan (`en_PK`).
@@ -1911,4 +1977,70 @@ class AppLocalizationsEnPk extends AppLocalizationsEn {
 
   @override
   String get oemGotIt => 'Samajh gaya';
+
+  @override
+  String get navKhata => 'Khata';
+
+  @override
+  String get khataTitle => 'Khata';
+
+  @override
+  String get khataMonthTotal => 'Is mahine ka kharcha';
+
+  @override
+  String get khataEmpty => 'Abhi koi kharcha nahi';
+
+  @override
+  String get khataEmptyHint => '+ dabayein pehla kharcha likhne ke liye';
+
+  @override
+  String get khataAddTitle => 'Kharcha Shamil Karein';
+
+  @override
+  String get khataAmount => 'Raqam';
+
+  @override
+  String get khataAmountInvalid => 'Sahi raqam likhein';
+
+  @override
+  String get khataCategory => 'Qism';
+
+  @override
+  String get khataNote => 'Note (ikhtiyari)';
+
+  @override
+  String get khataDate => 'Tareekh';
+
+  @override
+  String get khataSave => 'Save';
+
+  @override
+  String get khataDelete => 'Mitayein';
+
+  @override
+  String get khataToday => 'Aaj';
+
+  @override
+  String get khataYesterday => 'Kal';
+
+  @override
+  String get khataCatFood => 'Khana';
+
+  @override
+  String get khataCatTransport => 'Safar';
+
+  @override
+  String get khataCatRent => 'Kiraya';
+
+  @override
+  String get khataCatHealth => 'Sehat';
+
+  @override
+  String get khataCatBills => 'Bill';
+
+  @override
+  String get khataCatShopping => 'Shopping';
+
+  @override
+  String get khataCatOther => 'Aur';
 }

@@ -151,6 +151,7 @@ class PrayerLogsDao extends DatabaseAccessor<AppDatabase> with _$PrayerLogsDaoMi
   Future<void> clearAll() => delete(prayerLogs).go();
 }
 
+
 @DriftAccessor(tables: [SettingsHistory])
 class SettingsHistoryDao extends DatabaseAccessor<AppDatabase> with _$SettingsHistoryDaoMixin {
   SettingsHistoryDao(super.db);
@@ -285,4 +286,23 @@ class QazaDao extends DatabaseAccessor<AppDatabase> with _$QazaDaoMixin {
     await delete(qazaBalance).go();
     await delete(qazaHistory).go();
   }
+}
+
+@DriftAccessor(tables: [Expenses])
+class ExpensesDao extends DatabaseAccessor<AppDatabase> with _$ExpensesDaoMixin {
+  ExpensesDao(super.db);
+
+  Future<void> add(ExpensesCompanion entry) => into(expenses).insert(entry);
+
+  Future<void> remove(int id) => (delete(expenses)..where((t) => t.id.equals(id))).go();
+
+  /// All expenses for the given month (format: `yyyy-MM`), newest first.
+  Stream<List<Expense>> watchMonth(String yearMonth) =>
+      (select(expenses)
+            ..where((t) => t.date.like('$yearMonth%'))
+            ..orderBy([
+              (t) => OrderingTerm.desc(t.date),
+              (t) => OrderingTerm.desc(t.createdAt),
+            ]))
+          .watch();
 }

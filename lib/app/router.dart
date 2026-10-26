@@ -14,6 +14,7 @@ import '../features/prayer/presentation/screens/setup_check_screen.dart';
 import '../features/prayer/presentation/screens/tracker_screen.dart';
 import '../features/prayer/presentation/screens/ramadan_imsakiya_screen.dart';
 import '../features/prayer/presentation/screens/verify_screen.dart';
+import '../features/khata/presentation/screens/khata_screen.dart';
 import 'app_shell.dart';
 
 part 'router.g.dart';
@@ -24,6 +25,7 @@ abstract final class Routes {
   static const qaza = '/qaza';
   static const monthly = '/monthly';
   static const qibla = '/qibla';
+  static const khata = '/khata';
   static const settings = '/settings';
   static const onboarding = '/onboarding';
   static const oemGuide = '/oem-guide';
@@ -85,6 +87,9 @@ GoRouter router(Ref ref) {
           ]),
           StatefulShellBranch(routes: [
             GoRoute(path: Routes.qibla, builder: (_, _) => const QiblaScreen()),
+          ]),
+          StatefulShellBranch(routes: [
+            GoRoute(path: Routes.khata, builder: (_, _) => const KhataScreen()),
           ]),
           StatefulShellBranch(routes: [
             GoRoute(path: Routes.settings, builder: (_, _) => const SettingsScreen()),

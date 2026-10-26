@@ -39,6 +39,11 @@ class AppShell extends StatelessWidget {
             label: l10n.navQibla,
           ),
           NavigationDestination(
+            icon: const Icon(Icons.account_balance_wallet_outlined),
+            selectedIcon: const Icon(Icons.account_balance_wallet),
+            label: l10n.navKhata,
+          ),
+          NavigationDestination(
             icon: const Icon(Icons.settings_outlined),
             selectedIcon: const Icon(Icons.settings),
             label: l10n.navSettings,

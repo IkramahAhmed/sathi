@@ -75,3 +75,23 @@ class QazaHistory extends Table {
   /// For `auto` rows: `yyyy-MM-dd|prayer`, so the same missed prayer is never counted twice.
   TextColumn get autoKey => text().nullable().unique()();
 }
+
+/// Daily expense entries for the Khata (ledger) feature.
+class Expenses extends Table {
+  IntColumn get id => integer().autoIncrement()();
+
+  /// Amount in local currency (always positive).
+  RealColumn get amount => real()();
+
+  /// Matches [ExpenseCategory.name] — food, transport, rent, health, bills, shopping, other.
+  TextColumn get category => text()();
+
+  /// Optional description.
+  TextColumn get note => text().withDefault(const Constant(''))();
+
+  /// Calendar date as `yyyy-MM-dd`.
+  TextColumn get date => text()();
+
+  /// When this row was created (UTC), used for ordering within a day.
+  DateTimeColumn get createdAt => dateTime()();
+}

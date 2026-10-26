@@ -60,15 +60,15 @@ _PrayerSettingsDto _$PrayerSettingsDtoFromJson(
   leaveReminderMin: (json['leaveReminderMin'] as num?)?.toInt() ?? 0,
   silentDuringJamaat: json['silentDuringJamaat'] as bool? ?? false,
   silentMinutes: (json['silentMinutes'] as num?)?.toInt() ?? 15,
-  endReminderEnabled: json['endReminderEnabled'] as bool? ?? false,
+  endReminderEnabled: json['endReminderEnabled'] as bool? ?? true,
   endReminderPrayers:
       (json['endReminderPrayers'] as Map<String, dynamic>?)?.map(
         (k, e) => MapEntry($enumDecode(_$PrayerNameEnumMap, k), e as bool),
       ) ??
       const <PrayerName, bool>{},
-  endLeadMin: (json['endLeadMin'] as num?)?.toInt() ?? 30,
-  endRepeatMin: (json['endRepeatMin'] as num?)?.toInt() ?? 10,
-  endRequirePhoto: json['endRequirePhoto'] as bool? ?? false,
+  endLeadMin: (json['endLeadMin'] as num?)?.toInt() ?? 999,
+  endRepeatMin: (json['endRepeatMin'] as num?)?.toInt() ?? 5,
+  endRequirePhoto: json['endRequirePhoto'] as bool? ?? true,
   azanOnAlarm: json['azanOnAlarm'] as bool? ?? true,
   autoQazaFrom: json['autoQazaFrom'] as String?,
 );

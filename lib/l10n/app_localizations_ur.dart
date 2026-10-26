@@ -972,4 +972,70 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get scanNotDetected => 'نہیں ملا — ٹیپ کر کے سیٹ کریں';
+
+  @override
+  String get navKhata => 'کھاتہ';
+
+  @override
+  String get khataTitle => 'کھاتہ';
+
+  @override
+  String get khataMonthTotal => 'اس ماہ کا کل خرچ';
+
+  @override
+  String get khataEmpty => 'ابھی کوئی خرچ نہیں';
+
+  @override
+  String get khataEmptyHint => '+ دبائیں پہلا خرچ شامل کریں';
+
+  @override
+  String get khataAddTitle => 'خرچ شامل کریں';
+
+  @override
+  String get khataAmount => 'رقم';
+
+  @override
+  String get khataAmountInvalid => 'درست رقم درج کریں';
+
+  @override
+  String get khataCategory => 'قسم';
+
+  @override
+  String get khataNote => 'نوٹ (اختیاری)';
+
+  @override
+  String get khataDate => 'تاریخ';
+
+  @override
+  String get khataSave => 'محفوظ کریں';
+
+  @override
+  String get khataDelete => 'حذف کریں';
+
+  @override
+  String get khataToday => 'آج';
+
+  @override
+  String get khataYesterday => 'کل';
+
+  @override
+  String get khataCatFood => 'کھانا';
+
+  @override
+  String get khataCatTransport => 'سفر';
+
+  @override
+  String get khataCatRent => 'کرایہ';
+
+  @override
+  String get khataCatHealth => 'صحت';
+
+  @override
+  String get khataCatBills => 'بل';
+
+  @override
+  String get khataCatShopping => 'خریداری';
+
+  @override
+  String get khataCatOther => 'دیگر';
 }
