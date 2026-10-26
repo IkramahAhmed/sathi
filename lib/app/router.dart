@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../features/prayer/domain/entities/prayer_name.dart';
+import '../features/dashboard/presentation/screens/dashboard_screen.dart';
 import '../features/prayer/presentation/screens/home_screen.dart';
 import '../features/prayer/presentation/screens/monthly_timetable_screen.dart';
 import '../features/prayer/presentation/screens/onboarding_screen.dart';
@@ -21,6 +22,7 @@ part 'router.g.dart';
 
 abstract final class Routes {
   static const home = '/';
+  static const prayer = '/prayer';
   static const tracker = '/tracker';
   static const qaza = '/qaza';
   static const monthly = '/monthly';
@@ -49,6 +51,9 @@ GoRouter router(Ref ref) {
       GoRoute(path: Routes.onboarding, builder: (_, _) => const OnboardingScreen()),
       GoRoute(path: Routes.oemGuide, builder: (_, _) => const PermissionGuideScreen()),
       GoRoute(path: Routes.qaza, builder: (_, _) => const QazaScreen()),
+      GoRoute(path: Routes.tracker, builder: (_, _) => const TrackerScreen()),
+      GoRoute(path: Routes.monthly, builder: (_, _) => const MonthlyTimetableScreen()),
+      GoRoute(path: Routes.qibla, builder: (_, _) => const QiblaScreen()),
       GoRoute(path: Routes.imsakiya, builder: (_, _) => const RamadanImsakiyaScreen()),
       GoRoute(path: Routes.setupCheck, builder: (_, _) => const SetupCheckScreen()),
       GoRoute(
@@ -70,23 +75,17 @@ GoRouter router(Ref ref) {
         builder: (context, state, shell) => AppShell(shell: shell),
         branches: [
           StatefulShellBranch(routes: [
+            GoRoute(path: Routes.home, builder: (_, _) => const DashboardScreen()),
+          ]),
+          StatefulShellBranch(routes: [
             GoRoute(
-              path: Routes.home,
+              path: Routes.prayer,
               builder: (_, state) => HomeScreen(
                 highlight: PrayerName.values
                     .where((p) => p.name == state.uri.queryParameters['highlight'])
                     .firstOrNull,
               ),
             ),
-          ]),
-          StatefulShellBranch(routes: [
-            GoRoute(path: Routes.tracker, builder: (_, _) => const TrackerScreen()),
-          ]),
-          StatefulShellBranch(routes: [
-            GoRoute(path: Routes.monthly, builder: (_, _) => const MonthlyTimetableScreen()),
-          ]),
-          StatefulShellBranch(routes: [
-            GoRoute(path: Routes.qibla, builder: (_, _) => const QiblaScreen()),
           ]),
           StatefulShellBranch(routes: [
             GoRoute(path: Routes.khata, builder: (_, _) => const KhataScreen()),

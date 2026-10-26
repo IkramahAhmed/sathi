@@ -594,5 +594,9 @@
   "khataCatHealth": "Health",
   "khataCatBills": "Bills",
   "khataCatShopping": "Shopping",
-  "khataCatOther": "Other"
+  "khataCatOther": "Other",
+
+  "navPrayer": "Prayer",
+  "dashTools": "Tools",
+  "dashComingSoon": "Coming soon"
 }

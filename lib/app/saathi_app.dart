@@ -97,7 +97,7 @@ class _SaathiAppState extends ConsumerState<SaathiApp> with WidgetsBindingObserv
       final json = jsonDecode(payload) as Map<String, dynamic>;
       final prayer = json['prayer'] as String?;
       if (prayer == null) return;
-      ref.read(routerProvider).go('${Routes.home}?highlight=$prayer');
+      ref.read(routerProvider).go('${Routes.prayer}?highlight=$prayer');
     } catch (error) {
       appLog.info('Ignoring notification payload: $error');
     }

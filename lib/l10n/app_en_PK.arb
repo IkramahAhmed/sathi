@@ -294,5 +294,9 @@
   "khataCatHealth": "Sehat",
   "khataCatBills": "Bill",
   "khataCatShopping": "Shopping",
-  "khataCatOther": "Aur"
+  "khataCatOther": "Aur",
+
+  "navPrayer": "Namaz",
+  "dashTools": "Auzaar",
+  "dashComingSoon": "Jald aa raha hai"
 }

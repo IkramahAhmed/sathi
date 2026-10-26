@@ -311,5 +311,9 @@
   "khataCatHealth": "صحت",
   "khataCatBills": "بل",
   "khataCatShopping": "خریداری",
-  "khataCatOther": "دیگر"
+  "khataCatOther": "دیگر",
+
+  "navPrayer": "نماز",
+  "dashTools": "آلات",
+  "dashComingSoon": "جلد آ رہا ہے"
 }
