@@ -63,9 +63,6 @@ class _MonthlyTimetableScreenState extends ConsumerState<MonthlyTimetableScreen>
     final inRamadan = ref.watch(isRamadanProvider);
     final month = _month ?? DateTime(today.year, today.month);
     final days = ref.watch(monthTimesProvider(month.year, month.month));
-    // First day of next month gives us Isha's end for the last day of this month.
-    final nextMonth = DateTime(month.year, month.month + 1);
-    final nextMonthFirst = ref.watch(monthTimesProvider(nextMonth.year, nextMonth.month)).first;
     final scheme = Theme.of(context).colorScheme;
     final text = Theme.of(context).textTheme;
     final monthLabel = DateFormat.yMMMM(dateLocale(locale)).format(month);
@@ -137,39 +134,29 @@ class _MonthlyTimetableScreenState extends ConsumerState<MonthlyTimetableScreen>
                         col(l10n.prayerAsr),
                         col(l10n.prayerMaghrib),
                         col(l10n.prayerIsha),
-                        col('${l10n.prayerIsha} ends'),
                       ],
                       rows: [
-                        for (var i = 0; i < days.length; i++)
+                        for (final day in days)
                           DataRow(
-                            color: days[i].date == today
+                            color: day.date == today
                                 ? WidgetStatePropertyAll(scheme.primaryContainer)
                                 : null,
                             cells: [
                               DataCell(Text(
-                                '${days[i].date.day} ${DateFormat.E(dateLocale(locale)).format(days[i].date)}',
+                                '${day.date.day} ${DateFormat.E(dateLocale(locale)).format(day.date)}',
                                 style: TextStyle(
-                                  fontWeight: days[i].isFriday ? FontWeight.w700 : FontWeight.w400,
+                                  fontWeight: day.isFriday ? FontWeight.w700 : FontWeight.w400,
                                 ),
                               )),
                               for (final p in PrayerName.values)
                                 DataCell(Text(
-                                  formatClock(days[i].times[p]!, settings.timezoneId, locale),
+                                  formatClock(day.times[p]!, settings.timezoneId, locale),
                                   style: TextStyle(
-                                    fontWeight: days[i].isFriday && p == PrayerName.dhuhr
+                                    fontWeight: day.isFriday && p == PrayerName.dhuhr
                                         ? FontWeight.w700
                                         : FontWeight.w400,
                                   ),
                                 )),
-                              DataCell(Text(
-                                formatClock(
-                                  i + 1 < days.length
-                                      ? days[i + 1].times[PrayerName.fajr]!
-                                      : nextMonthFirst.times[PrayerName.fajr]!,
-                                  settings.timezoneId,
-                                  locale,
-                                ),
-                              )),
                             ],
                           ),
                       ],
