@@ -315,5 +315,12 @@
 
   "navPrayer": "نماز",
   "dashTools": "آلات",
-  "dashComingSoon": "جلد آ رہا ہے"
+  "dashComingSoon": "جلد آ رہا ہے",
+
+  "khataChart": "قسم کے مطابق خرچ",
+  "khataBudget": "ماہانہ بجٹ",
+  "khataBudgetHint": "حد ہٹانے کے لیے 0 لکھیں",
+  "khataExport": "CSV برآمد",
+  "khataBudgetSaved": "بجٹ محفوظ ہو گیا",
+  "khataOverBudget": "بجٹ سے زیادہ"
 }

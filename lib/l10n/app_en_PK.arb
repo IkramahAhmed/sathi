@@ -298,5 +298,12 @@
 
   "navPrayer": "Namaz",
   "dashTools": "Auzaar",
-  "dashComingSoon": "Jald aa raha hai"
+  "dashComingSoon": "Jald aa raha hai",
+
+  "khataChart": "Qism ke mutabiq kharcha",
+  "khataBudget": "Mahana budget",
+  "khataBudgetHint": "Hadd hatane ke liye 0 likhein",
+  "khataExport": "CSV Export",
+  "khataBudgetSaved": "Budget save ho gaya",
+  "khataOverBudget": "Budget se zyada"
 }

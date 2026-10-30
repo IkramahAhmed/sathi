@@ -598,5 +598,12 @@
 
   "navPrayer": "Prayer",
   "dashTools": "Tools",
-  "dashComingSoon": "Coming soon"
+  "dashComingSoon": "Coming soon",
+
+  "khataChart": "Spending by category",
+  "khataBudget": "Monthly budgets",
+  "khataBudgetHint": "Set 0 to remove a limit",
+  "khataExport": "Export CSV",
+  "khataBudgetSaved": "Budgets saved",
+  "khataOverBudget": "Over budget"
 }
