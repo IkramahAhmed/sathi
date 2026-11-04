@@ -1040,6 +1040,33 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get khataCatOther => 'Other';
+
+  @override
+  String get navPrayer => 'Prayer';
+
+  @override
+  String get dashTools => 'Tools';
+
+  @override
+  String get dashComingSoon => 'Coming soon';
+
+  @override
+  String get khataChart => 'Spending by category';
+
+  @override
+  String get khataBudget => 'Monthly budgets';
+
+  @override
+  String get khataBudgetHint => 'Set 0 to remove a limit';
+
+  @override
+  String get khataExport => 'Export CSV';
+
+  @override
+  String get khataBudgetSaved => 'Budgets saved';
+
+  @override
+  String get khataOverBudget => 'Over budget';
 }
 
 /// The translations for English, as used in Pakistan (`en_PK`).
@@ -2043,4 +2070,31 @@ class AppLocalizationsEnPk extends AppLocalizationsEn {
 
   @override
   String get khataCatOther => 'Aur';
+
+  @override
+  String get navPrayer => 'Namaz';
+
+  @override
+  String get dashTools => 'Auzaar';
+
+  @override
+  String get dashComingSoon => 'Jald aa raha hai';
+
+  @override
+  String get khataChart => 'Qism ke mutabiq kharcha';
+
+  @override
+  String get khataBudget => 'Mahana budget';
+
+  @override
+  String get khataBudgetHint => 'Hadd hatane ke liye 0 likhein';
+
+  @override
+  String get khataExport => 'CSV Export';
+
+  @override
+  String get khataBudgetSaved => 'Budget save ho gaya';
+
+  @override
+  String get khataOverBudget => 'Budget se zyada';
 }

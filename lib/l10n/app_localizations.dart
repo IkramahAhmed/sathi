@@ -1928,6 +1928,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Other'**
   String get khataCatOther;
+
+  /// No description provided for @navPrayer.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayer'**
+  String get navPrayer;
+
+  /// No description provided for @dashTools.
+  ///
+  /// In en, this message translates to:
+  /// **'Tools'**
+  String get dashTools;
+
+  /// No description provided for @dashComingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Coming soon'**
+  String get dashComingSoon;
+
+  /// No description provided for @khataChart.
+  ///
+  /// In en, this message translates to:
+  /// **'Spending by category'**
+  String get khataChart;
+
+  /// No description provided for @khataBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly budgets'**
+  String get khataBudget;
+
+  /// No description provided for @khataBudgetHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Set 0 to remove a limit'**
+  String get khataBudgetHint;
+
+  /// No description provided for @khataExport.
+  ///
+  /// In en, this message translates to:
+  /// **'Export CSV'**
+  String get khataExport;
+
+  /// No description provided for @khataBudgetSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Budgets saved'**
+  String get khataBudgetSaved;
+
+  /// No description provided for @khataOverBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Over budget'**
+  String get khataOverBudget;
 }
 
 class _AppLocalizationsDelegate

@@ -431,8 +431,13 @@ class _BudgetRow extends StatelessWidget {
               ),
             ),
             if (isOver) ...[
-              const SizedBox(width: 4),
-              Icon(Icons.warning_amber_rounded, size: 12, color: scheme.error),
+              const SizedBox(width: 6),
+              Icon(Icons.warning_amber_rounded, size: 14, color: scheme.error),
+              const SizedBox(width: 2),
+              Text(
+                l10n.khataOverBudget,
+                style: text.labelSmall?.copyWith(color: scheme.error, fontWeight: FontWeight.w600),
+              ),
             ],
           ],
         ),

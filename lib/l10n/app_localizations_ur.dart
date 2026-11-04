@@ -1038,4 +1038,31 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get khataCatOther => 'دیگر';
+
+  @override
+  String get navPrayer => 'نماز';
+
+  @override
+  String get dashTools => 'آلات';
+
+  @override
+  String get dashComingSoon => 'جلد آ رہا ہے';
+
+  @override
+  String get khataChart => 'قسم کے مطابق خرچ';
+
+  @override
+  String get khataBudget => 'ماہانہ بجٹ';
+
+  @override
+  String get khataBudgetHint => 'حد ہٹانے کے لیے 0 لکھیں';
+
+  @override
+  String get khataExport => 'CSV برآمد';
+
+  @override
+  String get khataBudgetSaved => 'بجٹ محفوظ ہو گیا';
+
+  @override
+  String get khataOverBudget => 'بجٹ سے زیادہ';
 }
