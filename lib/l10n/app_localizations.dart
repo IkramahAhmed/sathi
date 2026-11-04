@@ -1833,6 +1833,12 @@ abstract class AppLocalizations {
   /// **'Add Expense'**
   String get khataAddTitle;
 
+  /// No description provided for @khataEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Expense'**
+  String get khataEditTitle;
+
   /// No description provided for @khataAmount.
   ///
   /// In en, this message translates to:

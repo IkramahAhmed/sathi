@@ -279,6 +279,7 @@
   "khataEmpty": "Abhi koi kharcha nahi",
   "khataEmptyHint": "+ dabayein pehla kharcha likhne ke liye",
   "khataAddTitle": "Kharcha Shamil Karein",
+  "khataEditTitle": "Kharcha Edit Karein",
   "khataAmount": "Raqam",
   "khataAmountInvalid": "Sahi raqam likhein",
   "khataCategory": "Qism",

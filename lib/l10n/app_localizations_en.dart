@@ -994,6 +994,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get khataAddTitle => 'Add Expense';
 
   @override
+  String get khataEditTitle => 'Edit Expense';
+
+  @override
   String get khataAmount => 'Amount';
 
   @override
@@ -2022,6 +2025,9 @@ class AppLocalizationsEnPk extends AppLocalizationsEn {
 
   @override
   String get khataAddTitle => 'Kharcha Shamil Karein';
+
+  @override
+  String get khataEditTitle => 'Kharcha Edit Karein';
 
   @override
   String get khataAmount => 'Raqam';

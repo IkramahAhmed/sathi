@@ -528,7 +528,16 @@ class _ExpenseList extends StatelessWidget {
           children: [
             _DayHeader(label: dayLabel, total: dayTotal),
             for (final expense in dayExpenses)
-              _ExpenseTile(expense: expense, l10n: l10n, onDelete: onDelete),
+              _ExpenseTile(
+                expense: expense,
+                l10n: l10n,
+                onDelete: onDelete,
+                onEdit: (e) => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => AddExpenseScreen(expense: e),
+                  ),
+                ),
+              ),
           ],
         );
       },
@@ -576,11 +585,17 @@ class _DayHeader extends StatelessWidget {
 }
 
 class _ExpenseTile extends StatelessWidget {
-  const _ExpenseTile({required this.expense, required this.l10n, required this.onDelete});
+  const _ExpenseTile({
+    required this.expense,
+    required this.l10n,
+    required this.onDelete,
+    required this.onEdit,
+  });
 
   final Expense expense;
   final AppLocalizations l10n;
   final Future<void> Function(int id) onDelete;
+  final void Function(Expense e) onEdit;
 
   @override
   Widget build(BuildContext context) {
@@ -615,6 +630,7 @@ class _ExpenseTile extends StatelessWidget {
         child: Icon(Icons.delete_outline, color: scheme.onError),
       ),
       child: ListTile(
+        onTap: () => onEdit(expense),
         leading: CircleAvatar(
           backgroundColor: scheme.primaryContainer,
           child: Icon(cat.icon, size: 20, color: scheme.onPrimaryContainer),

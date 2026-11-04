@@ -294,6 +294,9 @@ class ExpensesDao extends DatabaseAccessor<AppDatabase> with _$ExpensesDaoMixin 
 
   Future<void> add(ExpensesCompanion entry) => into(expenses).insert(entry);
 
+  Future<void> updateExpense(int id, ExpensesCompanion entry) =>
+      (update(expenses)..where((t) => t.id.equals(id))).write(entry);
+
   Future<void> remove(int id) => (delete(expenses)..where((t) => t.id.equals(id))).go();
 
   /// All expenses for the given month (format: `yyyy-MM`), newest first.

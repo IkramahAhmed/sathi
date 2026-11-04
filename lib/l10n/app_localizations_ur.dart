@@ -992,6 +992,9 @@ class AppLocalizationsUr extends AppLocalizations {
   String get khataAddTitle => 'خرچ شامل کریں';
 
   @override
+  String get khataEditTitle => 'خرچ تبدیل کریں';
+
+  @override
   String get khataAmount => 'رقم';
 
   @override

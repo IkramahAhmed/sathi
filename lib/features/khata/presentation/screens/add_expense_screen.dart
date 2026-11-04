@@ -10,18 +10,35 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../khata/domain/entities/expense_category.dart';
 
 class AddExpenseScreen extends ConsumerStatefulWidget {
-  const AddExpenseScreen({super.key});
+  const AddExpenseScreen({super.key, this.expense});
+
+  /// When provided the screen is in edit mode.
+  final Expense? expense;
 
   @override
   ConsumerState<AddExpenseScreen> createState() => _AddExpenseScreenState();
 }
 
 class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
-  final _amountController = TextEditingController();
-  final _noteController = TextEditingController();
-  ExpenseCategory _category = ExpenseCategory.food;
-  DateTime _date = DateTime.now();
+  late final TextEditingController _amountController;
+  late final TextEditingController _noteController;
+  late ExpenseCategory _category;
+  late DateTime _date;
   bool _saving = false;
+
+  bool get _isEditing => widget.expense != null;
+
+  @override
+  void initState() {
+    super.initState();
+    final e = widget.expense;
+    _amountController = TextEditingController(
+      text: e != null ? e.amount.toStringAsFixed(e.amount % 1 == 0 ? 0 : 2) : '',
+    );
+    _noteController = TextEditingController(text: e?.note ?? '');
+    _category = e != null ? ExpenseCategory.fromString(e.category) : ExpenseCategory.food;
+    _date = e != null ? DateTime.parse(e.date) : DateTime.now();
+  }
 
   @override
   void dispose() {
@@ -39,17 +56,31 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
       return;
     }
     setState(() => _saving = true);
+    final dateStr =
+        '${_date.year.toString().padLeft(4, '0')}-${_date.month.toString().padLeft(2, '0')}-${_date.day.toString().padLeft(2, '0')}';
     try {
-      await ref.read(appDatabaseProvider).expensesDao.add(
-            ExpensesCompanion.insert(
-              amount: amount,
-              category: _category.name,
-              note: Value(_noteController.text.trim()),
-              date:
-                  '${_date.year.toString().padLeft(4, '0')}-${_date.month.toString().padLeft(2, '0')}-${_date.day.toString().padLeft(2, '0')}',
-              createdAt: DateTime.now().toUtc(),
-            ),
-          );
+      final dao = ref.read(appDatabaseProvider).expensesDao;
+      if (_isEditing) {
+        await dao.updateExpense(
+          widget.expense!.id,
+          ExpensesCompanion(
+            amount: Value(amount),
+            category: Value(_category.name),
+            note: Value(_noteController.text.trim()),
+            date: Value(dateStr),
+          ),
+        );
+      } else {
+        await dao.add(
+          ExpensesCompanion.insert(
+            amount: amount,
+            category: _category.name,
+            note: Value(_noteController.text.trim()),
+            date: dateStr,
+            createdAt: DateTime.now().toUtc(),
+          ),
+        );
+      }
       if (mounted) Navigator.of(context).pop();
     } finally {
       if (mounted) setState(() => _saving = false);
@@ -75,18 +106,51 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.khataAddTitle),
+        title: Text(_isEditing ? l10n.khataEditTitle : l10n.khataAddTitle),
         actions: [
           if (_saving)
             const Padding(
               padding: EdgeInsets.all(16),
               child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)),
             )
-          else
+          else ...[
+            if (_isEditing)
+              IconButton(
+                icon: const Icon(Icons.delete_outline),
+                tooltip: l10n.khataDelete,
+                onPressed: () async {
+                  final confirmed = await showDialog<bool>(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      title: Text(l10n.khataDelete),
+                      content: Text('Rs. ${_amountController.text} — ${_category.label(l10n)}'),
+                      actions: [
+                        TextButton(
+                            onPressed: () => Navigator.pop(ctx, false),
+                            child: Text(l10n.cancel)),
+                        FilledButton(
+                          onPressed: () => Navigator.pop(ctx, true),
+                          style: FilledButton.styleFrom(
+                              backgroundColor: Theme.of(context).colorScheme.error),
+                          child: Text(l10n.khataDelete),
+                        ),
+                      ],
+                    ),
+                  );
+                  if (confirmed == true && mounted) {
+                    await ref
+                        .read(appDatabaseProvider)
+                        .expensesDao
+                        .remove(widget.expense!.id);
+                    if (mounted) Navigator.of(context).pop();
+                  }
+                },
+              ),
             TextButton(
               onPressed: () => _save(l10n),
               child: Text(l10n.khataSave),
             ),
+          ],
         ],
       ),
       body: ListView(

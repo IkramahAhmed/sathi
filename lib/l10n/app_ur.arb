@@ -296,6 +296,7 @@
   "khataEmpty": "ابھی کوئی خرچ نہیں",
   "khataEmptyHint": "+ دبائیں پہلا خرچ شامل کریں",
   "khataAddTitle": "خرچ شامل کریں",
+  "khataEditTitle": "خرچ تبدیل کریں",
   "khataAmount": "رقم",
   "khataAmountInvalid": "درست رقم درج کریں",
   "khataCategory": "قسم",
