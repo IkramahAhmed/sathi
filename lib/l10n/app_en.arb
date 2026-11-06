@@ -606,5 +606,41 @@
   "khataBudgetHint": "Set 0 to remove a limit",
   "khataExport": "Export CSV",
   "khataBudgetSaved": "Budgets saved",
-  "khataOverBudget": "Over budget"
+  "khataOverBudget": "Over budget",
+
+  "udhaarTitle": "Udhaar Ledger",
+  "udhaarSearch": "Search contacts…",
+  "udhaarAddContact": "Add Contact",
+  "udhaarEditContact": "Edit Contact",
+  "udhaarDeleteContact": "Delete Contact",
+  "udhaarDeleteContactConfirm": "Delete {name} and all their entries?",
+  "@udhaarDeleteContactConfirm": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "udhaarContactName": "Name",
+  "udhaarSave": "Save",
+  "udhaarDelete": "Delete",
+  "udhaarEmpty": "No contacts yet",
+  "udhaarEmptyHint": "Add someone you gave or took money from",
+  "udhaarOwedToMe": "Owed to me",
+  "udhaarIOwe": "I owe",
+  "udhaarOwes": "Owes you",
+  "udhaarYouOwe": "You owe them",
+  "udhaarSettled": "Settled",
+  "udhaarClear": "All clear",
+  "udhaarOwesYou": "{name} owes you",
+  "@udhaarOwesYou": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "udhaarYouOweContact": "You owe {name}",
+  "@udhaarYouOweContact": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "udhaarGave": "Diya (gave)",
+  "udhaarReceived": "Liya (received)",
+  "udhaarAmount": "Amount",
+  "udhaarNote": "Note (optional)",
+  "udhaarChangeDate": "Change",
+  "udhaarNoEntries": "No entries yet.\nTap Diya or Liya to record.",
+  "udhaarDeleteEntry": "Delete this entry?"
 }

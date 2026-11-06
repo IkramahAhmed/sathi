@@ -323,5 +323,41 @@
   "khataBudgetHint": "حد ہٹانے کے لیے 0 لکھیں",
   "khataExport": "CSV برآمد",
   "khataBudgetSaved": "بجٹ محفوظ ہو گیا",
-  "khataOverBudget": "بجٹ سے زیادہ"
+  "khataOverBudget": "بجٹ سے زیادہ",
+
+  "udhaarTitle": "ادھار بہی کھاتہ",
+  "udhaarSearch": "رابطے تلاش کریں…",
+  "udhaarAddContact": "نیا رابطہ",
+  "udhaarEditContact": "نام تبدیل کریں",
+  "udhaarDeleteContact": "رابطہ حذف کریں",
+  "udhaarDeleteContactConfirm": "{name} اور تمام اندراجات حذف کریں؟",
+  "@udhaarDeleteContactConfirm": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "udhaarContactName": "نام",
+  "udhaarSave": "محفوظ کریں",
+  "udhaarDelete": "حذف کریں",
+  "udhaarEmpty": "ابھی کوئی رابطہ نہیں",
+  "udhaarEmptyHint": "جس سے لین دین ہو اسے شامل کریں",
+  "udhaarOwedToMe": "مجھے ملنا ہے",
+  "udhaarIOwe": "مجھے دینا ہے",
+  "udhaarOwes": "آپ کا دینا ہے",
+  "udhaarYouOwe": "آپ کا دینا ہے",
+  "udhaarSettled": "حساب صاف",
+  "udhaarClear": "سب صاف",
+  "udhaarOwesYou": "{name} کا آپ کو دینا ہے",
+  "@udhaarOwesYou": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "udhaarYouOweContact": "آپ کا {name} کو دینا ہے",
+  "@udhaarYouOweContact": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "udhaarGave": "دیا",
+  "udhaarReceived": "لیا",
+  "udhaarAmount": "رقم",
+  "udhaarNote": "نوٹ (اختیاری)",
+  "udhaarChangeDate": "تبدیل کریں",
+  "udhaarNoEntries": "کوئی اندراج نہیں۔\nدیا یا لیا بٹن دبائیں۔",
+  "udhaarDeleteEntry": "یہ اندراج حذف کریں؟"
 }

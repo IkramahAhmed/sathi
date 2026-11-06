@@ -1068,4 +1068,88 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get khataOverBudget => 'بجٹ سے زیادہ';
+
+  @override
+  String get udhaarTitle => 'ادھار بہی کھاتہ';
+
+  @override
+  String get udhaarSearch => 'رابطے تلاش کریں…';
+
+  @override
+  String get udhaarAddContact => 'نیا رابطہ';
+
+  @override
+  String get udhaarEditContact => 'نام تبدیل کریں';
+
+  @override
+  String get udhaarDeleteContact => 'رابطہ حذف کریں';
+
+  @override
+  String udhaarDeleteContactConfirm(String name) {
+    return '$name اور تمام اندراجات حذف کریں؟';
+  }
+
+  @override
+  String get udhaarContactName => 'نام';
+
+  @override
+  String get udhaarSave => 'محفوظ کریں';
+
+  @override
+  String get udhaarDelete => 'حذف کریں';
+
+  @override
+  String get udhaarEmpty => 'ابھی کوئی رابطہ نہیں';
+
+  @override
+  String get udhaarEmptyHint => 'جس سے لین دین ہو اسے شامل کریں';
+
+  @override
+  String get udhaarOwedToMe => 'مجھے ملنا ہے';
+
+  @override
+  String get udhaarIOwe => 'مجھے دینا ہے';
+
+  @override
+  String get udhaarOwes => 'آپ کا دینا ہے';
+
+  @override
+  String get udhaarYouOwe => 'آپ کا دینا ہے';
+
+  @override
+  String get udhaarSettled => 'حساب صاف';
+
+  @override
+  String get udhaarClear => 'سب صاف';
+
+  @override
+  String udhaarOwesYou(String name) {
+    return '$name کا آپ کو دینا ہے';
+  }
+
+  @override
+  String udhaarYouOweContact(String name) {
+    return 'آپ کا $name کو دینا ہے';
+  }
+
+  @override
+  String get udhaarGave => 'دیا';
+
+  @override
+  String get udhaarReceived => 'لیا';
+
+  @override
+  String get udhaarAmount => 'رقم';
+
+  @override
+  String get udhaarNote => 'نوٹ (اختیاری)';
+
+  @override
+  String get udhaarChangeDate => 'تبدیل کریں';
+
+  @override
+  String get udhaarNoEntries => 'کوئی اندراج نہیں۔\nدیا یا لیا بٹن دبائیں۔';
+
+  @override
+  String get udhaarDeleteEntry => 'یہ اندراج حذف کریں؟';
 }

@@ -68,3 +68,21 @@ class ExpensesDaoManager {
   $$ExpensesTableTableManager get expenses =>
       $$ExpensesTableTableManager(_db.attachedDatabase, _db.expenses);
 }
+
+mixin _$UdhaarDaoMixin on DatabaseAccessor<AppDatabase> {
+  $UdhaarContactsTable get udhaarContacts => attachedDatabase.udhaarContacts;
+  $UdhaarEntriesTable get udhaarEntries => attachedDatabase.udhaarEntries;
+  UdhaarDaoManager get managers => UdhaarDaoManager(this);
+}
+
+class UdhaarDaoManager {
+  final _$UdhaarDaoMixin _db;
+  UdhaarDaoManager(this._db);
+  $$UdhaarContactsTableTableManager get udhaarContacts =>
+      $$UdhaarContactsTableTableManager(
+        _db.attachedDatabase,
+        _db.udhaarContacts,
+      );
+  $$UdhaarEntriesTableTableManager get udhaarEntries =>
+      $$UdhaarEntriesTableTableManager(_db.attachedDatabase, _db.udhaarEntries);
+}

@@ -309,3 +309,61 @@ class ExpensesDao extends DatabaseAccessor<AppDatabase> with _$ExpensesDaoMixin 
             ]))
           .watch();
 }
+
+@DriftAccessor(tables: [UdhaarContacts, UdhaarEntries])
+class UdhaarDao extends DatabaseAccessor<AppDatabase> with _$UdhaarDaoMixin {
+  UdhaarDao(super.db);
+
+  // ── Contacts ──────────────────────────────────────────────────────────────
+
+  Stream<List<UdhaarContact>> watchContacts() =>
+      (select(udhaarContacts)..orderBy([(t) => OrderingTerm.asc(t.name)])).watch();
+
+  Future<int> addContact(UdhaarContactsCompanion entry) =>
+      into(udhaarContacts).insert(entry);
+
+  Future<void> updateContact(int id, UdhaarContactsCompanion entry) =>
+      (update(udhaarContacts)..where((t) => t.id.equals(id))).write(entry);
+
+  Future<void> deleteContact(int id) => transaction(() async {
+        await (delete(udhaarEntries)..where((t) => t.contactId.equals(id))).go();
+        await (delete(udhaarContacts)..where((t) => t.id.equals(id))).go();
+      });
+
+  // ── Entries ───────────────────────────────────────────────────────────────
+
+  /// All entries for a contact, newest first.
+  Stream<List<UdhaarEntry>> watchEntries(int contactId) =>
+      (select(udhaarEntries)
+            ..where((t) => t.contactId.equals(contactId))
+            ..orderBy([
+              (t) => OrderingTerm.desc(t.date),
+              (t) => OrderingTerm.desc(t.createdAt),
+            ]))
+          .watch();
+
+  Future<void> addEntry(UdhaarEntriesCompanion entry) =>
+      into(udhaarEntries).insert(entry);
+
+  Future<void> deleteEntry(int id) =>
+      (delete(udhaarEntries)..where((t) => t.id.equals(id))).go();
+
+  /// Net balance for each contact: positive = they owe you, negative = you owe them.
+  Stream<Map<int, double>> watchBalances() {
+    final gave = udhaarEntries.amount.sum();
+    return (selectOnly(udhaarEntries)
+          ..addColumns([udhaarEntries.contactId, gave])
+          ..groupBy([udhaarEntries.contactId]))
+        .watch()
+        .asyncMap((_) async {
+      // Manual calculation per contact for correctness with gave/received split.
+      final all = await select(udhaarEntries).get();
+      final map = <int, double>{};
+      for (final e in all) {
+        final delta = e.type == 'gave' ? e.amount : -e.amount;
+        map[e.contactId] = (map[e.contactId] ?? 0) + delta;
+      }
+      return map;
+    });
+  }
+}

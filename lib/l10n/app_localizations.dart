@@ -1988,6 +1988,162 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Over budget'**
   String get khataOverBudget;
+
+  /// No description provided for @udhaarTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Udhaar Ledger'**
+  String get udhaarTitle;
+
+  /// No description provided for @udhaarSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search contacts…'**
+  String get udhaarSearch;
+
+  /// No description provided for @udhaarAddContact.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Contact'**
+  String get udhaarAddContact;
+
+  /// No description provided for @udhaarEditContact.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Contact'**
+  String get udhaarEditContact;
+
+  /// No description provided for @udhaarDeleteContact.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Contact'**
+  String get udhaarDeleteContact;
+
+  /// No description provided for @udhaarDeleteContactConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete {name} and all their entries?'**
+  String udhaarDeleteContactConfirm(String name);
+
+  /// No description provided for @udhaarContactName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get udhaarContactName;
+
+  /// No description provided for @udhaarSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get udhaarSave;
+
+  /// No description provided for @udhaarDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get udhaarDelete;
+
+  /// No description provided for @udhaarEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No contacts yet'**
+  String get udhaarEmpty;
+
+  /// No description provided for @udhaarEmptyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add someone you gave or took money from'**
+  String get udhaarEmptyHint;
+
+  /// No description provided for @udhaarOwedToMe.
+  ///
+  /// In en, this message translates to:
+  /// **'Owed to me'**
+  String get udhaarOwedToMe;
+
+  /// No description provided for @udhaarIOwe.
+  ///
+  /// In en, this message translates to:
+  /// **'I owe'**
+  String get udhaarIOwe;
+
+  /// No description provided for @udhaarOwes.
+  ///
+  /// In en, this message translates to:
+  /// **'Owes you'**
+  String get udhaarOwes;
+
+  /// No description provided for @udhaarYouOwe.
+  ///
+  /// In en, this message translates to:
+  /// **'You owe them'**
+  String get udhaarYouOwe;
+
+  /// No description provided for @udhaarSettled.
+  ///
+  /// In en, this message translates to:
+  /// **'Settled'**
+  String get udhaarSettled;
+
+  /// No description provided for @udhaarClear.
+  ///
+  /// In en, this message translates to:
+  /// **'All clear'**
+  String get udhaarClear;
+
+  /// No description provided for @udhaarOwesYou.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} owes you'**
+  String udhaarOwesYou(String name);
+
+  /// No description provided for @udhaarYouOweContact.
+  ///
+  /// In en, this message translates to:
+  /// **'You owe {name}'**
+  String udhaarYouOweContact(String name);
+
+  /// No description provided for @udhaarGave.
+  ///
+  /// In en, this message translates to:
+  /// **'Diya (gave)'**
+  String get udhaarGave;
+
+  /// No description provided for @udhaarReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Liya (received)'**
+  String get udhaarReceived;
+
+  /// No description provided for @udhaarAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get udhaarAmount;
+
+  /// No description provided for @udhaarNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Note (optional)'**
+  String get udhaarNote;
+
+  /// No description provided for @udhaarChangeDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get udhaarChangeDate;
+
+  /// No description provided for @udhaarNoEntries.
+  ///
+  /// In en, this message translates to:
+  /// **'No entries yet.\nTap Diya or Liya to record.'**
+  String get udhaarNoEntries;
+
+  /// No description provided for @udhaarDeleteEntry.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this entry?'**
+  String get udhaarDeleteEntry;
 }
 
 class _AppLocalizationsDelegate

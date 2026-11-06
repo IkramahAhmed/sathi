@@ -1070,6 +1070,90 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get khataOverBudget => 'Over budget';
+
+  @override
+  String get udhaarTitle => 'Udhaar Ledger';
+
+  @override
+  String get udhaarSearch => 'Search contacts…';
+
+  @override
+  String get udhaarAddContact => 'Add Contact';
+
+  @override
+  String get udhaarEditContact => 'Edit Contact';
+
+  @override
+  String get udhaarDeleteContact => 'Delete Contact';
+
+  @override
+  String udhaarDeleteContactConfirm(String name) {
+    return 'Delete $name and all their entries?';
+  }
+
+  @override
+  String get udhaarContactName => 'Name';
+
+  @override
+  String get udhaarSave => 'Save';
+
+  @override
+  String get udhaarDelete => 'Delete';
+
+  @override
+  String get udhaarEmpty => 'No contacts yet';
+
+  @override
+  String get udhaarEmptyHint => 'Add someone you gave or took money from';
+
+  @override
+  String get udhaarOwedToMe => 'Owed to me';
+
+  @override
+  String get udhaarIOwe => 'I owe';
+
+  @override
+  String get udhaarOwes => 'Owes you';
+
+  @override
+  String get udhaarYouOwe => 'You owe them';
+
+  @override
+  String get udhaarSettled => 'Settled';
+
+  @override
+  String get udhaarClear => 'All clear';
+
+  @override
+  String udhaarOwesYou(String name) {
+    return '$name owes you';
+  }
+
+  @override
+  String udhaarYouOweContact(String name) {
+    return 'You owe $name';
+  }
+
+  @override
+  String get udhaarGave => 'Diya (gave)';
+
+  @override
+  String get udhaarReceived => 'Liya (received)';
+
+  @override
+  String get udhaarAmount => 'Amount';
+
+  @override
+  String get udhaarNote => 'Note (optional)';
+
+  @override
+  String get udhaarChangeDate => 'Change';
+
+  @override
+  String get udhaarNoEntries => 'No entries yet.\nTap Diya or Liya to record.';
+
+  @override
+  String get udhaarDeleteEntry => 'Delete this entry?';
 }
 
 /// The translations for English, as used in Pakistan (`en_PK`).
@@ -2103,4 +2187,88 @@ class AppLocalizationsEnPk extends AppLocalizationsEn {
 
   @override
   String get khataOverBudget => 'Budget se zyada';
+
+  @override
+  String get udhaarTitle => 'Udhaar Bahi Khata';
+
+  @override
+  String get udhaarSearch => 'Contact dhundein…';
+
+  @override
+  String get udhaarAddContact => 'Contact Shamil Karein';
+
+  @override
+  String get udhaarEditContact => 'Naam Badlein';
+
+  @override
+  String get udhaarDeleteContact => 'Contact Mitaein';
+
+  @override
+  String udhaarDeleteContactConfirm(String name) {
+    return '$name aur tamam entries mitaein?';
+  }
+
+  @override
+  String get udhaarContactName => 'Naam';
+
+  @override
+  String get udhaarSave => 'Save Karein';
+
+  @override
+  String get udhaarDelete => 'Mitaein';
+
+  @override
+  String get udhaarEmpty => 'Abhi koi contact nahi';
+
+  @override
+  String get udhaarEmptyHint => 'Jis se len den ho use shamil karein';
+
+  @override
+  String get udhaarOwedToMe => 'Mujhe milna hai';
+
+  @override
+  String get udhaarIOwe => 'Mujhe dena hai';
+
+  @override
+  String get udhaarOwes => 'Aap ka dena hai';
+
+  @override
+  String get udhaarYouOwe => 'Aap ka dena hai';
+
+  @override
+  String get udhaarSettled => 'Hisab saaf';
+
+  @override
+  String get udhaarClear => 'Sab clear';
+
+  @override
+  String udhaarOwesYou(String name) {
+    return '$name ka aap ko dena hai';
+  }
+
+  @override
+  String udhaarYouOweContact(String name) {
+    return 'Aap ka $name ko dena hai';
+  }
+
+  @override
+  String get udhaarGave => 'Diya';
+
+  @override
+  String get udhaarReceived => 'Liya';
+
+  @override
+  String get udhaarAmount => 'Raqam';
+
+  @override
+  String get udhaarNote => 'Note (ikhtiyari)';
+
+  @override
+  String get udhaarChangeDate => 'Badlein';
+
+  @override
+  String get udhaarNoEntries => 'Koi entry nahi.\nDiya ya Liya dabain.';
+
+  @override
+  String get udhaarDeleteEntry => 'Yeh entry mitaein?';
 }

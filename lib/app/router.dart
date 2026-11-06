@@ -16,6 +16,7 @@ import '../features/prayer/presentation/screens/tracker_screen.dart';
 import '../features/prayer/presentation/screens/ramadan_imsakiya_screen.dart';
 import '../features/prayer/presentation/screens/verify_screen.dart';
 import '../features/khata/presentation/screens/khata_screen.dart';
+import '../features/udhaar/presentation/screens/udhaar_list_screen.dart';
 import 'app_shell.dart';
 
 part 'router.g.dart';
@@ -34,6 +35,7 @@ abstract final class Routes {
   static const verify = '/verify';
   static const setupCheck = '/setup-check';
   static const imsakiya = '/imsakiya';
+  static const udhaar = '/udhaar';
 }
 
 /// The first route to show. Overridden in `main()` once onboarding state is known.
@@ -55,6 +57,7 @@ GoRouter router(Ref ref) {
       GoRoute(path: Routes.monthly, builder: (_, _) => const MonthlyTimetableScreen()),
       GoRoute(path: Routes.qibla, builder: (_, _) => const QiblaScreen()),
       GoRoute(path: Routes.imsakiya, builder: (_, _) => const RamadanImsakiyaScreen()),
+      GoRoute(path: Routes.udhaar, builder: (_, _) => const UdhaarListScreen()),
       GoRoute(path: Routes.setupCheck, builder: (_, _) => const SetupCheckScreen()),
       GoRoute(
         path: Routes.verify,

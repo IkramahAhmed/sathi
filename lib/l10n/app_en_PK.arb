@@ -306,5 +306,41 @@
   "khataBudgetHint": "Hadd hatane ke liye 0 likhein",
   "khataExport": "CSV Export",
   "khataBudgetSaved": "Budget save ho gaya",
-  "khataOverBudget": "Budget se zyada"
+  "khataOverBudget": "Budget se zyada",
+
+  "udhaarTitle": "Udhaar Bahi Khata",
+  "udhaarSearch": "Contact dhundein…",
+  "udhaarAddContact": "Contact Shamil Karein",
+  "udhaarEditContact": "Naam Badlein",
+  "udhaarDeleteContact": "Contact Mitaein",
+  "udhaarDeleteContactConfirm": "{name} aur tamam entries mitaein?",
+  "@udhaarDeleteContactConfirm": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "udhaarContactName": "Naam",
+  "udhaarSave": "Save Karein",
+  "udhaarDelete": "Mitaein",
+  "udhaarEmpty": "Abhi koi contact nahi",
+  "udhaarEmptyHint": "Jis se len den ho use shamil karein",
+  "udhaarOwedToMe": "Mujhe milna hai",
+  "udhaarIOwe": "Mujhe dena hai",
+  "udhaarOwes": "Aap ka dena hai",
+  "udhaarYouOwe": "Aap ka dena hai",
+  "udhaarSettled": "Hisab saaf",
+  "udhaarClear": "Sab clear",
+  "udhaarOwesYou": "{name} ka aap ko dena hai",
+  "@udhaarOwesYou": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "udhaarYouOweContact": "Aap ka {name} ko dena hai",
+  "@udhaarYouOweContact": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "udhaarGave": "Diya",
+  "udhaarReceived": "Liya",
+  "udhaarAmount": "Raqam",
+  "udhaarNote": "Note (ikhtiyari)",
+  "udhaarChangeDate": "Badlein",
+  "udhaarNoEntries": "Koi entry nahi.\nDiya ya Liya dabain.",
+  "udhaarDeleteEntry": "Yeh entry mitaein?"
 }

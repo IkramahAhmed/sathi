@@ -2066,6 +2066,753 @@ class ExpensesCompanion extends UpdateCompanion<Expense> {
   }
 }
 
+class $UdhaarContactsTable extends UdhaarContacts
+    with TableInfo<$UdhaarContactsTable, UdhaarContact> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $UdhaarContactsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _phoneMeta = const VerificationMeta('phone');
+  @override
+  late final GeneratedColumn<String> phone = GeneratedColumn<String>(
+    'phone',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, name, phone, createdAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'udhaar_contacts';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<UdhaarContact> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('phone')) {
+      context.handle(
+        _phoneMeta,
+        phone.isAcceptableOrUnknown(data['phone']!, _phoneMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  UdhaarContact map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return UdhaarContact(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      phone: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}phone'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $UdhaarContactsTable createAlias(String alias) {
+    return $UdhaarContactsTable(attachedDatabase, alias);
+  }
+}
+
+class UdhaarContact extends DataClass implements Insertable<UdhaarContact> {
+  final int id;
+
+  /// Display name of the person.
+  final String name;
+
+  /// Optional phone number (used for WhatsApp reminders later).
+  final String phone;
+  final DateTime createdAt;
+  const UdhaarContact({
+    required this.id,
+    required this.name,
+    required this.phone,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['name'] = Variable<String>(name);
+    map['phone'] = Variable<String>(phone);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  UdhaarContactsCompanion toCompanion(bool nullToAbsent) {
+    return UdhaarContactsCompanion(
+      id: Value(id),
+      name: Value(name),
+      phone: Value(phone),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory UdhaarContact.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return UdhaarContact(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      phone: serializer.fromJson<String>(json['phone']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String>(name),
+      'phone': serializer.toJson<String>(phone),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  UdhaarContact copyWith({
+    int? id,
+    String? name,
+    String? phone,
+    DateTime? createdAt,
+  }) => UdhaarContact(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    phone: phone ?? this.phone,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  UdhaarContact copyWithCompanion(UdhaarContactsCompanion data) {
+    return UdhaarContact(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      phone: data.phone.present ? data.phone.value : this.phone,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('UdhaarContact(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('phone: $phone, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, name, phone, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is UdhaarContact &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.phone == this.phone &&
+          other.createdAt == this.createdAt);
+}
+
+class UdhaarContactsCompanion extends UpdateCompanion<UdhaarContact> {
+  final Value<int> id;
+  final Value<String> name;
+  final Value<String> phone;
+  final Value<DateTime> createdAt;
+  const UdhaarContactsCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.phone = const Value.absent(),
+    this.createdAt = const Value.absent(),
+  });
+  UdhaarContactsCompanion.insert({
+    this.id = const Value.absent(),
+    required String name,
+    this.phone = const Value.absent(),
+    required DateTime createdAt,
+  }) : name = Value(name),
+       createdAt = Value(createdAt);
+  static Insertable<UdhaarContact> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+    Expression<String>? phone,
+    Expression<DateTime>? createdAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (phone != null) 'phone': phone,
+      if (createdAt != null) 'created_at': createdAt,
+    });
+  }
+
+  UdhaarContactsCompanion copyWith({
+    Value<int>? id,
+    Value<String>? name,
+    Value<String>? phone,
+    Value<DateTime>? createdAt,
+  }) {
+    return UdhaarContactsCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      phone: phone ?? this.phone,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (phone.present) {
+      map['phone'] = Variable<String>(phone.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('UdhaarContactsCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('phone: $phone, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $UdhaarEntriesTable extends UdhaarEntries
+    with TableInfo<$UdhaarEntriesTable, UdhaarEntry> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $UdhaarEntriesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _contactIdMeta = const VerificationMeta(
+    'contactId',
+  );
+  @override
+  late final GeneratedColumn<int> contactId = GeneratedColumn<int>(
+    'contact_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES udhaar_contacts (id)',
+    ),
+  );
+  static const VerificationMeta _amountMeta = const VerificationMeta('amount');
+  @override
+  late final GeneratedColumn<double> amount = GeneratedColumn<double>(
+    'amount',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _typeMeta = const VerificationMeta('type');
+  @override
+  late final GeneratedColumn<String> type = GeneratedColumn<String>(
+    'type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _noteMeta = const VerificationMeta('note');
+  @override
+  late final GeneratedColumn<String> note = GeneratedColumn<String>(
+    'note',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _dateMeta = const VerificationMeta('date');
+  @override
+  late final GeneratedColumn<String> date = GeneratedColumn<String>(
+    'date',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    contactId,
+    amount,
+    type,
+    note,
+    date,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'udhaar_entries';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<UdhaarEntry> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('contact_id')) {
+      context.handle(
+        _contactIdMeta,
+        contactId.isAcceptableOrUnknown(data['contact_id']!, _contactIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_contactIdMeta);
+    }
+    if (data.containsKey('amount')) {
+      context.handle(
+        _amountMeta,
+        amount.isAcceptableOrUnknown(data['amount']!, _amountMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_amountMeta);
+    }
+    if (data.containsKey('type')) {
+      context.handle(
+        _typeMeta,
+        type.isAcceptableOrUnknown(data['type']!, _typeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_typeMeta);
+    }
+    if (data.containsKey('note')) {
+      context.handle(
+        _noteMeta,
+        note.isAcceptableOrUnknown(data['note']!, _noteMeta),
+      );
+    }
+    if (data.containsKey('date')) {
+      context.handle(
+        _dateMeta,
+        date.isAcceptableOrUnknown(data['date']!, _dateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dateMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  UdhaarEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return UdhaarEntry(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      contactId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}contact_id'],
+      )!,
+      amount: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}amount'],
+      )!,
+      type: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}type'],
+      )!,
+      note: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}note'],
+      )!,
+      date: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}date'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $UdhaarEntriesTable createAlias(String alias) {
+    return $UdhaarEntriesTable(attachedDatabase, alias);
+  }
+}
+
+class UdhaarEntry extends DataClass implements Insertable<UdhaarEntry> {
+  final int id;
+  final int contactId;
+
+  /// Amount in local currency (always positive).
+  final double amount;
+
+  /// `gave`     → you gave money / they owe you  (adds to balance).
+  /// `received` → you received / they paid back   (subtracts from balance).
+  final String type;
+
+  /// Optional note.
+  final String note;
+
+  /// Calendar date as `yyyy-MM-dd`.
+  final String date;
+  final DateTime createdAt;
+  const UdhaarEntry({
+    required this.id,
+    required this.contactId,
+    required this.amount,
+    required this.type,
+    required this.note,
+    required this.date,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['contact_id'] = Variable<int>(contactId);
+    map['amount'] = Variable<double>(amount);
+    map['type'] = Variable<String>(type);
+    map['note'] = Variable<String>(note);
+    map['date'] = Variable<String>(date);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  UdhaarEntriesCompanion toCompanion(bool nullToAbsent) {
+    return UdhaarEntriesCompanion(
+      id: Value(id),
+      contactId: Value(contactId),
+      amount: Value(amount),
+      type: Value(type),
+      note: Value(note),
+      date: Value(date),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory UdhaarEntry.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return UdhaarEntry(
+      id: serializer.fromJson<int>(json['id']),
+      contactId: serializer.fromJson<int>(json['contactId']),
+      amount: serializer.fromJson<double>(json['amount']),
+      type: serializer.fromJson<String>(json['type']),
+      note: serializer.fromJson<String>(json['note']),
+      date: serializer.fromJson<String>(json['date']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'contactId': serializer.toJson<int>(contactId),
+      'amount': serializer.toJson<double>(amount),
+      'type': serializer.toJson<String>(type),
+      'note': serializer.toJson<String>(note),
+      'date': serializer.toJson<String>(date),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  UdhaarEntry copyWith({
+    int? id,
+    int? contactId,
+    double? amount,
+    String? type,
+    String? note,
+    String? date,
+    DateTime? createdAt,
+  }) => UdhaarEntry(
+    id: id ?? this.id,
+    contactId: contactId ?? this.contactId,
+    amount: amount ?? this.amount,
+    type: type ?? this.type,
+    note: note ?? this.note,
+    date: date ?? this.date,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  UdhaarEntry copyWithCompanion(UdhaarEntriesCompanion data) {
+    return UdhaarEntry(
+      id: data.id.present ? data.id.value : this.id,
+      contactId: data.contactId.present ? data.contactId.value : this.contactId,
+      amount: data.amount.present ? data.amount.value : this.amount,
+      type: data.type.present ? data.type.value : this.type,
+      note: data.note.present ? data.note.value : this.note,
+      date: data.date.present ? data.date.value : this.date,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('UdhaarEntry(')
+          ..write('id: $id, ')
+          ..write('contactId: $contactId, ')
+          ..write('amount: $amount, ')
+          ..write('type: $type, ')
+          ..write('note: $note, ')
+          ..write('date: $date, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, contactId, amount, type, note, date, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is UdhaarEntry &&
+          other.id == this.id &&
+          other.contactId == this.contactId &&
+          other.amount == this.amount &&
+          other.type == this.type &&
+          other.note == this.note &&
+          other.date == this.date &&
+          other.createdAt == this.createdAt);
+}
+
+class UdhaarEntriesCompanion extends UpdateCompanion<UdhaarEntry> {
+  final Value<int> id;
+  final Value<int> contactId;
+  final Value<double> amount;
+  final Value<String> type;
+  final Value<String> note;
+  final Value<String> date;
+  final Value<DateTime> createdAt;
+  const UdhaarEntriesCompanion({
+    this.id = const Value.absent(),
+    this.contactId = const Value.absent(),
+    this.amount = const Value.absent(),
+    this.type = const Value.absent(),
+    this.note = const Value.absent(),
+    this.date = const Value.absent(),
+    this.createdAt = const Value.absent(),
+  });
+  UdhaarEntriesCompanion.insert({
+    this.id = const Value.absent(),
+    required int contactId,
+    required double amount,
+    required String type,
+    this.note = const Value.absent(),
+    required String date,
+    required DateTime createdAt,
+  }) : contactId = Value(contactId),
+       amount = Value(amount),
+       type = Value(type),
+       date = Value(date),
+       createdAt = Value(createdAt);
+  static Insertable<UdhaarEntry> custom({
+    Expression<int>? id,
+    Expression<int>? contactId,
+    Expression<double>? amount,
+    Expression<String>? type,
+    Expression<String>? note,
+    Expression<String>? date,
+    Expression<DateTime>? createdAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (contactId != null) 'contact_id': contactId,
+      if (amount != null) 'amount': amount,
+      if (type != null) 'type': type,
+      if (note != null) 'note': note,
+      if (date != null) 'date': date,
+      if (createdAt != null) 'created_at': createdAt,
+    });
+  }
+
+  UdhaarEntriesCompanion copyWith({
+    Value<int>? id,
+    Value<int>? contactId,
+    Value<double>? amount,
+    Value<String>? type,
+    Value<String>? note,
+    Value<String>? date,
+    Value<DateTime>? createdAt,
+  }) {
+    return UdhaarEntriesCompanion(
+      id: id ?? this.id,
+      contactId: contactId ?? this.contactId,
+      amount: amount ?? this.amount,
+      type: type ?? this.type,
+      note: note ?? this.note,
+      date: date ?? this.date,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (contactId.present) {
+      map['contact_id'] = Variable<int>(contactId.value);
+    }
+    if (amount.present) {
+      map['amount'] = Variable<double>(amount.value);
+    }
+    if (type.present) {
+      map['type'] = Variable<String>(type.value);
+    }
+    if (note.present) {
+      map['note'] = Variable<String>(note.value);
+    }
+    if (date.present) {
+      map['date'] = Variable<String>(date.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('UdhaarEntriesCompanion(')
+          ..write('id: $id, ')
+          ..write('contactId: $contactId, ')
+          ..write('amount: $amount, ')
+          ..write('type: $type, ')
+          ..write('note: $note, ')
+          ..write('date: $date, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -2077,6 +2824,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $QazaBalanceTable qazaBalance = $QazaBalanceTable(this);
   late final $QazaHistoryTable qazaHistory = $QazaHistoryTable(this);
   late final $ExpensesTable expenses = $ExpensesTable(this);
+  late final $UdhaarContactsTable udhaarContacts = $UdhaarContactsTable(this);
+  late final $UdhaarEntriesTable udhaarEntries = $UdhaarEntriesTable(this);
   late final PrayerLogsDao prayerLogsDao = PrayerLogsDao(this as AppDatabase);
   late final SettingsHistoryDao settingsHistoryDao = SettingsHistoryDao(
     this as AppDatabase,
@@ -2086,6 +2835,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   );
   late final QazaDao qazaDao = QazaDao(this as AppDatabase);
   late final ExpensesDao expensesDao = ExpensesDao(this as AppDatabase);
+  late final UdhaarDao udhaarDao = UdhaarDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -2097,6 +2847,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     qazaBalance,
     qazaHistory,
     expenses,
+    udhaarContacts,
+    udhaarEntries,
   ];
 }
 
@@ -3298,6 +4050,642 @@ typedef $$ExpensesTableProcessedTableManager =
       Expense,
       PrefetchHooks Function()
     >;
+typedef $$UdhaarContactsTableCreateCompanionBuilder =
+    UdhaarContactsCompanion Function({
+      Value<int> id,
+      required String name,
+      Value<String> phone,
+      required DateTime createdAt,
+    });
+typedef $$UdhaarContactsTableUpdateCompanionBuilder =
+    UdhaarContactsCompanion Function({
+      Value<int> id,
+      Value<String> name,
+      Value<String> phone,
+      Value<DateTime> createdAt,
+    });
+
+final class $$UdhaarContactsTableReferences
+    extends BaseReferences<_$AppDatabase, $UdhaarContactsTable, UdhaarContact> {
+  $$UdhaarContactsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static MultiTypedResultKey<$UdhaarEntriesTable, List<UdhaarEntry>>
+  _udhaarEntriesRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.udhaarEntries,
+    aliasName: 'udhaar_contacts__id__udhaar_entries__contact_id',
+  );
+
+  $$UdhaarEntriesTableProcessedTableManager get udhaarEntriesRefs {
+    final manager = $$UdhaarEntriesTableTableManager(
+      $_db,
+      $_db.udhaarEntries,
+    ).filter((f) => f.contactId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_udhaarEntriesRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$UdhaarContactsTableFilterComposer
+    extends Composer<_$AppDatabase, $UdhaarContactsTable> {
+  $$UdhaarContactsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get phone => $composableBuilder(
+    column: $table.phone,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  Expression<bool> udhaarEntriesRefs(
+    Expression<bool> Function($$UdhaarEntriesTableFilterComposer f) f,
+  ) {
+    final $$UdhaarEntriesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.udhaarEntries,
+      getReferencedColumn: (t) => t.contactId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$UdhaarEntriesTableFilterComposer(
+            $db: $db,
+            $table: $db.udhaarEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$UdhaarContactsTableOrderingComposer
+    extends Composer<_$AppDatabase, $UdhaarContactsTable> {
+  $$UdhaarContactsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get phone => $composableBuilder(
+    column: $table.phone,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$UdhaarContactsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $UdhaarContactsTable> {
+  $$UdhaarContactsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get phone =>
+      $composableBuilder(column: $table.phone, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  Expression<T> udhaarEntriesRefs<T extends Object>(
+    Expression<T> Function($$UdhaarEntriesTableAnnotationComposer a) f,
+  ) {
+    final $$UdhaarEntriesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.udhaarEntries,
+      getReferencedColumn: (t) => t.contactId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$UdhaarEntriesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.udhaarEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$UdhaarContactsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $UdhaarContactsTable,
+          UdhaarContact,
+          $$UdhaarContactsTableFilterComposer,
+          $$UdhaarContactsTableOrderingComposer,
+          $$UdhaarContactsTableAnnotationComposer,
+          $$UdhaarContactsTableCreateCompanionBuilder,
+          $$UdhaarContactsTableUpdateCompanionBuilder,
+          (UdhaarContact, $$UdhaarContactsTableReferences),
+          UdhaarContact,
+          PrefetchHooks Function({bool udhaarEntriesRefs})
+        > {
+  $$UdhaarContactsTableTableManager(
+    _$AppDatabase db,
+    $UdhaarContactsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$UdhaarContactsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$UdhaarContactsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$UdhaarContactsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> phone = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+              }) => UdhaarContactsCompanion(
+                id: id,
+                name: name,
+                phone: phone,
+                createdAt: createdAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String name,
+                Value<String> phone = const Value.absent(),
+                required DateTime createdAt,
+              }) => UdhaarContactsCompanion.insert(
+                id: id,
+                name: name,
+                phone: phone,
+                createdAt: createdAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$UdhaarContactsTable, UdhaarContact>(table),
+                  $$UdhaarContactsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({udhaarEntriesRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [
+                if (udhaarEntriesRefs) db.udhaarEntries,
+              ],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (udhaarEntriesRefs)
+                    await $_getPrefetchedData<
+                      UdhaarContact,
+                      $UdhaarContactsTable,
+                      UdhaarEntry
+                    >(
+                      currentTable: table,
+                      referencedTable: $$UdhaarContactsTableReferences
+                          ._udhaarEntriesRefsTable(db),
+                      managerFromTypedResult: (p0) =>
+                          $$UdhaarContactsTableReferences(
+                            db,
+                            table,
+                            p0,
+                          ).udhaarEntriesRefs,
+                      referencedItemsForCurrentItem: (item, referencedItems) =>
+                          referencedItems.where((e) => e.contactId == item.id),
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$UdhaarContactsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $UdhaarContactsTable,
+      UdhaarContact,
+      $$UdhaarContactsTableFilterComposer,
+      $$UdhaarContactsTableOrderingComposer,
+      $$UdhaarContactsTableAnnotationComposer,
+      $$UdhaarContactsTableCreateCompanionBuilder,
+      $$UdhaarContactsTableUpdateCompanionBuilder,
+      (UdhaarContact, $$UdhaarContactsTableReferences),
+      UdhaarContact,
+      PrefetchHooks Function({bool udhaarEntriesRefs})
+    >;
+typedef $$UdhaarEntriesTableCreateCompanionBuilder =
+    UdhaarEntriesCompanion Function({
+      Value<int> id,
+      required int contactId,
+      required double amount,
+      required String type,
+      Value<String> note,
+      required String date,
+      required DateTime createdAt,
+    });
+typedef $$UdhaarEntriesTableUpdateCompanionBuilder =
+    UdhaarEntriesCompanion Function({
+      Value<int> id,
+      Value<int> contactId,
+      Value<double> amount,
+      Value<String> type,
+      Value<String> note,
+      Value<String> date,
+      Value<DateTime> createdAt,
+    });
+
+final class $$UdhaarEntriesTableReferences
+    extends BaseReferences<_$AppDatabase, $UdhaarEntriesTable, UdhaarEntry> {
+  $$UdhaarEntriesTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $UdhaarContactsTable _contactIdTable(_$AppDatabase db) => db
+      .udhaarContacts
+      .createAlias('udhaar_entries__contact_id__udhaar_contacts__id');
+
+  $$UdhaarContactsTableProcessedTableManager get contactId {
+    final $_column = $_itemColumn<int>('contact_id')!;
+
+    final manager = $$UdhaarContactsTableTableManager(
+      $_db,
+      $_db.udhaarContacts,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_contactIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$UdhaarEntriesTableFilterComposer
+    extends Composer<_$AppDatabase, $UdhaarEntriesTable> {
+  $$UdhaarEntriesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get amount => $composableBuilder(
+    column: $table.amount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get date => $composableBuilder(
+    column: $table.date,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$UdhaarContactsTableFilterComposer get contactId {
+    final $$UdhaarContactsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.contactId,
+      referencedTable: $db.udhaarContacts,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$UdhaarContactsTableFilterComposer(
+            $db: $db,
+            $table: $db.udhaarContacts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$UdhaarEntriesTableOrderingComposer
+    extends Composer<_$AppDatabase, $UdhaarEntriesTable> {
+  $$UdhaarEntriesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get amount => $composableBuilder(
+    column: $table.amount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get date => $composableBuilder(
+    column: $table.date,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$UdhaarContactsTableOrderingComposer get contactId {
+    final $$UdhaarContactsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.contactId,
+      referencedTable: $db.udhaarContacts,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$UdhaarContactsTableOrderingComposer(
+            $db: $db,
+            $table: $db.udhaarContacts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$UdhaarEntriesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $UdhaarEntriesTable> {
+  $$UdhaarEntriesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<double> get amount =>
+      $composableBuilder(column: $table.amount, builder: (column) => column);
+
+  GeneratedColumn<String> get type =>
+      $composableBuilder(column: $table.type, builder: (column) => column);
+
+  GeneratedColumn<String> get note =>
+      $composableBuilder(column: $table.note, builder: (column) => column);
+
+  GeneratedColumn<String> get date =>
+      $composableBuilder(column: $table.date, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  $$UdhaarContactsTableAnnotationComposer get contactId {
+    final $$UdhaarContactsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.contactId,
+      referencedTable: $db.udhaarContacts,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$UdhaarContactsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.udhaarContacts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$UdhaarEntriesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $UdhaarEntriesTable,
+          UdhaarEntry,
+          $$UdhaarEntriesTableFilterComposer,
+          $$UdhaarEntriesTableOrderingComposer,
+          $$UdhaarEntriesTableAnnotationComposer,
+          $$UdhaarEntriesTableCreateCompanionBuilder,
+          $$UdhaarEntriesTableUpdateCompanionBuilder,
+          (UdhaarEntry, $$UdhaarEntriesTableReferences),
+          UdhaarEntry,
+          PrefetchHooks Function({bool contactId})
+        > {
+  $$UdhaarEntriesTableTableManager(_$AppDatabase db, $UdhaarEntriesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$UdhaarEntriesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$UdhaarEntriesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$UdhaarEntriesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> contactId = const Value.absent(),
+                Value<double> amount = const Value.absent(),
+                Value<String> type = const Value.absent(),
+                Value<String> note = const Value.absent(),
+                Value<String> date = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+              }) => UdhaarEntriesCompanion(
+                id: id,
+                contactId: contactId,
+                amount: amount,
+                type: type,
+                note: note,
+                date: date,
+                createdAt: createdAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int contactId,
+                required double amount,
+                required String type,
+                Value<String> note = const Value.absent(),
+                required String date,
+                required DateTime createdAt,
+              }) => UdhaarEntriesCompanion.insert(
+                id: id,
+                contactId: contactId,
+                amount: amount,
+                type: type,
+                note: note,
+                date: date,
+                createdAt: createdAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$UdhaarEntriesTable, UdhaarEntry>(table),
+                  $$UdhaarEntriesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({contactId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (contactId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.contactId,
+                        referencedTable: $$UdhaarEntriesTableReferences
+                            ._contactIdTable(db),
+                        referencedColumn: $$UdhaarEntriesTableReferences
+                            ._contactIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$UdhaarEntriesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $UdhaarEntriesTable,
+      UdhaarEntry,
+      $$UdhaarEntriesTableFilterComposer,
+      $$UdhaarEntriesTableOrderingComposer,
+      $$UdhaarEntriesTableAnnotationComposer,
+      $$UdhaarEntriesTableCreateCompanionBuilder,
+      $$UdhaarEntriesTableUpdateCompanionBuilder,
+      (UdhaarEntry, $$UdhaarEntriesTableReferences),
+      UdhaarEntry,
+      PrefetchHooks Function({bool contactId})
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -3314,4 +4702,8 @@ class $AppDatabaseManager {
       $$QazaHistoryTableTableManager(_db, _db.qazaHistory);
   $$ExpensesTableTableManager get expenses =>
       $$ExpensesTableTableManager(_db, _db.expenses);
+  $$UdhaarContactsTableTableManager get udhaarContacts =>
+      $$UdhaarContactsTableTableManager(_db, _db.udhaarContacts);
+  $$UdhaarEntriesTableTableManager get udhaarEntries =>
+      $$UdhaarEntriesTableTableManager(_db, _db.udhaarEntries);
 }

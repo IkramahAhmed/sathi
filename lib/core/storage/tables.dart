@@ -76,6 +76,41 @@ class QazaHistory extends Table {
   TextColumn get autoKey => text().nullable().unique()();
 }
 
+/// A person in the Udhaar ledger (customer, friend, family, shopkeeper).
+class UdhaarContacts extends Table {
+  IntColumn get id => integer().autoIncrement()();
+
+  /// Display name of the person.
+  TextColumn get name => text()();
+
+  /// Optional phone number (used for WhatsApp reminders later).
+  TextColumn get phone => text().withDefault(const Constant(''))();
+
+  DateTimeColumn get createdAt => dateTime()();
+}
+
+/// One credit/debit entry in an [UdhaarContacts] ledger.
+class UdhaarEntries extends Table {
+  IntColumn get id => integer().autoIncrement()();
+
+  IntColumn get contactId => integer().references(UdhaarContacts, #id)();
+
+  /// Amount in local currency (always positive).
+  RealColumn get amount => real()();
+
+  /// `gave`     → you gave money / they owe you  (adds to balance).
+  /// `received` → you received / they paid back   (subtracts from balance).
+  TextColumn get type => text()();
+
+  /// Optional note.
+  TextColumn get note => text().withDefault(const Constant(''))();
+
+  /// Calendar date as `yyyy-MM-dd`.
+  TextColumn get date => text()();
+
+  DateTimeColumn get createdAt => dateTime()();
+}
+
 /// Daily expense entries for the Khata (ledger) feature.
 class Expenses extends Table {
   IntColumn get id => integer().autoIncrement()();
