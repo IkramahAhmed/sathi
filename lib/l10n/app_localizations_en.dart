@@ -994,6 +994,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get khataAddTitle => 'Add Expense';
 
   @override
+  String get khataTabExpenses => 'Expenses';
+
+  @override
   String get khataEditTitle => 'Edit Expense';
 
   @override
@@ -1173,6 +1176,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get udhaarWhatsAppNotFound => 'WhatsApp not installed';
+
+  @override
+  String get udhaarDueOn => 'Due';
+
+  @override
+  String get udhaarNoDueDate => 'No due date';
+
+  @override
+  String get udhaarSetDueDate => 'Set date';
+
+  @override
+  String get udhaarLate => 'Late — payment overdue';
+
+  @override
+  String get udhaarLateTitle => 'Late';
 }
 
 /// The translations for English, as used in Pakistan (`en_PK`).
@@ -2130,6 +2148,9 @@ class AppLocalizationsEnPk extends AppLocalizationsEn {
   String get khataAddTitle => 'Kharcha Shamil Karein';
 
   @override
+  String get khataTabExpenses => 'Kharcha';
+
+  @override
   String get khataEditTitle => 'Kharcha Edit Karein';
 
   @override
@@ -2309,4 +2330,19 @@ class AppLocalizationsEnPk extends AppLocalizationsEn {
 
   @override
   String get udhaarWhatsAppNotFound => 'WhatsApp install nahi hai';
+
+  @override
+  String get udhaarDueOn => 'Due';
+
+  @override
+  String get udhaarNoDueDate => 'Due date nahi';
+
+  @override
+  String get udhaarSetDueDate => 'Date lagayein';
+
+  @override
+  String get udhaarLate => 'Late — payment baqi hai';
+
+  @override
+  String get udhaarLateTitle => 'Late';
 }

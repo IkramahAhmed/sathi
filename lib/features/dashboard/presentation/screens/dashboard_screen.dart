@@ -141,9 +141,10 @@ class DashboardScreen extends ConsumerWidget {
                 onTap: () => context.push(Routes.qibla),
               ),
               _ToolTile(
-                icon: Icons.handshake_outlined,
-                label: l10n.udhaarTitle,
-                onTap: () => context.push(Routes.udhaar),
+                icon: Icons.calculate_outlined,
+                label: 'Zakat',
+                comingSoon: true,
+                onTap: () => _showComingSoon(context, l10n),
               ),
               _ToolTile(
                 icon: Icons.currency_exchange_outlined,

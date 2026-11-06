@@ -579,6 +579,7 @@
   "khataEmpty": "No expenses yet",
   "khataEmptyHint": "Tap + to record your first expense",
   "khataAddTitle": "Add Expense",
+  "khataTabExpenses": "Expenses",
   "khataEditTitle": "Edit Expense",
   "khataAmount": "Amount",
   "khataAmountInvalid": "Enter a valid amount greater than zero",
@@ -659,5 +660,10 @@
       "amount": { "type": "String" }
     }
   },
-  "udhaarWhatsAppNotFound": "WhatsApp not installed"
+  "udhaarWhatsAppNotFound": "WhatsApp not installed",
+  "udhaarDueOn": "Due",
+  "udhaarNoDueDate": "No due date",
+  "udhaarSetDueDate": "Set date",
+  "udhaarLate": "Late — payment overdue",
+  "udhaarLateTitle": "Late"
 }

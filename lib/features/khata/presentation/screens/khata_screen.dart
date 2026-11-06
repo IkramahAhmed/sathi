@@ -10,6 +10,7 @@ import 'package:share_plus/share_plus.dart';
 import '../../../../app/providers.dart';
 import '../../../../core/storage/app_database.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../udhaar/presentation/screens/udhaar_list_screen.dart';
 import '../../domain/entities/expense_category.dart';
 import '../providers/khata_providers.dart';
 import 'add_expense_screen.dart';
@@ -24,6 +25,7 @@ class KhataScreen extends ConsumerStatefulWidget {
 
 class _KhataScreenState extends ConsumerState<KhataScreen> {
   DateTime? _month;
+  bool _showUdhaar = false;
 
   void _shift(int delta) {
     final now = DateTime.now();
@@ -64,6 +66,26 @@ class _KhataScreenState extends ConsumerState<KhataScreen> {
     final scheme = Theme.of(context).colorScheme;
     final text = Theme.of(context).textTheme;
 
+    final segmented = Padding(
+      padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
+      child: SegmentedButton<bool>(
+        segments: [
+          ButtonSegment(
+            value: false,
+            label: Text(l10n.khataTabExpenses),
+            icon: const Icon(Icons.receipt_long_outlined),
+          ),
+          ButtonSegment(
+            value: true,
+            label: Text(l10n.udhaarTitle),
+            icon: const Icon(Icons.handshake_outlined),
+          ),
+        ],
+        selected: {_showUdhaar},
+        onSelectionChanged: (s) => setState(() => _showUdhaar = s.first),
+      ),
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.khataTitle),
@@ -91,6 +113,12 @@ class _KhataScreenState extends ConsumerState<KhataScreen> {
       ),
       body: Column(
         children: [
+          segmented,
+          Expanded(
+            child: _showUdhaar
+                ? const UdhaarListScreen(embedded: true)
+                : Column(
+                    children: [
           // Month navigator
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -165,14 +193,19 @@ class _KhataScreenState extends ConsumerState<KhataScreen> {
               },
             ),
           ),
+                    ],
+                  ),
+          ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => const AddExpenseScreen()),
-        ),
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: _showUdhaar
+          ? null
+          : FloatingActionButton(
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const AddExpenseScreen()),
+              ),
+              child: const Icon(Icons.add),
+            ),
     );
   }
 }

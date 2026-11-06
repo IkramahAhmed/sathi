@@ -296,6 +296,7 @@
   "khataEmpty": "ابھی کوئی خرچ نہیں",
   "khataEmptyHint": "+ دبائیں پہلا خرچ شامل کریں",
   "khataAddTitle": "خرچ شامل کریں",
+  "khataTabExpenses": "خرچ",
   "khataEditTitle": "خرچ تبدیل کریں",
   "khataAmount": "رقم",
   "khataAmountInvalid": "درست رقم درج کریں",
@@ -376,5 +377,10 @@
       "amount": { "type": "String" }
     }
   },
-  "udhaarWhatsAppNotFound": "واٹس ایپ نصب نہیں"
+  "udhaarWhatsAppNotFound": "واٹس ایپ نصب نہیں",
+  "udhaarDueOn": "آخری تاریخ",
+  "udhaarNoDueDate": "کوئی آخری تاریخ نہیں",
+  "udhaarSetDueDate": "تاریخ لگائیں",
+  "udhaarLate": "تاخیر — ادائیگی باقی ہے",
+  "udhaarLateTitle": "تاخیر"
 }

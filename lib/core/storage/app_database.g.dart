@@ -2434,6 +2434,17 @@ class $UdhaarEntriesTable extends UdhaarEntries
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _dueDateMeta = const VerificationMeta(
+    'dueDate',
+  );
+  @override
+  late final GeneratedColumn<String> dueDate = GeneratedColumn<String>(
+    'due_date',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -2453,6 +2464,7 @@ class $UdhaarEntriesTable extends UdhaarEntries
     type,
     note,
     date,
+    dueDate,
     createdAt,
   ];
   @override
@@ -2508,6 +2520,12 @@ class $UdhaarEntriesTable extends UdhaarEntries
     } else if (isInserting) {
       context.missing(_dateMeta);
     }
+    if (data.containsKey('due_date')) {
+      context.handle(
+        _dueDateMeta,
+        dueDate.isAcceptableOrUnknown(data['due_date']!, _dueDateMeta),
+      );
+    }
     if (data.containsKey('created_at')) {
       context.handle(
         _createdAtMeta,
@@ -2549,6 +2567,10 @@ class $UdhaarEntriesTable extends UdhaarEntries
         DriftSqlType.string,
         data['${effectivePrefix}date'],
       )!,
+      dueDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}due_date'],
+      ),
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -2578,6 +2600,9 @@ class UdhaarEntry extends DataClass implements Insertable<UdhaarEntry> {
 
   /// Calendar date as `yyyy-MM-dd`.
   final String date;
+
+  /// When a `gave` entry should be paid back (`yyyy-MM-dd`). Null when no due date was set.
+  final String? dueDate;
   final DateTime createdAt;
   const UdhaarEntry({
     required this.id,
@@ -2586,6 +2611,7 @@ class UdhaarEntry extends DataClass implements Insertable<UdhaarEntry> {
     required this.type,
     required this.note,
     required this.date,
+    this.dueDate,
     required this.createdAt,
   });
   @override
@@ -2597,6 +2623,9 @@ class UdhaarEntry extends DataClass implements Insertable<UdhaarEntry> {
     map['type'] = Variable<String>(type);
     map['note'] = Variable<String>(note);
     map['date'] = Variable<String>(date);
+    if (!nullToAbsent || dueDate != null) {
+      map['due_date'] = Variable<String>(dueDate);
+    }
     map['created_at'] = Variable<DateTime>(createdAt);
     return map;
   }
@@ -2609,6 +2638,9 @@ class UdhaarEntry extends DataClass implements Insertable<UdhaarEntry> {
       type: Value(type),
       note: Value(note),
       date: Value(date),
+      dueDate: dueDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dueDate),
       createdAt: Value(createdAt),
     );
   }
@@ -2625,6 +2657,7 @@ class UdhaarEntry extends DataClass implements Insertable<UdhaarEntry> {
       type: serializer.fromJson<String>(json['type']),
       note: serializer.fromJson<String>(json['note']),
       date: serializer.fromJson<String>(json['date']),
+      dueDate: serializer.fromJson<String?>(json['dueDate']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
   }
@@ -2638,6 +2671,7 @@ class UdhaarEntry extends DataClass implements Insertable<UdhaarEntry> {
       'type': serializer.toJson<String>(type),
       'note': serializer.toJson<String>(note),
       'date': serializer.toJson<String>(date),
+      'dueDate': serializer.toJson<String?>(dueDate),
       'createdAt': serializer.toJson<DateTime>(createdAt),
     };
   }
@@ -2649,6 +2683,7 @@ class UdhaarEntry extends DataClass implements Insertable<UdhaarEntry> {
     String? type,
     String? note,
     String? date,
+    Value<String?> dueDate = const Value.absent(),
     DateTime? createdAt,
   }) => UdhaarEntry(
     id: id ?? this.id,
@@ -2657,6 +2692,7 @@ class UdhaarEntry extends DataClass implements Insertable<UdhaarEntry> {
     type: type ?? this.type,
     note: note ?? this.note,
     date: date ?? this.date,
+    dueDate: dueDate.present ? dueDate.value : this.dueDate,
     createdAt: createdAt ?? this.createdAt,
   );
   UdhaarEntry copyWithCompanion(UdhaarEntriesCompanion data) {
@@ -2667,6 +2703,7 @@ class UdhaarEntry extends DataClass implements Insertable<UdhaarEntry> {
       type: data.type.present ? data.type.value : this.type,
       note: data.note.present ? data.note.value : this.note,
       date: data.date.present ? data.date.value : this.date,
+      dueDate: data.dueDate.present ? data.dueDate.value : this.dueDate,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
     );
   }
@@ -2680,6 +2717,7 @@ class UdhaarEntry extends DataClass implements Insertable<UdhaarEntry> {
           ..write('type: $type, ')
           ..write('note: $note, ')
           ..write('date: $date, ')
+          ..write('dueDate: $dueDate, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
@@ -2687,7 +2725,7 @@ class UdhaarEntry extends DataClass implements Insertable<UdhaarEntry> {
 
   @override
   int get hashCode =>
-      Object.hash(id, contactId, amount, type, note, date, createdAt);
+      Object.hash(id, contactId, amount, type, note, date, dueDate, createdAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2698,6 +2736,7 @@ class UdhaarEntry extends DataClass implements Insertable<UdhaarEntry> {
           other.type == this.type &&
           other.note == this.note &&
           other.date == this.date &&
+          other.dueDate == this.dueDate &&
           other.createdAt == this.createdAt);
 }
 
@@ -2708,6 +2747,7 @@ class UdhaarEntriesCompanion extends UpdateCompanion<UdhaarEntry> {
   final Value<String> type;
   final Value<String> note;
   final Value<String> date;
+  final Value<String?> dueDate;
   final Value<DateTime> createdAt;
   const UdhaarEntriesCompanion({
     this.id = const Value.absent(),
@@ -2716,6 +2756,7 @@ class UdhaarEntriesCompanion extends UpdateCompanion<UdhaarEntry> {
     this.type = const Value.absent(),
     this.note = const Value.absent(),
     this.date = const Value.absent(),
+    this.dueDate = const Value.absent(),
     this.createdAt = const Value.absent(),
   });
   UdhaarEntriesCompanion.insert({
@@ -2725,6 +2766,7 @@ class UdhaarEntriesCompanion extends UpdateCompanion<UdhaarEntry> {
     required String type,
     this.note = const Value.absent(),
     required String date,
+    this.dueDate = const Value.absent(),
     required DateTime createdAt,
   }) : contactId = Value(contactId),
        amount = Value(amount),
@@ -2738,6 +2780,7 @@ class UdhaarEntriesCompanion extends UpdateCompanion<UdhaarEntry> {
     Expression<String>? type,
     Expression<String>? note,
     Expression<String>? date,
+    Expression<String>? dueDate,
     Expression<DateTime>? createdAt,
   }) {
     return RawValuesInsertable({
@@ -2747,6 +2790,7 @@ class UdhaarEntriesCompanion extends UpdateCompanion<UdhaarEntry> {
       if (type != null) 'type': type,
       if (note != null) 'note': note,
       if (date != null) 'date': date,
+      if (dueDate != null) 'due_date': dueDate,
       if (createdAt != null) 'created_at': createdAt,
     });
   }
@@ -2758,6 +2802,7 @@ class UdhaarEntriesCompanion extends UpdateCompanion<UdhaarEntry> {
     Value<String>? type,
     Value<String>? note,
     Value<String>? date,
+    Value<String?>? dueDate,
     Value<DateTime>? createdAt,
   }) {
     return UdhaarEntriesCompanion(
@@ -2767,6 +2812,7 @@ class UdhaarEntriesCompanion extends UpdateCompanion<UdhaarEntry> {
       type: type ?? this.type,
       note: note ?? this.note,
       date: date ?? this.date,
+      dueDate: dueDate ?? this.dueDate,
       createdAt: createdAt ?? this.createdAt,
     );
   }
@@ -2792,6 +2838,9 @@ class UdhaarEntriesCompanion extends UpdateCompanion<UdhaarEntry> {
     if (date.present) {
       map['date'] = Variable<String>(date.value);
     }
+    if (dueDate.present) {
+      map['due_date'] = Variable<String>(dueDate.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -2807,6 +2856,7 @@ class UdhaarEntriesCompanion extends UpdateCompanion<UdhaarEntry> {
           ..write('type: $type, ')
           ..write('note: $note, ')
           ..write('date: $date, ')
+          ..write('dueDate: $dueDate, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
@@ -4342,6 +4392,7 @@ typedef $$UdhaarEntriesTableCreateCompanionBuilder =
       required String type,
       Value<String> note,
       required String date,
+      Value<String?> dueDate,
       required DateTime createdAt,
     });
 typedef $$UdhaarEntriesTableUpdateCompanionBuilder =
@@ -4352,6 +4403,7 @@ typedef $$UdhaarEntriesTableUpdateCompanionBuilder =
       Value<String> type,
       Value<String> note,
       Value<String> date,
+      Value<String?> dueDate,
       Value<DateTime> createdAt,
     });
 
@@ -4413,6 +4465,11 @@ class $$UdhaarEntriesTableFilterComposer
 
   ColumnFilters<String> get date => $composableBuilder(
     column: $table.date,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dueDate => $composableBuilder(
+    column: $table.dueDate,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -4479,6 +4536,11 @@ class $$UdhaarEntriesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get dueDate => $composableBuilder(
+    column: $table.dueDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -4531,6 +4593,9 @@ class $$UdhaarEntriesTableAnnotationComposer
 
   GeneratedColumn<String> get date =>
       $composableBuilder(column: $table.date, builder: (column) => column);
+
+  GeneratedColumn<String> get dueDate =>
+      $composableBuilder(column: $table.dueDate, builder: (column) => column);
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -4593,6 +4658,7 @@ class $$UdhaarEntriesTableTableManager
                 Value<String> type = const Value.absent(),
                 Value<String> note = const Value.absent(),
                 Value<String> date = const Value.absent(),
+                Value<String?> dueDate = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
               }) => UdhaarEntriesCompanion(
                 id: id,
@@ -4601,6 +4667,7 @@ class $$UdhaarEntriesTableTableManager
                 type: type,
                 note: note,
                 date: date,
+                dueDate: dueDate,
                 createdAt: createdAt,
               ),
           createCompanionCallback:
@@ -4611,6 +4678,7 @@ class $$UdhaarEntriesTableTableManager
                 required String type,
                 Value<String> note = const Value.absent(),
                 required String date,
+                Value<String?> dueDate = const Value.absent(),
                 required DateTime createdAt,
               }) => UdhaarEntriesCompanion.insert(
                 id: id,
@@ -4619,6 +4687,7 @@ class $$UdhaarEntriesTableTableManager
                 type: type,
                 note: note,
                 date: date,
+                dueDate: dueDate,
                 createdAt: createdAt,
               ),
           withReferenceMapper: (p0) => p0

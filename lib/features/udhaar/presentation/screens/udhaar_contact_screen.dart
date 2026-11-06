@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../../app/providers.dart';
 import '../../../../core/storage/app_database.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../domain/overdue.dart';
 
 class UdhaarContactScreen extends ConsumerStatefulWidget {
   const UdhaarContactScreen({super.key, required this.contact});
@@ -45,6 +46,7 @@ class _UdhaarContactScreenState extends ConsumerState<UdhaarContactScreen> {
             type: type,
             note: Value(result.note),
             date: result.date,
+            dueDate: Value(result.dueDate),
             createdAt: DateTime.now().toUtc(),
           ),
         );
@@ -174,8 +176,7 @@ class _UdhaarContactScreenState extends ConsumerState<UdhaarContactScreen> {
     final scheme = Theme.of(context).colorScheme;
     final db = ref.watch(appDatabaseProvider);
 
-    return Scaffold(
-      body: StreamBuilder<List<UdhaarEntry>>(
+    return StreamBuilder<List<UdhaarEntry>>(
         stream: db.udhaarDao.watchEntries(_contact.id),
         builder: (context, snap) {
           if (!snap.hasData) {
@@ -238,9 +239,9 @@ class _UdhaarContactScreenState extends ConsumerState<UdhaarContactScreen> {
                 onReceived: () => _addEntry('received'),
               ),
             ],
+            ),
           );
         },
-      ),
     );
   }
 }
@@ -370,9 +371,17 @@ class _EntryList extends StatelessWidget {
               style: TextStyle(fontWeight: FontWeight.w700, color: color),
             ),
             subtitle: Text(
-              e.note.isNotEmpty ? '${e.note} · $dateLabel' : dateLabel,
-              maxLines: 1,
+              [
+                if (e.note.isNotEmpty) e.note,
+                dateLabel,
+                if (e.dueDate != null)
+                  '${l10n.udhaarDueOn}: ${DateFormat('d MMM yyyy').format(DateTime.parse(e.dueDate!))}',
+              ].join(' · '),
+              maxLines: 2,
               overflow: TextOverflow.ellipsis,
+              style: isGave && e.dueDate != null && isPastDue(e.dueDate!)
+                  ? TextStyle(color: scheme.error, fontWeight: FontWeight.w600)
+                  : null,
             ),
           ),
         );
@@ -460,12 +469,17 @@ class _EmptyLedger extends StatelessWidget {
 // ── Add entry bottom sheet ────────────────────────────────────────────────────
 
 class _EntryInput {
-  const _EntryInput(
-      {required this.amount, required this.note, required this.date});
+  const _EntryInput({
+    required this.amount,
+    required this.note,
+    required this.date,
+    this.dueDate,
+  });
 
   final double amount;
   final String note;
   final String date;
+  final String? dueDate;
 }
 
 class _AddEntrySheet extends StatefulWidget {
@@ -482,6 +496,7 @@ class _AddEntrySheetState extends State<_AddEntrySheet> {
   final _amountCtrl = TextEditingController();
   final _noteCtrl = TextEditingController();
   DateTime _date = DateTime.now();
+  DateTime? _due;
 
   @override
   void dispose() {
@@ -490,8 +505,20 @@ class _AddEntrySheetState extends State<_AddEntrySheet> {
     super.dispose();
   }
 
-  String get _dateStr =>
-      '${_date.year.toString().padLeft(4, '0')}-${_date.month.toString().padLeft(2, '0')}-${_date.day.toString().padLeft(2, '0')}';
+  String _fmt(DateTime d) =>
+      '${d.year.toString().padLeft(4, '0')}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
+
+  String get _dateStr => _fmt(_date);
+
+  Future<void> _pickDue() async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _due ?? DateTime.now().add(const Duration(days: 7)),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2100),
+    );
+    if (picked != null) setState(() => _due = picked);
+  }
 
   Future<void> _pickDate() async {
     final picked = await showDatePicker(
@@ -509,7 +536,11 @@ class _AddEntrySheetState extends State<_AddEntrySheet> {
     Navigator.pop(
       context,
       _EntryInput(
-          amount: amount, note: _noteCtrl.text.trim(), date: _dateStr),
+        amount: amount,
+        note: _noteCtrl.text.trim(),
+        date: _dateStr,
+        dueDate: widget.type == 'gave' && _due != null ? _fmt(_due!) : null,
+      ),
     );
   }
 
@@ -571,6 +602,18 @@ class _AddEntrySheetState extends State<_AddEntrySheet> {
             trailing: TextButton(
                 onPressed: _pickDate, child: Text(l10n.udhaarChangeDate)),
           ),
+          if (isGave)
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: const Icon(Icons.event_outlined),
+              title: Text(_due == null
+                  ? l10n.udhaarNoDueDate
+                  : '${l10n.udhaarDueOn}: ${DateFormat.yMMMd().format(_due!)}'),
+              trailing: TextButton(
+                onPressed: _pickDue,
+                child: Text(_due == null ? l10n.udhaarSetDueDate : l10n.udhaarChangeDate),
+              ),
+            ),
           const SizedBox(height: 8),
           SizedBox(
             width: double.infinity,

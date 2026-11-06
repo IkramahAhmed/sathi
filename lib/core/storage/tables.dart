@@ -108,6 +108,9 @@ class UdhaarEntries extends Table {
   /// Calendar date as `yyyy-MM-dd`.
   TextColumn get date => text()();
 
+  /// When a `gave` entry should be paid back (`yyyy-MM-dd`). Null when no due date was set.
+  TextColumn get dueDate => text().nullable()();
+
   DateTimeColumn get createdAt => dateTime()();
 }
 

@@ -992,6 +992,9 @@ class AppLocalizationsUr extends AppLocalizations {
   String get khataAddTitle => 'خرچ شامل کریں';
 
   @override
+  String get khataTabExpenses => 'خرچ';
+
+  @override
   String get khataEditTitle => 'خرچ تبدیل کریں';
 
   @override
@@ -1171,4 +1174,19 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get udhaarWhatsAppNotFound => 'واٹس ایپ نصب نہیں';
+
+  @override
+  String get udhaarDueOn => 'آخری تاریخ';
+
+  @override
+  String get udhaarNoDueDate => 'کوئی آخری تاریخ نہیں';
+
+  @override
+  String get udhaarSetDueDate => 'تاریخ لگائیں';
+
+  @override
+  String get udhaarLate => 'تاخیر — ادائیگی باقی ہے';
+
+  @override
+  String get udhaarLateTitle => 'تاخیر';
 }

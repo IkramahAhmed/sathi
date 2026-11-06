@@ -1833,6 +1833,12 @@ abstract class AppLocalizations {
   /// **'Add Expense'**
   String get khataAddTitle;
 
+  /// No description provided for @khataTabExpenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Expenses'**
+  String get khataTabExpenses;
+
   /// No description provided for @khataEditTitle.
   ///
   /// In en, this message translates to:
@@ -2174,6 +2180,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'WhatsApp not installed'**
   String get udhaarWhatsAppNotFound;
+
+  /// No description provided for @udhaarDueOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Due'**
+  String get udhaarDueOn;
+
+  /// No description provided for @udhaarNoDueDate.
+  ///
+  /// In en, this message translates to:
+  /// **'No due date'**
+  String get udhaarNoDueDate;
+
+  /// No description provided for @udhaarSetDueDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Set date'**
+  String get udhaarSetDueDate;
+
+  /// No description provided for @udhaarLate.
+  ///
+  /// In en, this message translates to:
+  /// **'Late — payment overdue'**
+  String get udhaarLate;
+
+  /// No description provided for @udhaarLateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Late'**
+  String get udhaarLateTitle;
 }
 
 class _AppLocalizationsDelegate

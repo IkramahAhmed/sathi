@@ -279,6 +279,7 @@
   "khataEmpty": "Abhi koi kharcha nahi",
   "khataEmptyHint": "+ dabayein pehla kharcha likhne ke liye",
   "khataAddTitle": "Kharcha Shamil Karein",
+  "khataTabExpenses": "Kharcha",
   "khataEditTitle": "Kharcha Edit Karein",
   "khataAmount": "Raqam",
   "khataAmountInvalid": "Sahi raqam likhein",
@@ -359,5 +360,10 @@
       "amount": { "type": "String" }
     }
   },
-  "udhaarWhatsAppNotFound": "WhatsApp install nahi hai"
+  "udhaarWhatsAppNotFound": "WhatsApp install nahi hai",
+  "udhaarDueOn": "Due",
+  "udhaarNoDueDate": "Due date nahi",
+  "udhaarSetDueDate": "Date lagayein",
+  "udhaarLate": "Late — payment baqi hai",
+  "udhaarLateTitle": "Late"
 }

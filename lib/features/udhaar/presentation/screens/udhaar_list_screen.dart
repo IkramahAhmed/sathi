@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,10 +7,14 @@ import 'package:intl/intl.dart';
 import '../../../../app/providers.dart';
 import '../../../../core/storage/app_database.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../domain/overdue.dart';
 import 'udhaar_contact_screen.dart';
 
 class UdhaarListScreen extends ConsumerStatefulWidget {
-  const UdhaarListScreen({super.key});
+  const UdhaarListScreen({super.key, this.embedded = false});
+
+  /// True when shown inside the Khata tab: no AppBar, and the add button floats over the list.
+  final bool embedded;
 
   @override
   ConsumerState<UdhaarListScreen> createState() => _UdhaarListScreenState();
@@ -93,34 +98,34 @@ class _UdhaarListScreenState extends ConsumerState<UdhaarListScreen> {
     final scheme = Theme.of(context).colorScheme;
     final db = ref.watch(appDatabaseProvider);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.udhaarTitle),
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(56),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-            child: TextField(
-              controller: _search,
-              onChanged: (v) => setState(() => _query = v.toLowerCase()),
-              decoration: InputDecoration(
-                hintText: l10n.udhaarSearch,
-                prefixIcon: const Icon(Icons.search),
-                isDense: true,
-                filled: true,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
-                ),
-              ),
-            ),
+    final searchBar = Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+      child: TextField(
+        controller: _search,
+        onChanged: (v) => setState(() => _query = v.toLowerCase()),
+        decoration: InputDecoration(
+          hintText: l10n.udhaarSearch,
+          prefixIcon: const Icon(Icons.search),
+          isDense: true,
+          filled: true,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide.none,
           ),
         ),
       ),
-      body: StreamBuilder<Map<int, double>>(
-        stream: db.udhaarDao.watchBalances(),
+    );
+
+    final list = StreamBuilder<List<UdhaarEntry>>(
+        stream: db.udhaarDao.watchAllEntries(),
         builder: (context, balSnap) {
-          final balances = balSnap.data ?? {};
+          final entries = balSnap.data ?? const <UdhaarEntry>[];
+          final balances = <int, double>{};
+          for (final e in entries) {
+            balances[e.contactId] =
+                (balances[e.contactId] ?? 0) + (e.type == 'gave' ? e.amount : -e.amount);
+          }
+          final overdue = overdueByContact(entries);
           return StreamBuilder<List<UdhaarContact>>(
             stream: db.udhaarDao.watchContacts(),
             builder: (context, snap) {
@@ -153,6 +158,15 @@ class _UdhaarListScreenState extends ConsumerState<UdhaarListScreen> {
                     iOwe: totalIOwe,
                     scheme: scheme,
                   ),
+                  if (overdue.isNotEmpty)
+                    _OverdueBanner(
+                      names: all
+                          .where((c) => overdue.containsKey(c.id))
+                          .map((c) => c.name)
+                          .join(', '),
+                      l10n: l10n,
+                      scheme: scheme,
+                    ),
                   Expanded(
                     child: ListView.separated(
                       itemCount: filtered.length,
@@ -164,6 +178,7 @@ class _UdhaarListScreenState extends ConsumerState<UdhaarListScreen> {
                         return _ContactTile(
                           contact: c,
                           balance: bal,
+                          late: overdue.containsKey(c.id),
                           l10n: l10n,
                           scheme: scheme,
                           onTap: () => Navigator.push(
@@ -182,11 +197,58 @@ class _UdhaarListScreenState extends ConsumerState<UdhaarListScreen> {
             },
           );
         },
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _addContact,
-        icon: const Icon(Icons.person_add_outlined),
-        label: Text(l10n.udhaarAddContact),
+      );
+
+    final body = Column(children: [searchBar, Expanded(child: list)]);
+    final addButton = FloatingActionButton.extended(
+      onPressed: _addContact,
+      icon: const Icon(Icons.person_add_outlined),
+      label: Text(l10n.udhaarAddContact),
+    );
+
+    if (widget.embedded) {
+      return Stack(
+        children: [
+          body,
+          Positioned(right: 16, bottom: 16, child: addButton),
+        ],
+      );
+    }
+    return Scaffold(
+      appBar: AppBar(title: Text(l10n.udhaarTitle)),
+      body: body,
+      floatingActionButton: addButton,
+    );
+  }
+}
+
+// ── Overdue banner ───────────────────────────────────────────────────────────
+
+class _OverdueBanner extends StatelessWidget {
+  const _OverdueBanner(
+      {required this.names, required this.l10n, required this.scheme});
+
+  final String names;
+  final AppLocalizations l10n;
+  final ColorScheme scheme;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      color: scheme.errorContainer,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      child: Row(
+        children: [
+          Icon(Icons.warning_amber_rounded, color: scheme.onErrorContainer, size: 20),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              '${l10n.udhaarLateTitle}: $names',
+              style: TextStyle(color: scheme.onErrorContainer, fontWeight: FontWeight.w600),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -263,6 +325,7 @@ class _ContactTile extends StatelessWidget {
   const _ContactTile({
     required this.contact,
     required this.balance,
+    required this.late,
     required this.l10n,
     required this.scheme,
     required this.onTap,
@@ -270,6 +333,7 @@ class _ContactTile extends StatelessWidget {
 
   final UdhaarContact contact;
   final double balance;
+  final bool late;
   final AppLocalizations l10n;
   final ColorScheme scheme;
   final VoidCallback onTap;
@@ -299,7 +363,10 @@ class _ContactTile extends StatelessWidget {
       subtitle: balance == 0
           ? Text(l10n.udhaarSettled,
               style: TextStyle(color: scheme.onSurfaceVariant))
-          : Text(label, style: TextStyle(color: color)),
+          : late
+              ? Text(l10n.udhaarLate,
+                  style: TextStyle(color: scheme.error, fontWeight: FontWeight.w700))
+              : Text(label, style: TextStyle(color: color)),
       trailing: balance == 0
           ? Icon(Icons.check_circle_outline,
               color: scheme.onSurfaceVariant, size: 20)
