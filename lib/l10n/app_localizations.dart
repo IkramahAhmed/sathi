@@ -2058,61 +2058,61 @@ abstract class AppLocalizations {
   /// No description provided for @udhaarOwedToMe.
   ///
   /// In en, this message translates to:
-  /// **'Owed to me'**
+  /// **'Total Lena'**
   String get udhaarOwedToMe;
 
   /// No description provided for @udhaarIOwe.
   ///
   /// In en, this message translates to:
-  /// **'I owe'**
+  /// **'Total Dena'**
   String get udhaarIOwe;
 
   /// No description provided for @udhaarOwes.
   ///
   /// In en, this message translates to:
-  /// **'Owes you'**
+  /// **'Lena'**
   String get udhaarOwes;
 
   /// No description provided for @udhaarYouOwe.
   ///
   /// In en, this message translates to:
-  /// **'You owe them'**
+  /// **'Dena'**
   String get udhaarYouOwe;
 
   /// No description provided for @udhaarSettled.
   ///
   /// In en, this message translates to:
-  /// **'Settled'**
+  /// **'Barabar'**
   String get udhaarSettled;
 
   /// No description provided for @udhaarClear.
   ///
   /// In en, this message translates to:
-  /// **'All clear'**
+  /// **'Barabar'**
   String get udhaarClear;
 
   /// No description provided for @udhaarOwesYou.
   ///
   /// In en, this message translates to:
-  /// **'{name} owes you'**
+  /// **'{name} ka Lena'**
   String udhaarOwesYou(String name);
 
   /// No description provided for @udhaarYouOweContact.
   ///
   /// In en, this message translates to:
-  /// **'You owe {name}'**
+  /// **'{name} ka Dena'**
   String udhaarYouOweContact(String name);
 
   /// No description provided for @udhaarGave.
   ///
   /// In en, this message translates to:
-  /// **'Diya (gave)'**
+  /// **'Diya'**
   String get udhaarGave;
 
   /// No description provided for @udhaarReceived.
   ///
   /// In en, this message translates to:
-  /// **'Liya (received)'**
+  /// **'Liya'**
   String get udhaarReceived;
 
   /// No description provided for @udhaarAmount.
@@ -2144,6 +2144,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delete this entry?'**
   String get udhaarDeleteEntry;
+
+  /// No description provided for @udhaarPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone (for WhatsApp)'**
+  String get udhaarPhone;
+
+  /// No description provided for @udhaarWhatsAppReminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Send WhatsApp reminder'**
+  String get udhaarWhatsAppReminder;
+
+  /// No description provided for @udhaarWhatsAppLena.
+  ///
+  /// In en, this message translates to:
+  /// **'Assalamu Alaikum {name} bhai, aapka Rs. {amount} mujhe lena baqi hai. - Saathi App'**
+  String udhaarWhatsAppLena(String name, String amount);
+
+  /// No description provided for @udhaarWhatsAppDena.
+  ///
+  /// In en, this message translates to:
+  /// **'Assalamu Alaikum {name} bhai, mera Rs. {amount} aapko dena baqi hai. - Saathi App'**
+  String udhaarWhatsAppDena(String name, String amount);
+
+  /// No description provided for @udhaarWhatsAppNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp not installed'**
+  String get udhaarWhatsAppNotFound;
 }
 
 class _AppLocalizationsDelegate

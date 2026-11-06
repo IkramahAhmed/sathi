@@ -1105,31 +1105,31 @@ class AppLocalizationsUr extends AppLocalizations {
   String get udhaarEmptyHint => 'جس سے لین دین ہو اسے شامل کریں';
 
   @override
-  String get udhaarOwedToMe => 'مجھے ملنا ہے';
+  String get udhaarOwedToMe => 'کل لینا';
 
   @override
-  String get udhaarIOwe => 'مجھے دینا ہے';
+  String get udhaarIOwe => 'کل دینا';
 
   @override
-  String get udhaarOwes => 'آپ کا دینا ہے';
+  String get udhaarOwes => 'لینا';
 
   @override
-  String get udhaarYouOwe => 'آپ کا دینا ہے';
+  String get udhaarYouOwe => 'دینا';
 
   @override
-  String get udhaarSettled => 'حساب صاف';
+  String get udhaarSettled => 'برابر';
 
   @override
-  String get udhaarClear => 'سب صاف';
+  String get udhaarClear => 'برابر';
 
   @override
   String udhaarOwesYou(String name) {
-    return '$name کا آپ کو دینا ہے';
+    return '$name کا لینا';
   }
 
   @override
   String udhaarYouOweContact(String name) {
-    return 'آپ کا $name کو دینا ہے';
+    return '$name کا دینا';
   }
 
   @override
@@ -1152,4 +1152,23 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get udhaarDeleteEntry => 'یہ اندراج حذف کریں؟';
+
+  @override
+  String get udhaarPhone => 'فون (واٹس ایپ کے لیے)';
+
+  @override
+  String get udhaarWhatsAppReminder => 'واٹس ایپ یاد دہانی';
+
+  @override
+  String udhaarWhatsAppLena(String name, String amount) {
+    return 'السلام علیکم $name بھائی، آپ کا Rs. $amount مجھے لینا باقی ہے۔ - ساتھی ایپ';
+  }
+
+  @override
+  String udhaarWhatsAppDena(String name, String amount) {
+    return 'السلام علیکم $name بھائی، میرا Rs. $amount آپ کو دینا باقی ہے۔ - ساتھی ایپ';
+  }
+
+  @override
+  String get udhaarWhatsAppNotFound => 'واٹس ایپ نصب نہیں';
 }

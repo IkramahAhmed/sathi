@@ -622,25 +622,42 @@
   "udhaarDelete": "Delete",
   "udhaarEmpty": "No contacts yet",
   "udhaarEmptyHint": "Add someone you gave or took money from",
-  "udhaarOwedToMe": "Owed to me",
-  "udhaarIOwe": "I owe",
-  "udhaarOwes": "Owes you",
-  "udhaarYouOwe": "You owe them",
-  "udhaarSettled": "Settled",
-  "udhaarClear": "All clear",
-  "udhaarOwesYou": "{name} owes you",
+  "udhaarOwedToMe": "Total Lena",
+  "udhaarIOwe": "Total Dena",
+  "udhaarOwes": "Lena",
+  "udhaarYouOwe": "Dena",
+  "udhaarSettled": "Barabar",
+  "udhaarClear": "Barabar",
+  "udhaarOwesYou": "{name} ka Lena",
   "@udhaarOwesYou": {
     "placeholders": { "name": { "type": "String" } }
   },
-  "udhaarYouOweContact": "You owe {name}",
+  "udhaarYouOweContact": "{name} ka Dena",
   "@udhaarYouOweContact": {
     "placeholders": { "name": { "type": "String" } }
   },
-  "udhaarGave": "Diya (gave)",
-  "udhaarReceived": "Liya (received)",
+  "udhaarGave": "Diya",
+  "udhaarReceived": "Liya",
   "udhaarAmount": "Amount",
   "udhaarNote": "Note (optional)",
   "udhaarChangeDate": "Change",
   "udhaarNoEntries": "No entries yet.\nTap Diya or Liya to record.",
-  "udhaarDeleteEntry": "Delete this entry?"
+  "udhaarDeleteEntry": "Delete this entry?",
+  "udhaarPhone": "Phone (for WhatsApp)",
+  "udhaarWhatsAppReminder": "Send WhatsApp reminder",
+  "udhaarWhatsAppLena": "Assalamu Alaikum {name} bhai, aapka Rs. {amount} mujhe lena baqi hai. - Saathi App",
+  "@udhaarWhatsAppLena": {
+    "placeholders": {
+      "name": { "type": "String" },
+      "amount": { "type": "String" }
+    }
+  },
+  "udhaarWhatsAppDena": "Assalamu Alaikum {name} bhai, mera Rs. {amount} aapko dena baqi hai. - Saathi App",
+  "@udhaarWhatsAppDena": {
+    "placeholders": {
+      "name": { "type": "String" },
+      "amount": { "type": "String" }
+    }
+  },
+  "udhaarWhatsAppNotFound": "WhatsApp not installed"
 }

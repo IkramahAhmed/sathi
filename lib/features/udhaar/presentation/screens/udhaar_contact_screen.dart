@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../app/providers.dart';
 import '../../../../core/storage/app_database.dart';
@@ -49,37 +50,93 @@ class _UdhaarContactScreenState extends ConsumerState<UdhaarContactScreen> {
         );
   }
 
+  Future<void> _sendWhatsApp(double balance) async {
+    final l10n = AppLocalizations.of(context);
+    final fmt = NumberFormat('#,##0', 'en');
+    final amount = fmt.format(balance.abs());
+    final isLena = balance > 0;
+    final message = isLena
+        ? l10n.udhaarWhatsAppLena(_contact.name, amount)
+        : l10n.udhaarWhatsAppDena(_contact.name, amount);
+
+    // If phone saved, open WhatsApp directly; otherwise share
+    final phone = _contact.phone.trim();
+    if (phone.isNotEmpty) {
+      // Normalize: strip leading 0, prepend +92
+      final normalized = phone.startsWith('0') ? '92${phone.substring(1)}' : phone;
+      final uri = Uri.parse(
+          'https://wa.me/$normalized?text=${Uri.encodeComponent(message)}');
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+        return;
+      }
+    }
+    // Fallback: system share sheet
+    final uri = Uri.parse(
+        'whatsapp://send?text=${Uri.encodeComponent(message)}');
+    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(l10n.udhaarWhatsAppNotFound)));
+      }
+    }
+  }
+
   Future<void> _editName() async {
     final l10n = AppLocalizations.of(context);
-    final ctrl = TextEditingController(text: _contact.name);
-    final newName = await showDialog<String>(
+    final nameCtrl = TextEditingController(text: _contact.name);
+    final phoneCtrl = TextEditingController(text: _contact.phone);
+    final result = await showDialog<(String, String)>(
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(l10n.udhaarEditContact),
-        content: TextField(
-          controller: ctrl,
-          autofocus: true,
-          textCapitalization: TextCapitalization.words,
-          decoration: InputDecoration(
-              labelText: l10n.udhaarContactName,
-              border: const OutlineInputBorder()),
-          onSubmitted: (_) => Navigator.pop(ctx, ctrl.text),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: nameCtrl,
+              autofocus: true,
+              textCapitalization: TextCapitalization.words,
+              decoration: InputDecoration(
+                  labelText: l10n.udhaarContactName,
+                  border: const OutlineInputBorder()),
+              onSubmitted: (_) =>
+                  Navigator.pop(ctx, (nameCtrl.text, phoneCtrl.text)),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: phoneCtrl,
+              keyboardType: TextInputType.phone,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              decoration: InputDecoration(
+                labelText: l10n.udhaarPhone,
+                hintText: '03001234567',
+                prefixText: '+92 ',
+                border: const OutlineInputBorder(),
+              ),
+            ),
+          ],
         ),
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(ctx), child: Text(l10n.cancel)),
           FilledButton(
-              onPressed: () => Navigator.pop(ctx, ctrl.text),
+              onPressed: () =>
+                  Navigator.pop(ctx, (nameCtrl.text, phoneCtrl.text)),
               child: Text(l10n.udhaarSave)),
         ],
       ),
     );
-    if (newName == null || newName.trim().isEmpty) return;
+    if (result == null || result.$1.trim().isEmpty) return;
     await ref.read(appDatabaseProvider).udhaarDao.updateContact(
           _contact.id,
-          UdhaarContactsCompanion(name: Value(newName.trim())),
+          UdhaarContactsCompanion(
+            name: Value(result.$1.trim()),
+            phone: Value(result.$2.trim()),
+          ),
         );
-    setState(() => _contact = _contact.copyWith(name: newName.trim()));
+    setState(() => _contact =
+        _contact.copyWith(name: result.$1.trim(), phone: result.$2.trim()));
   }
 
   Future<void> _deleteContact() async {
@@ -118,24 +175,14 @@ class _UdhaarContactScreenState extends ConsumerState<UdhaarContactScreen> {
     final db = ref.watch(appDatabaseProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(_contact.name),
-        actions: [
-          IconButton(
-              icon: const Icon(Icons.edit_outlined),
-              tooltip: l10n.udhaarEditContact,
-              onPressed: _editName),
-          IconButton(
-              icon: const Icon(Icons.delete_outline),
-              tooltip: l10n.udhaarDeleteContact,
-              onPressed: _deleteContact),
-        ],
-      ),
       body: StreamBuilder<List<UdhaarEntry>>(
         stream: db.udhaarDao.watchEntries(_contact.id),
         builder: (context, snap) {
           if (!snap.hasData) {
-            return const Center(child: CircularProgressIndicator());
+            return Scaffold(
+              appBar: AppBar(title: Text(_contact.name)),
+              body: const Center(child: CircularProgressIndicator()),
+            );
           }
           final entries = snap.data!;
 
@@ -145,10 +192,33 @@ class _UdhaarContactScreenState extends ConsumerState<UdhaarContactScreen> {
             balance += e.type == 'gave' ? e.amount : -e.amount;
           }
 
-          return Column(
-            children: [
-              _BalanceHeader(
-                  balance: balance, contact: _contact, scheme: scheme, l10n: l10n),
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(_contact.name),
+              actions: [
+                if (balance != 0)
+                  IconButton(
+                    icon: Image.asset('assets/whatsapp.png',
+                        width: 24, height: 24,
+                        errorBuilder: (_, __, ___) =>
+                            const Icon(Icons.chat_outlined)),
+                    tooltip: l10n.udhaarWhatsAppReminder,
+                    onPressed: () => _sendWhatsApp(balance),
+                  ),
+                IconButton(
+                    icon: const Icon(Icons.edit_outlined),
+                    tooltip: l10n.udhaarEditContact,
+                    onPressed: _editName),
+                IconButton(
+                    icon: const Icon(Icons.delete_outline),
+                    tooltip: l10n.udhaarDeleteContact,
+                    onPressed: _deleteContact),
+              ],
+            ),
+            body: Column(
+              children: [
+                _BalanceHeader(
+                    balance: balance, contact: _contact, scheme: scheme, l10n: l10n),
               Expanded(
                 child: entries.isEmpty
                     ? _EmptyLedger(l10n: l10n)

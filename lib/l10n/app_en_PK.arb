@@ -322,17 +322,17 @@
   "udhaarDelete": "Mitaein",
   "udhaarEmpty": "Abhi koi contact nahi",
   "udhaarEmptyHint": "Jis se len den ho use shamil karein",
-  "udhaarOwedToMe": "Mujhe milna hai",
-  "udhaarIOwe": "Mujhe dena hai",
-  "udhaarOwes": "Aap ka dena hai",
-  "udhaarYouOwe": "Aap ka dena hai",
-  "udhaarSettled": "Hisab saaf",
-  "udhaarClear": "Sab clear",
-  "udhaarOwesYou": "{name} ka aap ko dena hai",
+  "udhaarOwedToMe": "Total Lena",
+  "udhaarIOwe": "Total Dena",
+  "udhaarOwes": "Lena",
+  "udhaarYouOwe": "Dena",
+  "udhaarSettled": "Barabar",
+  "udhaarClear": "Barabar",
+  "udhaarOwesYou": "{name} ka Lena",
   "@udhaarOwesYou": {
     "placeholders": { "name": { "type": "String" } }
   },
-  "udhaarYouOweContact": "Aap ka {name} ko dena hai",
+  "udhaarYouOweContact": "{name} ka Dena",
   "@udhaarYouOweContact": {
     "placeholders": { "name": { "type": "String" } }
   },
@@ -342,5 +342,22 @@
   "udhaarNote": "Note (ikhtiyari)",
   "udhaarChangeDate": "Badlein",
   "udhaarNoEntries": "Koi entry nahi.\nDiya ya Liya dabain.",
-  "udhaarDeleteEntry": "Yeh entry mitaein?"
+  "udhaarDeleteEntry": "Yeh entry mitaein?",
+  "udhaarPhone": "Phone (WhatsApp ke liye)",
+  "udhaarWhatsAppReminder": "WhatsApp reminder bhejein",
+  "udhaarWhatsAppLena": "Assalamu Alaikum {name} bhai, aapka Rs. {amount} mujhe lena baqi hai. - Saathi App",
+  "@udhaarWhatsAppLena": {
+    "placeholders": {
+      "name": { "type": "String" },
+      "amount": { "type": "String" }
+    }
+  },
+  "udhaarWhatsAppDena": "Assalamu Alaikum {name} bhai, mera Rs. {amount} aapko dena baqi hai. - Saathi App",
+  "@udhaarWhatsAppDena": {
+    "placeholders": {
+      "name": { "type": "String" },
+      "amount": { "type": "String" }
+    }
+  },
+  "udhaarWhatsAppNotFound": "WhatsApp install nahi hai"
 }

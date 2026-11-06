@@ -339,17 +339,17 @@
   "udhaarDelete": "حذف کریں",
   "udhaarEmpty": "ابھی کوئی رابطہ نہیں",
   "udhaarEmptyHint": "جس سے لین دین ہو اسے شامل کریں",
-  "udhaarOwedToMe": "مجھے ملنا ہے",
-  "udhaarIOwe": "مجھے دینا ہے",
-  "udhaarOwes": "آپ کا دینا ہے",
-  "udhaarYouOwe": "آپ کا دینا ہے",
-  "udhaarSettled": "حساب صاف",
-  "udhaarClear": "سب صاف",
-  "udhaarOwesYou": "{name} کا آپ کو دینا ہے",
+  "udhaarOwedToMe": "کل لینا",
+  "udhaarIOwe": "کل دینا",
+  "udhaarOwes": "لینا",
+  "udhaarYouOwe": "دینا",
+  "udhaarSettled": "برابر",
+  "udhaarClear": "برابر",
+  "udhaarOwesYou": "{name} کا لینا",
   "@udhaarOwesYou": {
     "placeholders": { "name": { "type": "String" } }
   },
-  "udhaarYouOweContact": "آپ کا {name} کو دینا ہے",
+  "udhaarYouOweContact": "{name} کا دینا",
   "@udhaarYouOweContact": {
     "placeholders": { "name": { "type": "String" } }
   },
@@ -359,5 +359,22 @@
   "udhaarNote": "نوٹ (اختیاری)",
   "udhaarChangeDate": "تبدیل کریں",
   "udhaarNoEntries": "کوئی اندراج نہیں۔\nدیا یا لیا بٹن دبائیں۔",
-  "udhaarDeleteEntry": "یہ اندراج حذف کریں؟"
+  "udhaarDeleteEntry": "یہ اندراج حذف کریں؟",
+  "udhaarPhone": "فون (واٹس ایپ کے لیے)",
+  "udhaarWhatsAppReminder": "واٹس ایپ یاد دہانی",
+  "udhaarWhatsAppLena": "السلام علیکم {name} بھائی، آپ کا Rs. {amount} مجھے لینا باقی ہے۔ - ساتھی ایپ",
+  "@udhaarWhatsAppLena": {
+    "placeholders": {
+      "name": { "type": "String" },
+      "amount": { "type": "String" }
+    }
+  },
+  "udhaarWhatsAppDena": "السلام علیکم {name} بھائی، میرا Rs. {amount} آپ کو دینا باقی ہے۔ - ساتھی ایپ",
+  "@udhaarWhatsAppDena": {
+    "placeholders": {
+      "name": { "type": "String" },
+      "amount": { "type": "String" }
+    }
+  },
+  "udhaarWhatsAppNotFound": "واٹس ایپ نصب نہیں"
 }

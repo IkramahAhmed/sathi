@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
@@ -25,38 +26,61 @@ class _UdhaarListScreenState extends ConsumerState<UdhaarListScreen> {
   }
 
   Future<void> _addContact() async {
-    final name = await _contactDialog(context);
-    if (name == null || name.trim().isEmpty) return;
+    final result = await _contactDialog(context);
+    if (result == null || result.$1.trim().isEmpty) return;
     await ref.read(appDatabaseProvider).udhaarDao.addContact(
           UdhaarContactsCompanion.insert(
-            name: name.trim(),
+            name: result.$1.trim(),
+            phone: Value(result.$2.trim()),
             createdAt: DateTime.now().toUtc(),
           ),
         );
   }
 
-  Future<String?> _contactDialog(BuildContext context, {String initial = ''}) {
-    final ctrl = TextEditingController(text: initial);
+  /// Returns (name, phone) or null if cancelled.
+  Future<(String, String)?> _contactDialog(BuildContext context,
+      {String initialName = '', String initialPhone = ''}) {
+    final nameCtrl = TextEditingController(text: initialName);
+    final phoneCtrl = TextEditingController(text: initialPhone);
     final l10n = AppLocalizations.of(context);
-    return showDialog<String>(
+    return showDialog<(String, String)>(
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(l10n.udhaarAddContact),
-        content: TextField(
-          controller: ctrl,
-          autofocus: true,
-          textCapitalization: TextCapitalization.words,
-          decoration: InputDecoration(
-            labelText: l10n.udhaarContactName,
-            border: const OutlineInputBorder(),
-          ),
-          onSubmitted: (_) => Navigator.pop(ctx, ctrl.text),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: nameCtrl,
+              autofocus: true,
+              textCapitalization: TextCapitalization.words,
+              decoration: InputDecoration(
+                labelText: l10n.udhaarContactName,
+                border: const OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: phoneCtrl,
+              keyboardType: TextInputType.phone,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              decoration: InputDecoration(
+                labelText: l10n.udhaarPhone,
+                hintText: '03001234567',
+                prefixText: '+92 ',
+                border: const OutlineInputBorder(),
+              ),
+              onSubmitted: (_) =>
+                  Navigator.pop(ctx, (nameCtrl.text, phoneCtrl.text)),
+            ),
+          ],
         ),
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(ctx), child: Text(l10n.cancel)),
           FilledButton(
-              onPressed: () => Navigator.pop(ctx, ctrl.text),
+              onPressed: () =>
+                  Navigator.pop(ctx, (nameCtrl.text, phoneCtrl.text)),
               child: Text(l10n.udhaarSave)),
         ],
       ),
