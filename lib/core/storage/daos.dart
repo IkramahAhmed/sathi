@@ -354,6 +354,10 @@ class UdhaarDao extends DatabaseAccessor<AppDatabase> with _$UdhaarDaoMixin {
   /// Every entry across all contacts. Used to work out who is overdue.
   Stream<List<UdhaarEntry>> watchAllEntries() => select(udhaarEntries).watch();
 
+  Future<List<UdhaarEntry>> getAllEntries() => select(udhaarEntries).get();
+
+  Future<List<UdhaarContact>> getAllContacts() => select(udhaarContacts).get();
+
   /// Net balance for each contact: positive = they owe you, negative = you owe them.
   Stream<Map<int, double>> watchBalances() {
     final gave = udhaarEntries.amount.sum();

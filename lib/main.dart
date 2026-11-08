@@ -5,6 +5,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app/headless.dart' show notificationBackgroundHandler;
+import 'features/udhaar/background/udhaar_overdue_check.dart';
 import 'app/providers.dart';
 import 'app/router.dart';
 import 'app/saathi_app.dart';
@@ -37,6 +38,8 @@ Future<void> main() async {
 
   final onboardingDone = SettingsLocalDataSource(prefs).onboardingDone();
   await WorkmanagerBootstrap.init();
+  // Fire-and-forget: show overdue notification if any contacts are past due.
+  runHeadlessUdhaarCheck();
 
   runApp(
     ProviderScope(

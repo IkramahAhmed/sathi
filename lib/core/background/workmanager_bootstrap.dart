@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:workmanager/workmanager.dart';
 
 import '../../app/headless.dart';
+import '../../features/udhaar/background/udhaar_overdue_check.dart';
 import '../utils/logger.dart';
 
 const String kRescheduleTaskName = 'saathi.rescheduleAzans';
@@ -14,6 +15,7 @@ void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
     try {
       final result = await runHeadlessReschedule();
+      await runHeadlessUdhaarCheck();
       return result.isSuccess;
     } catch (error, stackTrace) {
       appLog.severe('Background task crashed', error, stackTrace);

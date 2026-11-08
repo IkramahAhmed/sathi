@@ -15,6 +15,7 @@ abstract final class NotificationChannels {
   // heard at the alarm volume instead of the media volume.
   static const String prayerEndingAlarm = 'prayer_ending_alarm';
   static const String sehriReminder = 'sehri_reminder';
+  static const String udhaarOverdue = 'udhaar_overdue';
   static const String drawableIcon = 'ic_stat_saathi';
 
   /// Channels from earlier versions. They are deleted on start so they do not
@@ -105,6 +106,13 @@ abstract final class NotificationChannels {
           'Sehri reminder',
           description: 'Alert before sehri time ends during Ramadan',
           importance: Importance.max,
+          enableVibration: true,
+        ),
+        const AndroidNotificationChannel(
+          udhaarOverdue,
+          'Udhaar reminders',
+          description: 'Reminds you when someone has not returned your money',
+          importance: Importance.high,
           enableVibration: true,
         ),
       ];
