@@ -643,6 +643,7 @@
   "udhaarNote": "Note (optional)",
   "udhaarChangeDate": "Change",
   "udhaarNoEntries": "No entries yet.\nTap Diya or Liya to record.",
+  "udhaarEditEntry": "Edit entry",
   "udhaarDeleteEntry": "Delete this entry?",
   "udhaarPhone": "Phone (for WhatsApp)",
   "udhaarWhatsAppReminder": "Send WhatsApp reminder",

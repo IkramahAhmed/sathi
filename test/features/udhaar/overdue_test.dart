@@ -5,6 +5,7 @@ import 'package:saathi/features/udhaar/domain/overdue.dart';
 String _ymd(DateTime d) =>
     '${d.year.toString().padLeft(4, '0')}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
 
+final _today = _ymd(DateTime.now());
 final _past = _ymd(DateTime.now().subtract(const Duration(days: 2)));
 final _earlier = _ymd(DateTime.now().subtract(const Duration(days: 5)));
 final _future = _ymd(DateTime.now().add(const Duration(days: 7)));
@@ -24,6 +25,11 @@ void main() {
   test('contact with a passed due date and money still owed is overdue', () {
     final result = overdueByContact([_e(1, 1, 500, 'gave', due: _past)]);
     expect(result, {1: _past});
+  });
+
+  test('due date is today — still counts as late', () {
+    final result = overdueByContact([_e(1, 1, 500, 'gave', due: _today)]);
+    expect(result, {1: _today});
   });
 
   test('future due date is not overdue', () {

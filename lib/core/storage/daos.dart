@@ -345,6 +345,9 @@ class UdhaarDao extends DatabaseAccessor<AppDatabase> with _$UdhaarDaoMixin {
   Future<void> addEntry(UdhaarEntriesCompanion entry) =>
       into(udhaarEntries).insert(entry);
 
+  Future<void> updateEntry(int id, UdhaarEntriesCompanion entry) =>
+      (update(udhaarEntries)..where((t) => t.id.equals(id))).write(entry);
+
   Future<void> deleteEntry(int id) =>
       (delete(udhaarEntries)..where((t) => t.id.equals(id))).go();
 

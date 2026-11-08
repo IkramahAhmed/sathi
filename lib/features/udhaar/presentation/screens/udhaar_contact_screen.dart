@@ -52,6 +52,28 @@ class _UdhaarContactScreenState extends ConsumerState<UdhaarContactScreen> {
         );
   }
 
+  Future<void> _editEntry(UdhaarEntry entry) async {
+    final l10n = AppLocalizations.of(context);
+    final result = await showModalBottomSheet<_EntryInput>(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      builder: (_) => _AddEntrySheet(type: entry.type, l10n: l10n, existing: entry),
+    );
+    if (result == null) return;
+    await ref.read(appDatabaseProvider).udhaarDao.updateEntry(
+          entry.id,
+          UdhaarEntriesCompanion(
+            amount: Value(result.amount),
+            type: Value(entry.type),
+            note: Value(result.note),
+            date: Value(result.date),
+            dueDate: Value(result.dueDate),
+          ),
+        );
+  }
+
   Future<void> _sendWhatsApp(double balance) async {
     final l10n = AppLocalizations.of(context);
     final fmt = NumberFormat('#,##0', 'en');
@@ -231,6 +253,7 @@ class _UdhaarContactScreenState extends ConsumerState<UdhaarContactScreen> {
                             .read(appDatabaseProvider)
                             .udhaarDao
                             .deleteEntry(id),
+                        onEdit: _editEntry,
                       ),
               ),
               _ActionButtons(
@@ -306,12 +329,14 @@ class _EntryList extends StatelessWidget {
     required this.l10n,
     required this.scheme,
     required this.onDelete,
+    required this.onEdit,
   });
 
   final List<UdhaarEntry> entries;
   final AppLocalizations l10n;
   final ColorScheme scheme;
   final Future<void> Function(int id) onDelete;
+  final Future<void> Function(UdhaarEntry entry) onEdit;
 
   @override
   Widget build(BuildContext context) {
@@ -355,6 +380,7 @@ class _EntryList extends StatelessWidget {
             child: Icon(Icons.delete_outline, color: scheme.onError),
           ),
           child: ListTile(
+            onTap: () => onEdit(e),
             leading: CircleAvatar(
               radius: 20,
               backgroundColor: isGave
@@ -483,20 +509,32 @@ class _EntryInput {
 }
 
 class _AddEntrySheet extends StatefulWidget {
-  const _AddEntrySheet({required this.type, required this.l10n});
+  const _AddEntrySheet({required this.type, required this.l10n, this.existing});
 
   final String type;
   final AppLocalizations l10n;
+  final UdhaarEntry? existing;
 
   @override
   State<_AddEntrySheet> createState() => _AddEntrySheetState();
 }
 
 class _AddEntrySheetState extends State<_AddEntrySheet> {
-  final _amountCtrl = TextEditingController();
-  final _noteCtrl = TextEditingController();
-  DateTime _date = DateTime.now();
+  late final TextEditingController _amountCtrl;
+  late final TextEditingController _noteCtrl;
+  late DateTime _date;
   DateTime? _due;
+
+  @override
+  void initState() {
+    super.initState();
+    final e = widget.existing;
+    _amountCtrl = TextEditingController(
+        text: e != null ? e.amount.toStringAsFixed(e.amount % 1 == 0 ? 0 : 2) : '');
+    _noteCtrl = TextEditingController(text: e?.note ?? '');
+    _date = e != null ? DateTime.parse(e.date) : DateTime.now();
+    _due = e?.dueDate != null ? DateTime.parse(e!.dueDate!) : null;
+  }
 
   @override
   void dispose() {
@@ -548,9 +586,10 @@ class _AddEntrySheetState extends State<_AddEntrySheet> {
   Widget build(BuildContext context) {
     final l10n = widget.l10n;
     final isGave = widget.type == 'gave';
+    final isEdit = widget.existing != null;
     final scheme = Theme.of(context).colorScheme;
     final color = isGave ? Colors.green.shade700 : scheme.error;
-    final title = isGave ? l10n.udhaarGave : l10n.udhaarReceived;
+    final title = isEdit ? l10n.udhaarEditEntry : (isGave ? l10n.udhaarGave : l10n.udhaarReceived);
 
     return Padding(
       padding: EdgeInsets.fromLTRB(
