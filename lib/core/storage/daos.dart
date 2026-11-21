@@ -347,6 +347,16 @@ class ExpensesDao extends DatabaseAccessor<AppDatabase> with _$ExpensesDaoMixin 
             ]))
           .watch();
 
+  /// Bank-auto-captured entries for the given month, newest first.
+  Stream<List<Expense>> watchBankMonth(String yearMonth) =>
+      (select(expenses)
+            ..where((t) => t.date.like('$yearMonth%') & t.source.equals('bank'))
+            ..orderBy([
+              (t) => OrderingTerm.desc(t.date),
+              (t) => OrderingTerm.desc(t.createdAt),
+            ]))
+          .watch();
+
   /// All entries for the given month as a one-shot Future (for PDF export).
   Future<List<Expense>> getMonth(String yearMonth) =>
       (select(expenses)

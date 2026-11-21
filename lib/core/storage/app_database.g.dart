@@ -1744,6 +1744,16 @@ class $ExpensesTable extends Expenses with TableInfo<$ExpensesTable, Expense> {
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _sourceMeta = const VerificationMeta('source');
+  @override
+  late final GeneratedColumn<String> source = GeneratedColumn<String>(
+    'source',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('manual'),
+  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -1764,6 +1774,7 @@ class $ExpensesTable extends Expenses with TableInfo<$ExpensesTable, Expense> {
     note,
     date,
     receiptPath,
+    source,
     createdAt,
   ];
   @override
@@ -1826,6 +1837,12 @@ class $ExpensesTable extends Expenses with TableInfo<$ExpensesTable, Expense> {
         ),
       );
     }
+    if (data.containsKey('source')) {
+      context.handle(
+        _sourceMeta,
+        source.isAcceptableOrUnknown(data['source']!, _sourceMeta),
+      );
+    }
     if (data.containsKey('created_at')) {
       context.handle(
         _createdAtMeta,
@@ -1871,6 +1888,10 @@ class $ExpensesTable extends Expenses with TableInfo<$ExpensesTable, Expense> {
         DriftSqlType.string,
         data['${effectivePrefix}receipt_path'],
       ),
+      source: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source'],
+      )!,
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -1906,6 +1927,9 @@ class Expense extends DataClass implements Insertable<Expense> {
   /// Absolute path to an attached receipt photo. Null when no photo.
   final String? receiptPath;
 
+  /// `manual` (user-entered) or `bank` (auto-captured from notification).
+  final String source;
+
   /// When this row was created (UTC), used for ordering within a day.
   final DateTime createdAt;
   const Expense({
@@ -1916,6 +1940,7 @@ class Expense extends DataClass implements Insertable<Expense> {
     required this.note,
     required this.date,
     this.receiptPath,
+    required this.source,
     required this.createdAt,
   });
   @override
@@ -1930,6 +1955,7 @@ class Expense extends DataClass implements Insertable<Expense> {
     if (!nullToAbsent || receiptPath != null) {
       map['receipt_path'] = Variable<String>(receiptPath);
     }
+    map['source'] = Variable<String>(source);
     map['created_at'] = Variable<DateTime>(createdAt);
     return map;
   }
@@ -1945,6 +1971,7 @@ class Expense extends DataClass implements Insertable<Expense> {
       receiptPath: receiptPath == null && nullToAbsent
           ? const Value.absent()
           : Value(receiptPath),
+      source: Value(source),
       createdAt: Value(createdAt),
     );
   }
@@ -1962,6 +1989,7 @@ class Expense extends DataClass implements Insertable<Expense> {
       note: serializer.fromJson<String>(json['note']),
       date: serializer.fromJson<String>(json['date']),
       receiptPath: serializer.fromJson<String?>(json['receiptPath']),
+      source: serializer.fromJson<String>(json['source']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
   }
@@ -1976,6 +2004,7 @@ class Expense extends DataClass implements Insertable<Expense> {
       'note': serializer.toJson<String>(note),
       'date': serializer.toJson<String>(date),
       'receiptPath': serializer.toJson<String?>(receiptPath),
+      'source': serializer.toJson<String>(source),
       'createdAt': serializer.toJson<DateTime>(createdAt),
     };
   }
@@ -1988,6 +2017,7 @@ class Expense extends DataClass implements Insertable<Expense> {
     String? note,
     String? date,
     Value<String?> receiptPath = const Value.absent(),
+    String? source,
     DateTime? createdAt,
   }) => Expense(
     id: id ?? this.id,
@@ -1997,6 +2027,7 @@ class Expense extends DataClass implements Insertable<Expense> {
     note: note ?? this.note,
     date: date ?? this.date,
     receiptPath: receiptPath.present ? receiptPath.value : this.receiptPath,
+    source: source ?? this.source,
     createdAt: createdAt ?? this.createdAt,
   );
   Expense copyWithCompanion(ExpensesCompanion data) {
@@ -2010,6 +2041,7 @@ class Expense extends DataClass implements Insertable<Expense> {
       receiptPath: data.receiptPath.present
           ? data.receiptPath.value
           : this.receiptPath,
+      source: data.source.present ? data.source.value : this.source,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
     );
   }
@@ -2024,6 +2056,7 @@ class Expense extends DataClass implements Insertable<Expense> {
           ..write('note: $note, ')
           ..write('date: $date, ')
           ..write('receiptPath: $receiptPath, ')
+          ..write('source: $source, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
@@ -2038,6 +2071,7 @@ class Expense extends DataClass implements Insertable<Expense> {
     note,
     date,
     receiptPath,
+    source,
     createdAt,
   );
   @override
@@ -2051,6 +2085,7 @@ class Expense extends DataClass implements Insertable<Expense> {
           other.note == this.note &&
           other.date == this.date &&
           other.receiptPath == this.receiptPath &&
+          other.source == this.source &&
           other.createdAt == this.createdAt);
 }
 
@@ -2062,6 +2097,7 @@ class ExpensesCompanion extends UpdateCompanion<Expense> {
   final Value<String> note;
   final Value<String> date;
   final Value<String?> receiptPath;
+  final Value<String> source;
   final Value<DateTime> createdAt;
   const ExpensesCompanion({
     this.id = const Value.absent(),
@@ -2071,6 +2107,7 @@ class ExpensesCompanion extends UpdateCompanion<Expense> {
     this.note = const Value.absent(),
     this.date = const Value.absent(),
     this.receiptPath = const Value.absent(),
+    this.source = const Value.absent(),
     this.createdAt = const Value.absent(),
   });
   ExpensesCompanion.insert({
@@ -2081,6 +2118,7 @@ class ExpensesCompanion extends UpdateCompanion<Expense> {
     this.note = const Value.absent(),
     required String date,
     this.receiptPath = const Value.absent(),
+    this.source = const Value.absent(),
     required DateTime createdAt,
   }) : amount = Value(amount),
        category = Value(category),
@@ -2094,6 +2132,7 @@ class ExpensesCompanion extends UpdateCompanion<Expense> {
     Expression<String>? note,
     Expression<String>? date,
     Expression<String>? receiptPath,
+    Expression<String>? source,
     Expression<DateTime>? createdAt,
   }) {
     return RawValuesInsertable({
@@ -2104,6 +2143,7 @@ class ExpensesCompanion extends UpdateCompanion<Expense> {
       if (note != null) 'note': note,
       if (date != null) 'date': date,
       if (receiptPath != null) 'receipt_path': receiptPath,
+      if (source != null) 'source': source,
       if (createdAt != null) 'created_at': createdAt,
     });
   }
@@ -2116,6 +2156,7 @@ class ExpensesCompanion extends UpdateCompanion<Expense> {
     Value<String>? note,
     Value<String>? date,
     Value<String?>? receiptPath,
+    Value<String>? source,
     Value<DateTime>? createdAt,
   }) {
     return ExpensesCompanion(
@@ -2126,6 +2167,7 @@ class ExpensesCompanion extends UpdateCompanion<Expense> {
       note: note ?? this.note,
       date: date ?? this.date,
       receiptPath: receiptPath ?? this.receiptPath,
+      source: source ?? this.source,
       createdAt: createdAt ?? this.createdAt,
     );
   }
@@ -2154,6 +2196,9 @@ class ExpensesCompanion extends UpdateCompanion<Expense> {
     if (receiptPath.present) {
       map['receipt_path'] = Variable<String>(receiptPath.value);
     }
+    if (source.present) {
+      map['source'] = Variable<String>(source.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -2170,6 +2215,7 @@ class ExpensesCompanion extends UpdateCompanion<Expense> {
           ..write('note: $note, ')
           ..write('date: $date, ')
           ..write('receiptPath: $receiptPath, ')
+          ..write('source: $source, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
@@ -4004,6 +4050,7 @@ typedef $$ExpensesTableCreateCompanionBuilder = ExpensesCompanion Function({
   Value<String> note,
   required String date,
   Value<String?> receiptPath,
+  Value<String> source,
   required DateTime createdAt,
 });
 typedef $$ExpensesTableUpdateCompanionBuilder = ExpensesCompanion Function({
@@ -4014,6 +4061,7 @@ typedef $$ExpensesTableUpdateCompanionBuilder = ExpensesCompanion Function({
   Value<String> note,
   Value<String> date,
   Value<String?> receiptPath,
+  Value<String> source,
   Value<DateTime> createdAt,
 });
 
@@ -4058,6 +4106,11 @@ class $$ExpensesTableFilterComposer
 
   ColumnFilters<String> get receiptPath => $composableBuilder(
     column: $table.receiptPath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get source => $composableBuilder(
+    column: $table.source,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -4111,6 +4164,11 @@ class $$ExpensesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get source => $composableBuilder(
+    column: $table.source,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -4148,6 +4206,9 @@ class $$ExpensesTableAnnotationComposer
     column: $table.receiptPath,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get source =>
+      $composableBuilder(column: $table.source, builder: (column) => column);
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -4188,6 +4249,7 @@ class $$ExpensesTableTableManager
                 Value<String> note = const Value.absent(),
                 Value<String> date = const Value.absent(),
                 Value<String?> receiptPath = const Value.absent(),
+                Value<String> source = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
               }) => ExpensesCompanion(
                 id: id,
@@ -4197,6 +4259,7 @@ class $$ExpensesTableTableManager
                 note: note,
                 date: date,
                 receiptPath: receiptPath,
+                source: source,
                 createdAt: createdAt,
               ),
           createCompanionCallback:
@@ -4208,6 +4271,7 @@ class $$ExpensesTableTableManager
                 Value<String> note = const Value.absent(),
                 required String date,
                 Value<String?> receiptPath = const Value.absent(),
+                Value<String> source = const Value.absent(),
                 required DateTime createdAt,
               }) => ExpensesCompanion.insert(
                 id: id,
@@ -4217,6 +4281,7 @@ class $$ExpensesTableTableManager
                 note: note,
                 date: date,
                 receiptPath: receiptPath,
+                source: source,
                 createdAt: createdAt,
               ),
           withReferenceMapper: (p0) => p0

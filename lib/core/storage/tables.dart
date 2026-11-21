@@ -137,6 +137,9 @@ class Expenses extends Table {
   /// Absolute path to an attached receipt photo. Null when no photo.
   TextColumn get receiptPath => text().nullable()();
 
+  /// `manual` (user-entered) or `bank` (auto-captured from notification).
+  TextColumn get source => text().withDefault(const Constant('manual'))();
+
   /// When this row was created (UTC), used for ordering within a day.
   DateTimeColumn get createdAt => dateTime()();
 }

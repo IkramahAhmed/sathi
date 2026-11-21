@@ -42,6 +42,7 @@ Stream<void> notificationListenerStream(Ref ref) async* {
         type: Value(tx.isCredit ? 'income' : 'expense'),
         category: tx.isCredit ? 'salary' : 'other',
         note: Value(note),
+        source: const Value('bank'),
         createdAt: tx.timestamp,
       ));
       await NotificationCaptureService.markCaptured(tx.id);

@@ -16,6 +16,7 @@ import '../features/prayer/presentation/screens/tracker_screen.dart';
 import '../features/prayer/presentation/screens/ramadan_imsakiya_screen.dart';
 import '../features/prayer/presentation/screens/verify_screen.dart';
 import '../features/khata/presentation/screens/khata_screen.dart';
+import '../features/udhaar/presentation/screens/udhaar_list_screen.dart';
 import 'app_shell.dart';
 
 part 'router.g.dart';
@@ -28,6 +29,7 @@ abstract final class Routes {
   static const monthly = '/monthly';
   static const qibla = '/qibla';
   static const khata = '/khata';
+  static const udhaar = '/udhaar';
   static const settings = '/settings';
   static const onboarding = '/onboarding';
   static const oemGuide = '/oem-guide';
@@ -89,6 +91,9 @@ GoRouter router(Ref ref) {
           ]),
           StatefulShellBranch(routes: [
             GoRoute(path: Routes.khata, builder: (_, _) => const KhataScreen()),
+          ]),
+          StatefulShellBranch(routes: [
+            GoRoute(path: Routes.udhaar, builder: (_, _) => const UdhaarListScreen()),
           ]),
           StatefulShellBranch(routes: [
             GoRoute(path: Routes.settings, builder: (_, _) => const SettingsScreen()),

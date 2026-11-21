@@ -29,6 +29,7 @@ class TransactionNotificationService : NotificationListenerService() {
         Log.d(TAG, "Bank notification matched! Sending broadcast.")
 
         val intent = Intent(ACTION_TRANSACTION_NOTIFICATION).apply {
+            setPackage(packageName)   // explicit: required by Android 8+ for dynamic receivers
             putExtra("package", pkg)
             putExtra("title", title)
             putExtra("body", body)
@@ -49,7 +50,7 @@ class TransactionNotificationService : NotificationListenerService() {
             "com.jazzcash.android",       // JazzCash
             "com.easypaisa.app",          // EasyPaisa
             "com.sadapay.app",            // SadaPay
-            "com.nayapay.android",        // NayaPay
+            "com.nayapay.app",             // NayaPay
             "com.dibpak.android",         // DIB Pakistan
             "com.askaribank.android",     // Askari Bank
             "com.jsbl.android",           // JS Bank

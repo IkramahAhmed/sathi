@@ -11,7 +11,6 @@ import '../../../../app/providers.dart';
 import '../../../../core/pdf/pdf_generator.dart';
 import '../../../../core/storage/app_database.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../udhaar/presentation/screens/udhaar_list_screen.dart';
 import '../../domain/entities/expense_category.dart';
 import '../../domain/entities/income_source.dart';
 import '../providers/khata_providers.dart';
@@ -25,11 +24,13 @@ class KhataScreen extends ConsumerStatefulWidget {
   ConsumerState<KhataScreen> createState() => _KhataScreenState();
 }
 
-enum _TxFilter { all, incoming, outgoing, bankSync }
+enum _TxFilter { all, incoming, outgoing }
+
+enum _KhataTab { khata, bank }
 
 class _KhataScreenState extends ConsumerState<KhataScreen> {
   DateTime? _month;
-  bool _showUdhaar = false;
+  _KhataTab _tab = _KhataTab.khata;
   _TxFilter _filter = _TxFilter.all;
 
   void _shift(int delta) {
@@ -48,14 +49,12 @@ class _KhataScreenState extends ConsumerState<KhataScreen> {
         _TxFilter.all => 'All',
         _TxFilter.incoming => 'Incoming',
         _TxFilter.outgoing => 'Outgoing',
-        _TxFilter.bankSync => 'Bank Sync',
       };
 
   List<Expense> _applyFilter(List<Expense> all) => switch (_filter) {
         _TxFilter.all => all,
         _TxFilter.incoming => all.where((e) => e.type == 'income').toList(),
         _TxFilter.outgoing => all.where((e) => e.type != 'income').toList(),
-        _TxFilter.bankSync => all.where((e) => e.note.startsWith('[')).toList(),
       };
 
   Future<void> _exportCsv(List<Expense> expenses, DateTime month) async {
@@ -117,21 +116,21 @@ class _KhataScreenState extends ConsumerState<KhataScreen> {
 
     final segmented = Padding(
       padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
-      child: SegmentedButton<bool>(
+      child: SegmentedButton<_KhataTab>(
         segments: [
           ButtonSegment(
-            value: false,
+            value: _KhataTab.khata,
             label: Text(l10n.khataTabExpenses),
             icon: const Icon(Icons.receipt_long_outlined),
           ),
-          ButtonSegment(
-            value: true,
-            label: Text(l10n.udhaarTitle),
-            icon: const Icon(Icons.handshake_outlined),
+          const ButtonSegment(
+            value: _KhataTab.bank,
+            label: Text('Bank'),
+            icon: Icon(Icons.account_balance_outlined),
           ),
         ],
-        selected: {_showUdhaar},
-        onSelectionChanged: (s) => setState(() => _showUdhaar = s.first),
+        selected: {_tab},
+        onSelectionChanged: (s) => setState(() => _tab = s.first),
       ),
     );
 
@@ -163,9 +162,9 @@ class _KhataScreenState extends ConsumerState<KhataScreen> {
         children: [
           segmented,
           Expanded(
-            child: _showUdhaar
-                ? const UdhaarListScreen(embedded: true)
-                : Column(
+            child: _tab == _KhataTab.bank
+                    ? _BankFeed(month: month)
+                    : Column(
                     children: [
           // Month navigator
           Padding(
@@ -269,7 +268,7 @@ class _KhataScreenState extends ConsumerState<KhataScreen> {
           ),
         ],
       ),
-      floatingActionButton: _showUdhaar
+      floatingActionButton: _tab == _KhataTab.bank
           ? null
           : FloatingActionButton(
               onPressed: () => _showAddMenu(context),
@@ -863,6 +862,7 @@ class _ExpenseTile extends StatelessWidget {
       ),
       child: InkWell(
         onTap: () => onEdit(expense),
+        onLongPress: () => _shareWhatsApp(context),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           child: Row(
@@ -966,6 +966,181 @@ class _ExpenseTile extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  void _shareWhatsApp(BuildContext context) {
+    final fmt = NumberFormat('#,##0', 'en');
+    final isIncome = expense.type == 'income';
+    final sign = isIncome ? '+' : '-';
+    final typeLabel = isIncome ? 'Income' : 'Expense';
+    final note = expense.note.isNotEmpty ? '\n📝 ${expense.note}' : '';
+    final text = '📅 ${expense.date}\n'
+        '$typeLabel: ${sign}Rs ${fmt.format(expense.amount)}'
+        '$note';
+    Share.share(text);
+  }
+}
+
+// ── Bank feed tab ─────────────────────────────────────────────────────────────
+
+enum _BankDirection { all, in_, out }
+
+class _BankFeed extends ConsumerStatefulWidget {
+  const _BankFeed({required this.month});
+  final DateTime month;
+
+  @override
+  ConsumerState<_BankFeed> createState() => _BankFeedState();
+}
+
+class _BankFeedState extends ConsumerState<_BankFeed> {
+  _BankDirection _direction = _BankDirection.all;
+  String? _selectedBank; // null = all banks
+
+  static String _bankName(Expense e) =>
+      e.note.isNotEmpty ? e.note.split(':').first.trim() : 'Bank';
+
+  List<Expense> _applyFilters(List<Expense> all) {
+    var list = all;
+    if (_direction == _BankDirection.in_) {
+      list = list.where((e) => e.type == 'income').toList();
+    } else if (_direction == _BankDirection.out) {
+      list = list.where((e) => e.type != 'income').toList();
+    }
+    if (_selectedBank != null) {
+      list = list.where((e) => _bankName(e) == _selectedBank).toList();
+    }
+    return list;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final yearMonth = DateFormat('yyyy-MM').format(widget.month);
+    final stream = ref.watch(appDatabaseProvider).expensesDao.watchBankMonth(yearMonth);
+    final fmt = NumberFormat('#,##0', 'en');
+    final scheme = Theme.of(context).colorScheme;
+    final text = Theme.of(context).textTheme;
+
+    return StreamBuilder<List<Expense>>(
+      stream: stream,
+      builder: (context, snap) {
+        final all = snap.data ?? [];
+        final filtered = _applyFilters(all);
+
+        // Dynamic bank list from actual data
+        final banks = all.map(_bankName).toSet().toList()..sort();
+        // Reset selected bank if it no longer exists in data
+        if (_selectedBank != null && !banks.contains(_selectedBank)) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) setState(() => _selectedBank = null);
+          });
+        }
+
+        return Column(
+          children: [
+            // ── Filter row 1: Direction ──────────────────────────
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+              child: SegmentedButton<_BankDirection>(
+                segments: const [
+                  ButtonSegment(value: _BankDirection.all,  label: Text('All')),
+                  ButtonSegment(value: _BankDirection.in_,  label: Text('In'),  icon: Icon(Icons.arrow_downward, size: 14)),
+                  ButtonSegment(value: _BankDirection.out,  label: Text('Out'), icon: Icon(Icons.arrow_upward,   size: 14)),
+                ],
+                selected: {_direction},
+                onSelectionChanged: (s) => setState(() => _direction = s.first),
+                style: const ButtonStyle(visualDensity: VisualDensity.compact),
+              ),
+            ),
+            // ── Filter row 2: Bank picker (only if >1 bank) ──────
+            if (banks.length > 1)
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: FilterChip(
+                        label: const Text('All banks'),
+                        selected: _selectedBank == null,
+                        onSelected: (_) => setState(() => _selectedBank = null),
+                        visualDensity: VisualDensity.compact,
+                      ),
+                    ),
+                    for (final bank in banks)
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: FilterChip(
+                          label: Text(bank),
+                          selected: _selectedBank == bank,
+                          onSelected: (_) => setState(() =>
+                              _selectedBank = _selectedBank == bank ? null : bank),
+                          visualDensity: VisualDensity.compact,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            const SizedBox(height: 4),
+            // ── Transaction list ──────────────────────────────────
+            Expanded(
+              child: filtered.isEmpty
+                  ? Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.account_balance_outlined, size: 56, color: scheme.outlineVariant),
+                          const SizedBox(height: 12),
+                          Text(
+                            all.isEmpty ? 'No bank transactions yet' : 'No matching transactions',
+                            style: text.bodyMedium?.copyWith(color: scheme.onSurfaceVariant),
+                          ),
+                          if (all.isEmpty) ...[
+                            const SizedBox(height: 6),
+                            Text('Auto-captured from bank notifications',
+                                style: text.bodySmall?.copyWith(color: scheme.outlineVariant)),
+                          ],
+                        ],
+                      ),
+                    )
+                  : ListView.separated(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      itemCount: filtered.length,
+                      separatorBuilder: (_, __) => Divider(height: 1, indent: 72, color: scheme.outlineVariant.withAlpha(60)),
+                      itemBuilder: (context, i) {
+                        final e = filtered[i];
+                        final isCredit = e.type == 'income';
+                        final bank = _bankName(e);
+                        final color = isCredit ? Colors.green.shade700 : scheme.error;
+                        final sign = isCredit ? '+' : '-';
+                        return ListTile(
+                          leading: CircleAvatar(
+                            backgroundColor: color.withAlpha(28),
+                            child: Icon(Icons.account_balance_outlined, size: 20, color: color),
+                          ),
+                          title: Text(
+                            '$sign Rs ${fmt.format(e.amount)}',
+                            style: text.bodyLarge?.copyWith(fontWeight: FontWeight.w700, color: color),
+                          ),
+                          subtitle: Text(e.note, maxLines: 1, overflow: TextOverflow.ellipsis, style: text.bodySmall),
+                          trailing: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(e.date, style: text.bodySmall?.copyWith(color: scheme.onSurfaceVariant)),
+                              Text(bank, style: text.bodySmall?.copyWith(color: scheme.primary, fontWeight: FontWeight.w600)),
+                            ],
+                          ),
+                          onLongPress: () => Share.share('📅 ${e.date}\n$bank\n${sign}Rs ${fmt.format(e.amount)}\n${e.note}'),
+                        );
+                      },
+                    ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
