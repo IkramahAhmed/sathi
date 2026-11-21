@@ -1,8 +1,11 @@
 import 'package:drift/drift.dart' show Value;
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../app/providers.dart';
+import '../notifications/local_notification_scheduler.dart';
+import '../notifications/notification_channels.dart';
 import '../storage/app_database.dart';
 import 'notification_capture_service.dart';
 
@@ -15,8 +18,6 @@ Stream<void> notificationListenerStream(Ref ref) async* {
   final fmt = DateFormat('yyyy-MM-dd');
 
   await for (final event in NotificationCaptureService.notificationStream) {
-    // ignore: avoid_print
-    print('[Saathi] notificationListenerStream: got event $event');
     try {
       final pkg = event['package'] as String? ?? '';
       final title = event['title'] as String? ?? '';
@@ -36,7 +37,7 @@ Stream<void> notificationListenerStream(Ref ref) async* {
       final date = fmt.format(tx.timestamp);
       final note = '${tx.bankName}: $body';
 
-      await dao.addIfNew(ExpensesCompanion.insert(
+      final saved = await dao.addIfNew(ExpensesCompanion.insert(
         amount: tx.amount,
         date: date,
         type: Value(tx.isCredit ? 'income' : 'expense'),
@@ -46,6 +47,20 @@ Stream<void> notificationListenerStream(Ref ref) async* {
         createdAt: tx.timestamp,
       ));
       await NotificationCaptureService.markCaptured(tx.id);
+
+      if (saved) {
+        final amtFmt = NumberFormat('#,##0', 'en');
+        final sign = tx.isCredit ? '+' : '-';
+        final plugin = FlutterLocalNotificationsPlugin();
+        await LocalNotificationScheduler.initialize(plugin);
+        final scheduler = LocalNotificationScheduler(plugin);
+        await scheduler.showNow(
+          id: tx.id.hashCode & 0x7fffffff,
+          title: '${tx.bankName} transaction saved',
+          body: '${sign}Rs ${amtFmt.format(tx.amount)} added to your Bank tab',
+          channelId: NotificationChannels.khataAlert,
+        );
+      }
     } catch (_) {}
   }
 }

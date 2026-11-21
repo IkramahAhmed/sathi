@@ -35,5 +35,13 @@
 - For self-notification reliability on aggressive OEM phones (Xiaomi, Samsung), prefer `AlarmManager` + `BOOT_COMPLETED` over Firebase. Zero APK impact.
 - WhatsApp Business API and SMS (Twilio) are overkill for a personal finance app.
 
+## Private Vault — biometric-only, no over-engineering
+- The vault is a **family-privacy feature**, not a security product. Biometric gate (fingerprint/face) is sufficient — no encryption at rest, no separate password.
+- Use `local_auth` package (adds ~200 KB). Do not add heavy crypto libraries.
+- Vault entries are stored in the same SQLite DB with `source = 'private'`. They are excluded from all normal feeds, PDF exports, and CSV exports.
+- Both Khata entries and Udhaar contacts can be moved to the vault.
+- If biometrics are unavailable or not enrolled, show a clear message — do not fall back to a PIN screen (scope creep).
+- The vault tab/screen must show nothing (locked state) until biometrics pass — never show counts, amounts, or names before authentication.
+
 ## Separate projects
-- This repo is `/Users/ikramah/Documents/saathi`. Do not touch any other project.
+- This repo is `/Users/noman/Downloads/saathi`. Do not touch any other project.
