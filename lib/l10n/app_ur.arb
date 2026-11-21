@@ -383,5 +383,25 @@
   "udhaarNoDueDate": "کوئی آخری تاریخ نہیں",
   "udhaarSetDueDate": "تاریخ لگائیں",
   "udhaarLate": "تاخیر — ادائیگی باقی ہے",
-  "udhaarLateTitle": "تاخیر"
+  "udhaarLateTitle": "تاخیر",
+
+  "khataIncome": "آمدنی",
+  "khataExpense": "خرچ",
+  "khataNet": "خالص",
+  "khataAddIncome": "آمدنی شامل کریں",
+  "khataAddExpense": "خرچ شامل کریں",
+  "khataTotalIncome": "کل آمدنی",
+  "khataTotalExpense": "کل خرچ",
+  "khataReceiptPhoto": "رسید تصویر",
+  "khataAddPhoto": "تصویر شامل کریں",
+  "khataViewPhoto": "رسید دیکھیں",
+  "khataRemovePhoto": "تصویر ہٹائیں",
+  "khataPdfExport": "PDF برآمد کریں",
+  "udhaarPdfPassbook": "اُدھار پاس بک (PDF)",
+
+  "incomeSourceSalary": "تنخواہ",
+  "incomeSourceFreelance": "فری لانس",
+  "incomeSourceBusiness": "کاروبار",
+  "incomeSourceGift": "تحفہ",
+  "incomeSourceOther": "دیگر آمدنی"
 }

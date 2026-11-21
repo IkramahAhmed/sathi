@@ -1704,6 +1704,16 @@ class $ExpensesTable extends Expenses with TableInfo<$ExpensesTable, Expense> {
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _typeMeta = const VerificationMeta('type');
+  @override
+  late final GeneratedColumn<String> type = GeneratedColumn<String>(
+    'type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('expense'),
+  );
   static const VerificationMeta _noteMeta = const VerificationMeta('note');
   @override
   late final GeneratedColumn<String> note = GeneratedColumn<String>(
@@ -1723,6 +1733,17 @@ class $ExpensesTable extends Expenses with TableInfo<$ExpensesTable, Expense> {
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _receiptPathMeta = const VerificationMeta(
+    'receiptPath',
+  );
+  @override
+  late final GeneratedColumn<String> receiptPath = GeneratedColumn<String>(
+    'receipt_path',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -1739,8 +1760,10 @@ class $ExpensesTable extends Expenses with TableInfo<$ExpensesTable, Expense> {
     id,
     amount,
     category,
+    type,
     note,
     date,
+    receiptPath,
     createdAt,
   ];
   @override
@@ -1774,6 +1797,12 @@ class $ExpensesTable extends Expenses with TableInfo<$ExpensesTable, Expense> {
     } else if (isInserting) {
       context.missing(_categoryMeta);
     }
+    if (data.containsKey('type')) {
+      context.handle(
+        _typeMeta,
+        type.isAcceptableOrUnknown(data['type']!, _typeMeta),
+      );
+    }
     if (data.containsKey('note')) {
       context.handle(
         _noteMeta,
@@ -1787,6 +1816,15 @@ class $ExpensesTable extends Expenses with TableInfo<$ExpensesTable, Expense> {
       );
     } else if (isInserting) {
       context.missing(_dateMeta);
+    }
+    if (data.containsKey('receipt_path')) {
+      context.handle(
+        _receiptPathMeta,
+        receiptPath.isAcceptableOrUnknown(
+          data['receipt_path']!,
+          _receiptPathMeta,
+        ),
+      );
     }
     if (data.containsKey('created_at')) {
       context.handle(
@@ -1817,6 +1855,10 @@ class $ExpensesTable extends Expenses with TableInfo<$ExpensesTable, Expense> {
         DriftSqlType.string,
         data['${effectivePrefix}category'],
       )!,
+      type: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}type'],
+      )!,
       note: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}note'],
@@ -1825,6 +1867,10 @@ class $ExpensesTable extends Expenses with TableInfo<$ExpensesTable, Expense> {
         DriftSqlType.string,
         data['${effectivePrefix}date'],
       )!,
+      receiptPath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}receipt_path'],
+      ),
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -1844,8 +1890,12 @@ class Expense extends DataClass implements Insertable<Expense> {
   /// Amount in local currency (always positive).
   final double amount;
 
-  /// Matches [ExpenseCategory.name] — food, transport, rent, health, bills, shopping, other.
+  /// For expenses: matches [ExpenseCategory.name].
+  /// For income: matches [IncomeSource.name].
   final String category;
+
+  /// `expense` (default) or `income`.
+  final String type;
 
   /// Optional description.
   final String note;
@@ -1853,14 +1903,19 @@ class Expense extends DataClass implements Insertable<Expense> {
   /// Calendar date as `yyyy-MM-dd`.
   final String date;
 
+  /// Absolute path to an attached receipt photo. Null when no photo.
+  final String? receiptPath;
+
   /// When this row was created (UTC), used for ordering within a day.
   final DateTime createdAt;
   const Expense({
     required this.id,
     required this.amount,
     required this.category,
+    required this.type,
     required this.note,
     required this.date,
+    this.receiptPath,
     required this.createdAt,
   });
   @override
@@ -1869,8 +1924,12 @@ class Expense extends DataClass implements Insertable<Expense> {
     map['id'] = Variable<int>(id);
     map['amount'] = Variable<double>(amount);
     map['category'] = Variable<String>(category);
+    map['type'] = Variable<String>(type);
     map['note'] = Variable<String>(note);
     map['date'] = Variable<String>(date);
+    if (!nullToAbsent || receiptPath != null) {
+      map['receipt_path'] = Variable<String>(receiptPath);
+    }
     map['created_at'] = Variable<DateTime>(createdAt);
     return map;
   }
@@ -1880,8 +1939,12 @@ class Expense extends DataClass implements Insertable<Expense> {
       id: Value(id),
       amount: Value(amount),
       category: Value(category),
+      type: Value(type),
       note: Value(note),
       date: Value(date),
+      receiptPath: receiptPath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(receiptPath),
       createdAt: Value(createdAt),
     );
   }
@@ -1895,8 +1958,10 @@ class Expense extends DataClass implements Insertable<Expense> {
       id: serializer.fromJson<int>(json['id']),
       amount: serializer.fromJson<double>(json['amount']),
       category: serializer.fromJson<String>(json['category']),
+      type: serializer.fromJson<String>(json['type']),
       note: serializer.fromJson<String>(json['note']),
       date: serializer.fromJson<String>(json['date']),
+      receiptPath: serializer.fromJson<String?>(json['receiptPath']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
   }
@@ -1907,8 +1972,10 @@ class Expense extends DataClass implements Insertable<Expense> {
       'id': serializer.toJson<int>(id),
       'amount': serializer.toJson<double>(amount),
       'category': serializer.toJson<String>(category),
+      'type': serializer.toJson<String>(type),
       'note': serializer.toJson<String>(note),
       'date': serializer.toJson<String>(date),
+      'receiptPath': serializer.toJson<String?>(receiptPath),
       'createdAt': serializer.toJson<DateTime>(createdAt),
     };
   }
@@ -1917,15 +1984,19 @@ class Expense extends DataClass implements Insertable<Expense> {
     int? id,
     double? amount,
     String? category,
+    String? type,
     String? note,
     String? date,
+    Value<String?> receiptPath = const Value.absent(),
     DateTime? createdAt,
   }) => Expense(
     id: id ?? this.id,
     amount: amount ?? this.amount,
     category: category ?? this.category,
+    type: type ?? this.type,
     note: note ?? this.note,
     date: date ?? this.date,
+    receiptPath: receiptPath.present ? receiptPath.value : this.receiptPath,
     createdAt: createdAt ?? this.createdAt,
   );
   Expense copyWithCompanion(ExpensesCompanion data) {
@@ -1933,8 +2004,12 @@ class Expense extends DataClass implements Insertable<Expense> {
       id: data.id.present ? data.id.value : this.id,
       amount: data.amount.present ? data.amount.value : this.amount,
       category: data.category.present ? data.category.value : this.category,
+      type: data.type.present ? data.type.value : this.type,
       note: data.note.present ? data.note.value : this.note,
       date: data.date.present ? data.date.value : this.date,
+      receiptPath: data.receiptPath.present
+          ? data.receiptPath.value
+          : this.receiptPath,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
     );
   }
@@ -1945,15 +2020,26 @@ class Expense extends DataClass implements Insertable<Expense> {
           ..write('id: $id, ')
           ..write('amount: $amount, ')
           ..write('category: $category, ')
+          ..write('type: $type, ')
           ..write('note: $note, ')
           ..write('date: $date, ')
+          ..write('receiptPath: $receiptPath, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, amount, category, note, date, createdAt);
+  int get hashCode => Object.hash(
+    id,
+    amount,
+    category,
+    type,
+    note,
+    date,
+    receiptPath,
+    createdAt,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1961,8 +2047,10 @@ class Expense extends DataClass implements Insertable<Expense> {
           other.id == this.id &&
           other.amount == this.amount &&
           other.category == this.category &&
+          other.type == this.type &&
           other.note == this.note &&
           other.date == this.date &&
+          other.receiptPath == this.receiptPath &&
           other.createdAt == this.createdAt);
 }
 
@@ -1970,23 +2058,29 @@ class ExpensesCompanion extends UpdateCompanion<Expense> {
   final Value<int> id;
   final Value<double> amount;
   final Value<String> category;
+  final Value<String> type;
   final Value<String> note;
   final Value<String> date;
+  final Value<String?> receiptPath;
   final Value<DateTime> createdAt;
   const ExpensesCompanion({
     this.id = const Value.absent(),
     this.amount = const Value.absent(),
     this.category = const Value.absent(),
+    this.type = const Value.absent(),
     this.note = const Value.absent(),
     this.date = const Value.absent(),
+    this.receiptPath = const Value.absent(),
     this.createdAt = const Value.absent(),
   });
   ExpensesCompanion.insert({
     this.id = const Value.absent(),
     required double amount,
     required String category,
+    this.type = const Value.absent(),
     this.note = const Value.absent(),
     required String date,
+    this.receiptPath = const Value.absent(),
     required DateTime createdAt,
   }) : amount = Value(amount),
        category = Value(category),
@@ -1996,16 +2090,20 @@ class ExpensesCompanion extends UpdateCompanion<Expense> {
     Expression<int>? id,
     Expression<double>? amount,
     Expression<String>? category,
+    Expression<String>? type,
     Expression<String>? note,
     Expression<String>? date,
+    Expression<String>? receiptPath,
     Expression<DateTime>? createdAt,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (amount != null) 'amount': amount,
       if (category != null) 'category': category,
+      if (type != null) 'type': type,
       if (note != null) 'note': note,
       if (date != null) 'date': date,
+      if (receiptPath != null) 'receipt_path': receiptPath,
       if (createdAt != null) 'created_at': createdAt,
     });
   }
@@ -2014,16 +2112,20 @@ class ExpensesCompanion extends UpdateCompanion<Expense> {
     Value<int>? id,
     Value<double>? amount,
     Value<String>? category,
+    Value<String>? type,
     Value<String>? note,
     Value<String>? date,
+    Value<String?>? receiptPath,
     Value<DateTime>? createdAt,
   }) {
     return ExpensesCompanion(
       id: id ?? this.id,
       amount: amount ?? this.amount,
       category: category ?? this.category,
+      type: type ?? this.type,
       note: note ?? this.note,
       date: date ?? this.date,
+      receiptPath: receiptPath ?? this.receiptPath,
       createdAt: createdAt ?? this.createdAt,
     );
   }
@@ -2040,11 +2142,17 @@ class ExpensesCompanion extends UpdateCompanion<Expense> {
     if (category.present) {
       map['category'] = Variable<String>(category.value);
     }
+    if (type.present) {
+      map['type'] = Variable<String>(type.value);
+    }
     if (note.present) {
       map['note'] = Variable<String>(note.value);
     }
     if (date.present) {
       map['date'] = Variable<String>(date.value);
+    }
+    if (receiptPath.present) {
+      map['receipt_path'] = Variable<String>(receiptPath.value);
     }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
@@ -2058,8 +2166,10 @@ class ExpensesCompanion extends UpdateCompanion<Expense> {
           ..write('id: $id, ')
           ..write('amount: $amount, ')
           ..write('category: $category, ')
+          ..write('type: $type, ')
           ..write('note: $note, ')
           ..write('date: $date, ')
+          ..write('receiptPath: $receiptPath, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
@@ -3890,16 +4000,20 @@ typedef $$ExpensesTableCreateCompanionBuilder = ExpensesCompanion Function({
   Value<int> id,
   required double amount,
   required String category,
+  Value<String> type,
   Value<String> note,
   required String date,
+  Value<String?> receiptPath,
   required DateTime createdAt,
 });
 typedef $$ExpensesTableUpdateCompanionBuilder = ExpensesCompanion Function({
   Value<int> id,
   Value<double> amount,
   Value<String> category,
+  Value<String> type,
   Value<String> note,
   Value<String> date,
+  Value<String?> receiptPath,
   Value<DateTime> createdAt,
 });
 
@@ -3927,6 +4041,11 @@ class $$ExpensesTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<String> get note => $composableBuilder(
     column: $table.note,
     builder: (column) => ColumnFilters(column),
@@ -3934,6 +4053,11 @@ class $$ExpensesTableFilterComposer
 
   ColumnFilters<String> get date => $composableBuilder(
     column: $table.date,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get receiptPath => $composableBuilder(
+    column: $table.receiptPath,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -3967,6 +4091,11 @@ class $$ExpensesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get note => $composableBuilder(
     column: $table.note,
     builder: (column) => ColumnOrderings(column),
@@ -3974,6 +4103,11 @@ class $$ExpensesTableOrderingComposer
 
   ColumnOrderings<String> get date => $composableBuilder(
     column: $table.date,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get receiptPath => $composableBuilder(
+    column: $table.receiptPath,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -4001,11 +4135,19 @@ class $$ExpensesTableAnnotationComposer
   GeneratedColumn<String> get category =>
       $composableBuilder(column: $table.category, builder: (column) => column);
 
+  GeneratedColumn<String> get type =>
+      $composableBuilder(column: $table.type, builder: (column) => column);
+
   GeneratedColumn<String> get note =>
       $composableBuilder(column: $table.note, builder: (column) => column);
 
   GeneratedColumn<String> get date =>
       $composableBuilder(column: $table.date, builder: (column) => column);
+
+  GeneratedColumn<String> get receiptPath => $composableBuilder(
+    column: $table.receiptPath,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -4042,15 +4184,19 @@ class $$ExpensesTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<double> amount = const Value.absent(),
                 Value<String> category = const Value.absent(),
+                Value<String> type = const Value.absent(),
                 Value<String> note = const Value.absent(),
                 Value<String> date = const Value.absent(),
+                Value<String?> receiptPath = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
               }) => ExpensesCompanion(
                 id: id,
                 amount: amount,
                 category: category,
+                type: type,
                 note: note,
                 date: date,
+                receiptPath: receiptPath,
                 createdAt: createdAt,
               ),
           createCompanionCallback:
@@ -4058,15 +4204,19 @@ class $$ExpensesTableTableManager
                 Value<int> id = const Value.absent(),
                 required double amount,
                 required String category,
+                Value<String> type = const Value.absent(),
                 Value<String> note = const Value.absent(),
                 required String date,
+                Value<String?> receiptPath = const Value.absent(),
                 required DateTime createdAt,
               }) => ExpensesCompanion.insert(
                 id: id,
                 amount: amount,
                 category: category,
+                type: type,
                 note: note,
                 date: date,
+                receiptPath: receiptPath,
                 createdAt: createdAt,
               ),
           withReferenceMapper: (p0) => p0

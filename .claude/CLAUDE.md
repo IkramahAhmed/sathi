@@ -24,5 +24,16 @@
 - After schema changes, run: `dart run build_runner build --delete-conflicting-outputs`.
 - After ARB changes, run: `flutter gen-l10n`.
 
+## Before building any new feature
+- Always research what the top downloaded competing apps (Easy Khata, Hisaab, OK Credit, etc.) do first.
+- Check what is missing in Saathi vs the competition before writing code.
+- Report the gap analysis to the user, then wait for confirmation before building.
+
+## Udhaar / payment reminders — no Firebase for debtors
+- **Do not add Firebase (FCM) to notify debtors.** Debtors do not have Saathi installed, so FCM cannot reach them. Firebase also adds ~8 MB to the APK.
+- The correct solution for debtor reminders is the **WhatsApp 1-tap button** (already built). It opens a pre-filled WhatsApp chat — universally available in Pakistan.
+- For self-notification reliability on aggressive OEM phones (Xiaomi, Samsung), prefer `AlarmManager` + `BOOT_COMPLETED` over Firebase. Zero APK impact.
+- WhatsApp Business API and SMS (Twilio) are overkill for a personal finance app.
+
 ## Separate projects
 - This repo is `/Users/ikramah/Documents/saathi`. Do not touch any other project.

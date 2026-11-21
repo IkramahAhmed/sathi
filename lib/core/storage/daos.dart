@@ -294,12 +294,50 @@ class ExpensesDao extends DatabaseAccessor<AppDatabase> with _$ExpensesDaoMixin 
 
   Future<void> add(ExpensesCompanion entry) => into(expenses).insert(entry);
 
+  /// Returns true if an identical auto-import already exists.
+  /// Key: amount + date + type + bank tag (extracted from note prefix "[BANK] ...").
+  /// Using bank in the key prevents false positives when two different banks
+  /// both send Rs 1,000 debits on the same day.
+  Future<bool> isDuplicate(double amount, String date, String type, String note) async {
+    final bank = _extractBankTag(note);
+    final rows = await (select(expenses)
+          ..where((t) =>
+              t.amount.equals(amount) &
+              t.date.equals(date) &
+              t.type.equals(type))
+          ..limit(20))
+        .get();
+    for (final r in rows) {
+      if (_extractBankTag(r.note) == bank) return true;
+    }
+    return false;
+  }
+
+  /// Inserts only if no matching auto-import (amount + date + type + bank) already exists.
+  Future<bool> addIfNew(ExpensesCompanion entry) async {
+    final note = entry.note.value ?? '';
+    final dup = await isDuplicate(
+      entry.amount.value,
+      entry.date.value,
+      entry.type.value ?? 'expense',
+      note,
+    );
+    if (dup) return false;
+    await add(entry);
+    return true;
+  }
+
+  static String? _extractBankTag(String note) {
+    final m = RegExp(r'^\[([^\]]+)\]').firstMatch(note);
+    return m?.group(1);
+  }
+
   Future<void> updateExpense(int id, ExpensesCompanion entry) =>
       (update(expenses)..where((t) => t.id.equals(id))).write(entry);
 
   Future<void> remove(int id) => (delete(expenses)..where((t) => t.id.equals(id))).go();
 
-  /// All expenses for the given month (format: `yyyy-MM`), newest first.
+  /// All entries for the given month (format: `yyyy-MM`), newest first.
   Stream<List<Expense>> watchMonth(String yearMonth) =>
       (select(expenses)
             ..where((t) => t.date.like('$yearMonth%'))
@@ -308,6 +346,16 @@ class ExpensesDao extends DatabaseAccessor<AppDatabase> with _$ExpensesDaoMixin 
               (t) => OrderingTerm.desc(t.createdAt),
             ]))
           .watch();
+
+  /// All entries for the given month as a one-shot Future (for PDF export).
+  Future<List<Expense>> getMonth(String yearMonth) =>
+      (select(expenses)
+            ..where((t) => t.date.like('$yearMonth%'))
+            ..orderBy([
+              (t) => OrderingTerm.asc(t.date),
+              (t) => OrderingTerm.asc(t.createdAt),
+            ]))
+          .get();
 }
 
 @DriftAccessor(tables: [UdhaarContacts, UdhaarEntries])

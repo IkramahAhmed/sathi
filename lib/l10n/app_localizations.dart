@@ -2145,6 +2145,12 @@ abstract class AppLocalizations {
   /// **'No entries yet.\nTap Diya or Liya to record.'**
   String get udhaarNoEntries;
 
+  /// No description provided for @udhaarEditEntry.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit entry'**
+  String get udhaarEditEntry;
+
   /// No description provided for @udhaarDeleteEntry.
   ///
   /// In en, this message translates to:
@@ -2210,6 +2216,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Late'**
   String get udhaarLateTitle;
+
+  /// No description provided for @khataIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'Income'**
+  String get khataIncome;
+
+  /// No description provided for @khataExpense.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense'**
+  String get khataExpense;
+
+  /// No description provided for @khataNet.
+  ///
+  /// In en, this message translates to:
+  /// **'Net'**
+  String get khataNet;
+
+  /// No description provided for @khataAddIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'Add income'**
+  String get khataAddIncome;
+
+  /// No description provided for @khataAddExpense.
+  ///
+  /// In en, this message translates to:
+  /// **'Add expense'**
+  String get khataAddExpense;
+
+  /// No description provided for @khataTotalIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'Total income'**
+  String get khataTotalIncome;
+
+  /// No description provided for @khataTotalExpense.
+  ///
+  /// In en, this message translates to:
+  /// **'Total expense'**
+  String get khataTotalExpense;
+
+  /// No description provided for @khataReceiptPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Receipt photo'**
+  String get khataReceiptPhoto;
+
+  /// No description provided for @khataAddPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Add photo'**
+  String get khataAddPhoto;
+
+  /// No description provided for @khataViewPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'View receipt'**
+  String get khataViewPhoto;
+
+  /// No description provided for @khataRemovePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove photo'**
+  String get khataRemovePhoto;
+
+  /// No description provided for @khataPdfExport.
+  ///
+  /// In en, this message translates to:
+  /// **'Export PDF'**
+  String get khataPdfExport;
+
+  /// No description provided for @udhaarPdfPassbook.
+  ///
+  /// In en, this message translates to:
+  /// **'Udhaar passbook (PDF)'**
+  String get udhaarPdfPassbook;
+
+  /// No description provided for @incomeSourceSalary.
+  ///
+  /// In en, this message translates to:
+  /// **'Salary'**
+  String get incomeSourceSalary;
+
+  /// No description provided for @incomeSourceFreelance.
+  ///
+  /// In en, this message translates to:
+  /// **'Freelance'**
+  String get incomeSourceFreelance;
+
+  /// No description provided for @incomeSourceBusiness.
+  ///
+  /// In en, this message translates to:
+  /// **'Business'**
+  String get incomeSourceBusiness;
+
+  /// No description provided for @incomeSourceGift.
+  ///
+  /// In en, this message translates to:
+  /// **'Gift'**
+  String get incomeSourceGift;
+
+  /// No description provided for @incomeSourceOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other income'**
+  String get incomeSourceOther;
 }
 
 class _AppLocalizationsDelegate

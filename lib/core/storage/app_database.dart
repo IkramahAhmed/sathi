@@ -15,7 +15,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? driftDatabase(name: 'saathi'));
 
   @override
-  int get schemaVersion => 6;
+  int get schemaVersion => 7;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -41,6 +41,10 @@ class AppDatabase extends _$AppDatabase {
           }
           if (from < 6) {
             await m.addColumn(udhaarEntries, udhaarEntries.dueDate);
+          }
+          if (from < 7) {
+            await m.addColumn(expenses, expenses.type);
+            await m.addColumn(expenses, expenses.receiptPath);
           }
         },
       );

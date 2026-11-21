@@ -114,21 +114,28 @@ class UdhaarEntries extends Table {
   DateTimeColumn get createdAt => dateTime()();
 }
 
-/// Daily expense entries for the Khata (ledger) feature.
+/// Daily expense / income entries for the Khata (ledger) feature.
 class Expenses extends Table {
   IntColumn get id => integer().autoIncrement()();
 
   /// Amount in local currency (always positive).
   RealColumn get amount => real()();
 
-  /// Matches [ExpenseCategory.name] — food, transport, rent, health, bills, shopping, other.
+  /// For expenses: matches [ExpenseCategory.name].
+  /// For income: matches [IncomeSource.name].
   TextColumn get category => text()();
+
+  /// `expense` (default) or `income`.
+  TextColumn get type => text().withDefault(const Constant('expense'))();
 
   /// Optional description.
   TextColumn get note => text().withDefault(const Constant(''))();
 
   /// Calendar date as `yyyy-MM-dd`.
   TextColumn get date => text()();
+
+  /// Absolute path to an attached receipt photo. Null when no photo.
+  TextColumn get receiptPath => text().nullable()();
 
   /// When this row was created (UTC), used for ordering within a day.
   DateTimeColumn get createdAt => dateTime()();

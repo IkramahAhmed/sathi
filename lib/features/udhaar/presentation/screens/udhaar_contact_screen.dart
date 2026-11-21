@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../app/providers.dart';
+import '../../../../core/pdf/pdf_generator.dart';
 import '../../../../core/storage/app_database.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/overdue.dart';
@@ -219,6 +220,12 @@ class _UdhaarContactScreenState extends ConsumerState<UdhaarContactScreen> {
             appBar: AppBar(
               title: Text(_contact.name),
               actions: [
+                if (entries.isNotEmpty)
+                  IconButton(
+                    icon: const Icon(Icons.picture_as_pdf_outlined),
+                    tooltip: l10n.udhaarPdfPassbook,
+                    onPressed: () => shareUdhaarPassbookPdf(_contact, entries, balance),
+                  ),
                 if (balance != 0)
                   IconButton(
                     icon: Image.asset('assets/whatsapp.png',

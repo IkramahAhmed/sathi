@@ -1156,6 +1156,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get udhaarNoEntries => 'No entries yet.\nTap Diya or Liya to record.';
 
   @override
+  String get udhaarEditEntry => 'Edit entry';
+
+  @override
   String get udhaarDeleteEntry => 'Delete this entry?';
 
   @override
@@ -1191,6 +1194,60 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get udhaarLateTitle => 'Late';
+
+  @override
+  String get khataIncome => 'Income';
+
+  @override
+  String get khataExpense => 'Expense';
+
+  @override
+  String get khataNet => 'Net';
+
+  @override
+  String get khataAddIncome => 'Add income';
+
+  @override
+  String get khataAddExpense => 'Add expense';
+
+  @override
+  String get khataTotalIncome => 'Total income';
+
+  @override
+  String get khataTotalExpense => 'Total expense';
+
+  @override
+  String get khataReceiptPhoto => 'Receipt photo';
+
+  @override
+  String get khataAddPhoto => 'Add photo';
+
+  @override
+  String get khataViewPhoto => 'View receipt';
+
+  @override
+  String get khataRemovePhoto => 'Remove photo';
+
+  @override
+  String get khataPdfExport => 'Export PDF';
+
+  @override
+  String get udhaarPdfPassbook => 'Udhaar passbook (PDF)';
+
+  @override
+  String get incomeSourceSalary => 'Salary';
+
+  @override
+  String get incomeSourceFreelance => 'Freelance';
+
+  @override
+  String get incomeSourceBusiness => 'Business';
+
+  @override
+  String get incomeSourceGift => 'Gift';
+
+  @override
+  String get incomeSourceOther => 'Other income';
 }
 
 /// The translations for English, as used in Pakistan (`en_PK`).
@@ -2310,6 +2367,9 @@ class AppLocalizationsEnPk extends AppLocalizationsEn {
   String get udhaarNoEntries => 'Koi entry nahi.\nDiya ya Liya dabain.';
 
   @override
+  String get udhaarEditEntry => 'Entry edit karein';
+
+  @override
   String get udhaarDeleteEntry => 'Yeh entry mitaein?';
 
   @override
@@ -2345,4 +2405,58 @@ class AppLocalizationsEnPk extends AppLocalizationsEn {
 
   @override
   String get udhaarLateTitle => 'Late';
+
+  @override
+  String get khataIncome => 'Income';
+
+  @override
+  String get khataExpense => 'Kharch';
+
+  @override
+  String get khataNet => 'Net';
+
+  @override
+  String get khataAddIncome => 'Income daalen';
+
+  @override
+  String get khataAddExpense => 'Kharch daalen';
+
+  @override
+  String get khataTotalIncome => 'Kul income';
+
+  @override
+  String get khataTotalExpense => 'Kul kharch';
+
+  @override
+  String get khataReceiptPhoto => 'Receipt ki tasveer';
+
+  @override
+  String get khataAddPhoto => 'Tasveer lagayen';
+
+  @override
+  String get khataViewPhoto => 'Receipt dekhen';
+
+  @override
+  String get khataRemovePhoto => 'Tasveer hatayein';
+
+  @override
+  String get khataPdfExport => 'PDF export karein';
+
+  @override
+  String get udhaarPdfPassbook => 'Udhaar passbook (PDF)';
+
+  @override
+  String get incomeSourceSalary => 'Tankhwah';
+
+  @override
+  String get incomeSourceFreelance => 'Freelance';
+
+  @override
+  String get incomeSourceBusiness => 'Business';
+
+  @override
+  String get incomeSourceGift => 'Tohfa';
+
+  @override
+  String get incomeSourceOther => 'Doosri income';
 }

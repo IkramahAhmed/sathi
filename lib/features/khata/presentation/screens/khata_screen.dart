@@ -8,10 +8,12 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../../app/providers.dart';
+import '../../../../core/pdf/pdf_generator.dart';
 import '../../../../core/storage/app_database.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../udhaar/presentation/screens/udhaar_list_screen.dart';
 import '../../domain/entities/expense_category.dart';
+import '../../domain/entities/income_source.dart';
 import '../providers/khata_providers.dart';
 import 'add_expense_screen.dart';
 import 'budget_screen.dart';
@@ -23,9 +25,12 @@ class KhataScreen extends ConsumerStatefulWidget {
   ConsumerState<KhataScreen> createState() => _KhataScreenState();
 }
 
+enum _TxFilter { all, incoming, outgoing, bankSync }
+
 class _KhataScreenState extends ConsumerState<KhataScreen> {
   DateTime? _month;
   bool _showUdhaar = false;
+  _TxFilter _filter = _TxFilter.all;
 
   void _shift(int delta) {
     final now = DateTime.now();
@@ -39,12 +44,26 @@ class _KhataScreenState extends ConsumerState<KhataScreen> {
     return current.year == now.year && current.month == now.month;
   }
 
-  Future<void> _export(List<Expense> expenses, DateTime month, AppLocalizations l10n) async {
+  String _filterLabel(_TxFilter f) => switch (f) {
+        _TxFilter.all => 'All',
+        _TxFilter.incoming => 'Incoming',
+        _TxFilter.outgoing => 'Outgoing',
+        _TxFilter.bankSync => 'Bank Sync',
+      };
+
+  List<Expense> _applyFilter(List<Expense> all) => switch (_filter) {
+        _TxFilter.all => all,
+        _TxFilter.incoming => all.where((e) => e.type == 'income').toList(),
+        _TxFilter.outgoing => all.where((e) => e.type != 'income').toList(),
+        _TxFilter.bankSync => all.where((e) => e.note.startsWith('[')).toList(),
+      };
+
+  Future<void> _exportCsv(List<Expense> expenses, DateTime month) async {
     final monthLabel = DateFormat('yyyy-MM').format(month);
-    final csv = StringBuffer('Date,Category,Amount (Rs.),Note\n');
+    final csv = StringBuffer('Date,Type,Category,Amount (Rs.),Note\n');
     for (final e in expenses) {
       final note = e.note.replaceAll('"', '""');
-      csv.write('${e.date},${e.category},${e.amount},"$note"\n');
+      csv.write('${e.date},${e.type},${e.category},${e.amount},"$note"\n');
     }
     final dir = await getTemporaryDirectory();
     final file = File('${dir.path}/khata_$monthLabel.csv');
@@ -52,6 +71,36 @@ class _KhataScreenState extends ConsumerState<KhataScreen> {
     await Share.shareXFiles(
       [XFile(file.path, mimeType: 'text/csv')],
       subject: 'Khata – ${DateFormat.yMMMM().format(month)}',
+    );
+  }
+
+  Future<void> _exportPdf(DateTime month) async {
+    final entries = await ref.read(appDatabaseProvider).expensesDao.getMonth(
+          DateFormat('yyyy-MM').format(month),
+        );
+    await shareKhataPdf(entries, month);
+  }
+
+  void _showExportMenu(BuildContext context, List<Expense> expenses, DateTime month) {
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (_) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.picture_as_pdf_outlined),
+              title: const Text('Export PDF'),
+              onTap: () { Navigator.pop(context); _exportPdf(month); },
+            ),
+            ListTile(
+              leading: const Icon(Icons.table_chart_outlined),
+              title: const Text('Export CSV'),
+              onTap: () { Navigator.pop(context); _exportCsv(expenses, month); },
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -90,7 +139,6 @@ class _KhataScreenState extends ConsumerState<KhataScreen> {
       appBar: AppBar(
         title: Text(l10n.khataTitle),
         actions: [
-          // Export action — enabled only when there is data
           expensesAsync.when(
             loading: () => const SizedBox.shrink(),
             error: (_, __) => const SizedBox.shrink(),
@@ -99,7 +147,7 @@ class _KhataScreenState extends ConsumerState<KhataScreen> {
                 : IconButton(
                     tooltip: l10n.khataExport,
                     icon: const Icon(Icons.upload_outlined),
-                    onPressed: () => _export(expenses, month, l10n),
+                    onPressed: () => _showExportMenu(context, expenses, month),
                   ),
           ),
           IconButton(
@@ -141,51 +189,74 @@ class _KhataScreenState extends ConsumerState<KhataScreen> {
             ),
           ),
 
-          // Summary card
+          // Filter chips
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+            child: Row(
+              children: [
+                for (final f in _TxFilter.values)
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: FilterChip(
+                      selected: _filter == f,
+                      label: Text(_filterLabel(f)),
+                      onSelected: (_) => setState(() => _filter = f),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+
+          // Summary card — always based on full month, not filtered
           expensesAsync.when(
             loading: () => const LinearProgressIndicator(),
             error: (_, __) => const SizedBox.shrink(),
-            data: (expenses) {
-              final total = expenses.fold(0.0, (s, e) => s + e.amount);
-              return _SummaryCard(total: total, scheme: scheme, text: text, l10n: l10n);
+            data: (entries) {
+              final income = entries.where((e) => e.type == 'income').fold(0.0, (s, e) => s + e.amount);
+              final expense = entries.where((e) => e.type != 'income').fold(0.0, (s, e) => s + e.amount);
+              return _SummaryCard(income: income, expense: expense, scheme: scheme, text: text, l10n: l10n);
             },
           ),
 
-          // Category chart
-          expensesAsync.when(
-            loading: () => const SizedBox.shrink(),
-            error: (_, __) => const SizedBox.shrink(),
-            data: (expenses) {
-              final catTotals = _categoryTotals(expenses);
-              if (catTotals.isEmpty) return const SizedBox.shrink();
-              return _CategoryChartCard(totals: catTotals, l10n: l10n);
-            },
-          ),
+          // Category chart (shown only for All / Outgoing filter)
+          if (_filter == _TxFilter.all || _filter == _TxFilter.outgoing)
+            expensesAsync.when(
+              loading: () => const SizedBox.shrink(),
+              error: (_, __) => const SizedBox.shrink(),
+              data: (entries) {
+                final catTotals = _categoryTotals(entries.where((e) => e.type != 'income').toList());
+                if (catTotals.isEmpty) return const SizedBox.shrink();
+                return _CategoryChartCard(totals: catTotals, l10n: l10n);
+              },
+            ),
 
           // Budget progress
-          expensesAsync.when(
-            loading: () => const SizedBox.shrink(),
-            error: (_, __) => const SizedBox.shrink(),
-            data: (expenses) {
-              final hasBudget = budgets.values.any((v) => v > 0);
-              if (!hasBudget) return const SizedBox.shrink();
-              return _BudgetCard(
-                totals: _categoryTotals(expenses),
-                budgets: budgets,
-                l10n: l10n,
-              );
-            },
-          ),
+          if (_filter == _TxFilter.all || _filter == _TxFilter.outgoing)
+            expensesAsync.when(
+              loading: () => const SizedBox.shrink(),
+              error: (_, __) => const SizedBox.shrink(),
+              data: (entries) {
+                final hasBudget = budgets.values.any((v) => v > 0);
+                if (!hasBudget) return const SizedBox.shrink();
+                return _BudgetCard(
+                  totals: _categoryTotals(entries.where((e) => e.type != 'income').toList()),
+                  budgets: budgets,
+                  l10n: l10n,
+                );
+              },
+            ),
 
-          // Expense list
+          // Transaction list (filtered)
           Expanded(
             child: expensesAsync.when(
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (e, _) => Center(child: Text(l10n.genericError)),
               data: (expenses) {
-                if (expenses.isEmpty) return _EmptyState(l10n: l10n, scheme: scheme, text: text);
+                final filtered = _applyFilter(expenses);
+                if (filtered.isEmpty) return _EmptyState(l10n: l10n, scheme: scheme, text: text);
                 return _ExpenseList(
-                  expenses: expenses,
+                  expenses: filtered,
                   l10n: l10n,
                   onDelete: (id) =>
                       ref.read(appDatabaseProvider).expensesDao.remove(id),
@@ -201,13 +272,55 @@ class _KhataScreenState extends ConsumerState<KhataScreen> {
       floatingActionButton: _showUdhaar
           ? null
           : FloatingActionButton(
-              onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const AddExpenseScreen()),
-              ),
+              onPressed: () => _showAddMenu(context),
               child: const Icon(Icons.add),
             ),
     );
   }
+
+  void _showAddMenu(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (_) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.arrow_upward, color: Colors.red),
+              title: Text(l10n.khataAddExpense),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (_) => const AddExpenseScreen()));
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.arrow_downward, color: Colors.green),
+              title: Text(l10n.khataAddIncome),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (_) =>
+                        const AddExpenseScreen(startAsIncome: true)));
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// Extracts "[HBL]" → "HBL" from auto-imported transaction notes.
+String? _bankTag(String note) {
+  final m = RegExp(r'^\[([^\]]+)\]').firstMatch(note);
+  return m?.group(1);
+}
+
+// Returns the note with the leading [BankName] tag stripped.
+String _cleanNote(String note) {
+  return note.replaceFirst(RegExp(r'^\[[^\]]+\]\s*'), '').trim();
 }
 
 Map<ExpenseCategory, double> _categoryTotals(List<Expense> expenses) {
@@ -233,45 +346,116 @@ Color _catColor(ExpenseCategory cat) => switch (cat) {
 
 class _SummaryCard extends StatelessWidget {
   const _SummaryCard({
-    required this.total,
+    required this.income,
+    required this.expense,
     required this.scheme,
     required this.text,
     required this.l10n,
   });
 
-  final double total;
+  final double income;
+  final double expense;
   final ColorScheme scheme;
   final TextTheme text;
   final AppLocalizations l10n;
 
   @override
   Widget build(BuildContext context) {
-    final formatted = NumberFormat('#,##0.##', 'en').format(total);
+    final fmt = NumberFormat('#,##0', 'en');
+    final net = income - expense;
+    final isPositive = net >= 0;
+    final netColor = isPositive ? Colors.green.shade700 : scheme.error;
+
     return Card(
       margin: const EdgeInsets.fromLTRB(16, 4, 16, 10),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-        child: Row(
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(l10n.khataMonthTotal,
-                      style: text.bodySmall?.copyWith(color: scheme.onSurfaceVariant)),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Rs. $formatted',
-                    style: text.headlineSmall?.copyWith(
-                      color: scheme.primary,
-                      fontWeight: FontWeight.w700,
-                    ),
+            // Net balance — most prominent number
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.baseline,
+              textBaseline: TextBaseline.alphabetic,
+              children: [
+                Text(
+                  '${isPositive ? '+' : ''}Rs ${fmt.format(net)}',
+                  style: text.headlineSmall?.copyWith(
+                    color: netColor,
+                    fontWeight: FontWeight.w700,
                   ),
-                ],
-              ),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  l10n.khataNet,
+                  style: text.bodySmall?.copyWith(
+                    color: scheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
             ),
-            Icon(Icons.account_balance_wallet_outlined,
-                size: 36, color: scheme.primaryContainer),
+            const SizedBox(height: 12),
+            const Divider(height: 1),
+            const SizedBox(height: 10),
+            // Income + Expense side by side
+            Row(
+              children: [
+                Expanded(
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 8,
+                        height: 8,
+                        decoration: BoxDecoration(
+                          color: Colors.green.shade600,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(l10n.khataTotalIncome,
+                              style: text.labelSmall?.copyWith(
+                                  color: scheme.onSurfaceVariant)),
+                          Text('Rs ${fmt.format(income)}',
+                              style: text.labelLarge?.copyWith(
+                                  color: Colors.green.shade700,
+                                  fontWeight: FontWeight.w600)),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 8,
+                        height: 8,
+                        decoration: BoxDecoration(
+                          color: scheme.error,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(l10n.khataTotalExpense,
+                              style: text.labelSmall?.copyWith(
+                                  color: scheme.onSurfaceVariant)),
+                          Text('Rs ${fmt.format(expense)}',
+                              style: text.labelLarge?.copyWith(
+                                  color: scheme.error,
+                                  fontWeight: FontWeight.w600)),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),
@@ -544,7 +728,6 @@ class _ExpenseList extends StatelessWidget {
       itemBuilder: (context, i) {
         final date = dates[i];
         final dayExpenses = grouped[date]!;
-        final dayTotal = dayExpenses.fold(0.0, (s, e) => s + e.amount);
 
         String dayLabel;
         if (date == todayStr) {
@@ -559,7 +742,7 @@ class _ExpenseList extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _DayHeader(label: dayLabel, total: dayTotal),
+            _DayHeader(label: dayLabel, entries: dayExpenses),
             for (final expense in dayExpenses)
               _ExpenseTile(
                 expense: expense,
@@ -582,35 +765,45 @@ class _ExpenseList extends StatelessWidget {
 }
 
 class _DayHeader extends StatelessWidget {
-  const _DayHeader({required this.label, required this.total});
+  const _DayHeader({required this.label, required this.entries});
 
   final String label;
-  final double total;
+  final List<Expense> entries;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final formatted = NumberFormat('#,##0.##', 'en').format(total);
+    final text = Theme.of(context).textTheme;
+    final fmt = NumberFormat('#,##0', 'en');
+    final income = entries.where((e) => e.type == 'income').fold(0.0, (s, e) => s + e.amount);
+    final expense = entries.where((e) => e.type != 'income').fold(0.0, (s, e) => s + e.amount);
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 6),
       child: Row(
         children: [
-          Expanded(
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            decoration: BoxDecoration(
+              color: scheme.surfaceContainerHighest,
+              borderRadius: BorderRadius.circular(20),
+            ),
             child: Text(
               label,
-              style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    color: scheme.onSurfaceVariant,
-                    fontWeight: FontWeight.w600,
-                  ),
+              style: text.labelMedium?.copyWith(
+                color: scheme.onSurfaceVariant,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
-          Text(
-            'Rs. $formatted',
-            style: Theme.of(context)
-                .textTheme
-                .labelMedium
-                ?.copyWith(color: scheme.onSurfaceVariant),
-          ),
+          const Spacer(),
+          if (income > 0)
+            Text('+${fmt.format(income)}',
+                style: text.labelSmall?.copyWith(color: Colors.green.shade700, fontWeight: FontWeight.w600)),
+          if (income > 0 && expense > 0)
+            Text('  ·  ', style: text.labelSmall?.copyWith(color: scheme.outlineVariant)),
+          if (expense > 0)
+            Text('-${fmt.format(expense)}',
+                style: text.labelSmall?.copyWith(color: scheme.onSurfaceVariant)),
         ],
       ),
     );
@@ -632,9 +825,15 @@ class _ExpenseTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cat = ExpenseCategory.fromString(expense.category);
+    final isIncome = expense.type == 'income';
+    final cat = isIncome ? null : ExpenseCategory.fromString(expense.category);
+    final src = isIncome ? IncomeSource.fromString(expense.category) : null;
     final scheme = Theme.of(context).colorScheme;
-    final formatted = NumberFormat('#,##0.##', 'en').format(expense.amount);
+    final fmt = NumberFormat('#,##0', 'en');
+    final formatted = fmt.format(expense.amount);
+    final label = isIncome ? src!.label(l10n) : cat!.label(l10n);
+    final icon = isIncome ? src!.icon : cat!.icon;
+    final catColor = isIncome ? Colors.green.shade700 : _catColor(cat!);
 
     return Dismissible(
       key: ValueKey(expense.id),
@@ -643,7 +842,7 @@ class _ExpenseTile extends StatelessWidget {
         context: context,
         builder: (ctx) => AlertDialog(
           title: Text(l10n.khataDelete),
-          content: Text('Rs. $formatted — ${cat.label(l10n)}'),
+          content: Text('Rs $formatted — $label'),
           actions: [
             TextButton(
                 onPressed: () => Navigator.pop(ctx, false), child: Text(l10n.cancel)),
@@ -662,22 +861,109 @@ class _ExpenseTile extends StatelessWidget {
         padding: const EdgeInsets.only(right: 20),
         child: Icon(Icons.delete_outline, color: scheme.onError),
       ),
-      child: ListTile(
+      child: InkWell(
         onTap: () => onEdit(expense),
-        leading: CircleAvatar(
-          backgroundColor: scheme.primaryContainer,
-          child: Icon(cat.icon, size: 20, color: scheme.onPrimaryContainer),
-        ),
-        title: Text(cat.label(l10n)),
-        subtitle: expense.note.isNotEmpty
-            ? Text(expense.note, maxLines: 1, overflow: TextOverflow.ellipsis)
-            : null,
-        trailing: Text(
-          'Rs. $formatted',
-          style: Theme.of(context)
-              .textTheme
-              .titleMedium
-              ?.copyWith(fontWeight: FontWeight.w600),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          child: Row(
+            children: [
+              // Rounded-square category avatar with category color
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: catColor.withAlpha(28),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  icon,
+                  size: 22,
+                  color: catColor,
+                ),
+              ),
+              const SizedBox(width: 12),
+              // Category label + subtitle row
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Top row: label + bank badge
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            label,
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        if (_bankTag(expense.note) != null) ...[
+                          const SizedBox(width: 6),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.secondaryContainer,
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: Text(
+                              _bankTag(expense.note)!,
+                              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                                color: Theme.of(context).colorScheme.onSecondaryContainer,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                    // Subtitle: note text (if any)
+                    if (_cleanNote(expense.note).isNotEmpty) ...[
+                      const SizedBox(height: 2),
+                      Text(
+                        _cleanNote(expense.note),
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              const SizedBox(width: 12),
+              // Amount + optional receipt thumb
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    isIncome ? '+Rs $formatted' : 'Rs $formatted',
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: isIncome ? Colors.green.shade700 : null,
+                    ),
+                  ),
+                  if (expense.receiptPath != null) ...[
+                    const SizedBox(height: 4),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      child: Image.file(
+                        File(expense.receiptPath!),
+                        width: 28,
+                        height: 28,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) =>
+                            const Icon(Icons.receipt_outlined, size: 16),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -1,29 +1,73 @@
 package com.ikramah.saathi.nativebridge
 
+import android.content.BroadcastReceiver
 import android.content.Context
-import android.hardware.GeomagneticField
 import android.content.Intent
+import android.content.IntentFilter
+import android.hardware.GeomagneticField
+import android.os.Build
 import android.provider.Settings
+import android.provider.Telephony
 import io.flutter.embedding.engine.plugins.FlutterPlugin
+import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import org.json.JSONArray
 import org.json.JSONObject
 
 /** The `com.ikramah.saathi/native` channel. Also registered in the background isolate. */
-class SaathiNativePlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
+class SaathiNativePlugin : FlutterPlugin, MethodChannel.MethodCallHandler, EventChannel.StreamHandler {
     private var channel: MethodChannel? = null
+    private var eventChannel: EventChannel? = null
+    private var eventSink: EventChannel.EventSink? = null
+    private var notificationReceiver: BroadcastReceiver? = null
     private var context: Context? = null
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         context = binding.applicationContext
         channel = MethodChannel(binding.binaryMessenger, CHANNEL).also { it.setMethodCallHandler(this) }
+        eventChannel = EventChannel(binding.binaryMessenger, EVENT_CHANNEL).also { it.setStreamHandler(this) }
     }
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         channel?.setMethodCallHandler(null)
         channel = null
+        eventChannel?.setStreamHandler(null)
+        eventChannel = null
         context = null
+    }
+
+    override fun onListen(arguments: Any?, sink: EventChannel.EventSink?) {
+        android.util.Log.d("SaathiNative", "onListen called — registering broadcast receiver")
+        val ctx = context ?: return
+        eventSink = sink
+        val receiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                val event = mapOf(
+                    "package" to (intent?.getStringExtra("package") ?: ""),
+                    "title"   to (intent?.getStringExtra("title") ?: ""),
+                    "body"    to (intent?.getStringExtra("body") ?: ""),
+                    "time"    to (intent?.getLongExtra("time", 0L) ?: 0L),
+                )
+                sink?.success(event)
+            }
+        }
+        val filter = IntentFilter(TransactionNotificationService.ACTION_TRANSACTION_NOTIFICATION)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            ctx.registerReceiver(receiver, filter, Context.RECEIVER_NOT_EXPORTED)
+        } else {
+            ctx.registerReceiver(receiver, filter)
+        }
+        notificationReceiver = receiver
+        android.util.Log.d("SaathiNative", "BroadcastReceiver registered OK")
+    }
+
+    override fun onCancel(arguments: Any?) {
+        context?.let { ctx ->
+            notificationReceiver?.let { ctx.unregisterReceiver(it) }
+        }
+        notificationReceiver = null
+        eventSink = null
     }
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
@@ -70,6 +114,46 @@ class SaathiNativePlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
                     val field = GeomagneticField(lat, lng, 0f, System.currentTimeMillis())
                     result.success(field.declination.toDouble())
                 }
+                "hasNotificationAccess" -> {
+                    val enabled = Settings.Secure.getString(
+                        ctx.contentResolver,
+                        "enabled_notification_listeners"
+                    ) ?: ""
+                    result.success(enabled.contains(ctx.packageName))
+                }
+                "openNotificationAccessSettings" -> {
+                    val intent = Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    ctx.startActivity(intent)
+                    result.success(null)
+                }
+                "readSmsInbox" -> {
+                    val monthsBack = call.argument<Int>("monthsBack") ?: 3
+                    val cutoffMs = System.currentTimeMillis() - (monthsBack * 31L * 24 * 60 * 60 * 1000)
+                    val messages = mutableListOf<Map<String, Any>>()
+                    val uri = Telephony.Sms.CONTENT_URI
+                    val projection = arrayOf(
+                        Telephony.Sms.ADDRESS,
+                        Telephony.Sms.BODY,
+                        Telephony.Sms.DATE,
+                    )
+                    val selection = "${Telephony.Sms.DATE} >= ? AND ${Telephony.Sms.TYPE} = ?"
+                    val selectionArgs = arrayOf(cutoffMs.toString(), Telephony.Sms.MESSAGE_TYPE_INBOX.toString())
+                    val sortOrder = "${Telephony.Sms.DATE} DESC"
+                    ctx.contentResolver.query(uri, projection, selection, selectionArgs, sortOrder)?.use { cursor ->
+                        val addrIdx = cursor.getColumnIndexOrThrow(Telephony.Sms.ADDRESS)
+                        val bodyIdx = cursor.getColumnIndexOrThrow(Telephony.Sms.BODY)
+                        val dateIdx = cursor.getColumnIndexOrThrow(Telephony.Sms.DATE)
+                        while (cursor.moveToNext()) {
+                            messages.add(mapOf(
+                                "address" to (cursor.getString(addrIdx) ?: ""),
+                                "body" to (cursor.getString(bodyIdx) ?: ""),
+                                "date" to cursor.getLong(dateIdx),
+                            ))
+                        }
+                    }
+                    result.success(messages)
+                }
                 else -> result.notImplemented()
             }
         } catch (e: Exception) {
@@ -79,5 +163,6 @@ class SaathiNativePlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
 
     companion object {
         const val CHANNEL = "com.ikramah.saathi/native"
+        const val EVENT_CHANNEL = "com.ikramah.saathi/notifications"
     }
 }

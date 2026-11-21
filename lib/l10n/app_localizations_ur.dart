@@ -1154,6 +1154,9 @@ class AppLocalizationsUr extends AppLocalizations {
   String get udhaarNoEntries => 'کوئی اندراج نہیں۔\nدیا یا لیا بٹن دبائیں۔';
 
   @override
+  String get udhaarEditEntry => 'اندراج ترمیم کریں';
+
+  @override
   String get udhaarDeleteEntry => 'یہ اندراج حذف کریں؟';
 
   @override
@@ -1189,4 +1192,58 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get udhaarLateTitle => 'تاخیر';
+
+  @override
+  String get khataIncome => 'آمدنی';
+
+  @override
+  String get khataExpense => 'خرچ';
+
+  @override
+  String get khataNet => 'خالص';
+
+  @override
+  String get khataAddIncome => 'آمدنی شامل کریں';
+
+  @override
+  String get khataAddExpense => 'خرچ شامل کریں';
+
+  @override
+  String get khataTotalIncome => 'کل آمدنی';
+
+  @override
+  String get khataTotalExpense => 'کل خرچ';
+
+  @override
+  String get khataReceiptPhoto => 'رسید تصویر';
+
+  @override
+  String get khataAddPhoto => 'تصویر شامل کریں';
+
+  @override
+  String get khataViewPhoto => 'رسید دیکھیں';
+
+  @override
+  String get khataRemovePhoto => 'تصویر ہٹائیں';
+
+  @override
+  String get khataPdfExport => 'PDF برآمد کریں';
+
+  @override
+  String get udhaarPdfPassbook => 'اُدھار پاس بک (PDF)';
+
+  @override
+  String get incomeSourceSalary => 'تنخواہ';
+
+  @override
+  String get incomeSourceFreelance => 'فری لانس';
+
+  @override
+  String get incomeSourceBusiness => 'کاروبار';
+
+  @override
+  String get incomeSourceGift => 'تحفہ';
+
+  @override
+  String get incomeSourceOther => 'دیگر آمدنی';
 }

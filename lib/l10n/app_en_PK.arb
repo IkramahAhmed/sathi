@@ -366,5 +366,25 @@
   "udhaarNoDueDate": "Due date nahi",
   "udhaarSetDueDate": "Date lagayein",
   "udhaarLate": "Late — payment baqi hai",
-  "udhaarLateTitle": "Late"
+  "udhaarLateTitle": "Late",
+
+  "khataIncome": "Income",
+  "khataExpense": "Kharch",
+  "khataNet": "Net",
+  "khataAddIncome": "Income daalen",
+  "khataAddExpense": "Kharch daalen",
+  "khataTotalIncome": "Kul income",
+  "khataTotalExpense": "Kul kharch",
+  "khataReceiptPhoto": "Receipt ki tasveer",
+  "khataAddPhoto": "Tasveer lagayen",
+  "khataViewPhoto": "Receipt dekhen",
+  "khataRemovePhoto": "Tasveer hatayein",
+  "khataPdfExport": "PDF export karein",
+  "udhaarPdfPassbook": "Udhaar passbook (PDF)",
+
+  "incomeSourceSalary": "Tankhwah",
+  "incomeSourceFreelance": "Freelance",
+  "incomeSourceBusiness": "Business",
+  "incomeSourceGift": "Tohfa",
+  "incomeSourceOther": "Doosri income"
 }

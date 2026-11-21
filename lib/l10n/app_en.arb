@@ -666,5 +666,25 @@
   "udhaarNoDueDate": "No due date",
   "udhaarSetDueDate": "Set date",
   "udhaarLate": "Late — payment overdue",
-  "udhaarLateTitle": "Late"
+  "udhaarLateTitle": "Late",
+
+  "khataIncome": "Income",
+  "khataExpense": "Expense",
+  "khataNet": "Net",
+  "khataAddIncome": "Add income",
+  "khataAddExpense": "Add expense",
+  "khataTotalIncome": "Total income",
+  "khataTotalExpense": "Total expense",
+  "khataReceiptPhoto": "Receipt photo",
+  "khataAddPhoto": "Add photo",
+  "khataViewPhoto": "View receipt",
+  "khataRemovePhoto": "Remove photo",
+  "khataPdfExport": "Export PDF",
+  "udhaarPdfPassbook": "Udhaar passbook (PDF)",
+
+  "incomeSourceSalary": "Salary",
+  "incomeSourceFreelance": "Freelance",
+  "incomeSourceBusiness": "Business",
+  "incomeSourceGift": "Gift",
+  "incomeSourceOther": "Other income"
 }
