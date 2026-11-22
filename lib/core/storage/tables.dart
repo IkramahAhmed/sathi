@@ -114,6 +114,44 @@ class UdhaarEntries extends Table {
   DateTimeColumn get createdAt => dateTime()();
 }
 
+/// A named task list (e.g. Personal, Work, Shopping).
+class TaskLists extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get name => text()();
+  TextColumn get color => text().withDefault(const Constant('#6750A4'))();
+  TextColumn get emoji => text().withDefault(const Constant('📋'))();
+  DateTimeColumn get createdAt => dateTime()();
+}
+
+/// A task / to-do item. Due date and time are optional.
+class Tasks extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get title => text()();
+
+  /// `yyyy-MM-dd` or null for tasks with no specific date.
+  TextColumn get dueDate => text().nullable()();
+
+  /// `HH:mm` or null — notification fires at this time on [dueDate].
+  TextColumn get dueTime => text().nullable()();
+
+  /// `high` or `normal`.
+  TextColumn get priority => text().withDefault(const Constant('normal'))();
+
+  BoolColumn get isCompleted => boolean().withDefault(const Constant(false))();
+  DateTimeColumn get completedAt => dateTime().nullable()();
+
+  /// `none` | `daily` | `weekly` | `monthly`.
+  TextColumn get recurrence => text().withDefault(const Constant('none'))();
+
+  /// Optional description / sub-tasks note.
+  TextColumn get note => text().withDefault(const Constant(''))();
+
+  /// Optional list this task belongs to.
+  IntColumn get listId => integer().nullable()();
+
+  DateTimeColumn get createdAt => dateTime()();
+}
+
 /// Daily expense / income entries for the Khata (ledger) feature.
 class Expenses extends Table {
   IntColumn get id => integer().autoIncrement()();

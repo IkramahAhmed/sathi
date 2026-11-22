@@ -3,6 +3,7 @@ import 'dart:math' show max;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -14,6 +15,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/expense_category.dart';
 import '../../domain/entities/income_source.dart';
 import '../providers/khata_providers.dart';
+import '../../../../app/router.dart';
 import 'add_expense_screen.dart';
 import 'budget_screen.dart';
 
@@ -148,6 +150,11 @@ class _KhataScreenState extends ConsumerState<KhataScreen> {
                     icon: const Icon(Icons.upload_outlined),
                     onPressed: () => _showExportMenu(context, expenses, month),
                   ),
+          ),
+          IconButton(
+            tooltip: 'Monthly Summary',
+            icon: const Icon(Icons.bar_chart_outlined),
+            onPressed: () => context.push(Routes.monthlySummary),
           ),
           IconButton(
             tooltip: l10n.khataBudget,

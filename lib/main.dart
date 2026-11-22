@@ -38,8 +38,8 @@ Future<void> main() async {
 
   final onboardingDone = SettingsLocalDataSource(prefs).onboardingDone();
   await WorkmanagerBootstrap.init();
-  // Fire-and-forget: show overdue notification if any contacts are past due.
-  runHeadlessUdhaarCheck();
+  // Fire-and-forget: show overdue notification after migration completes.
+  Future.delayed(const Duration(seconds: 3), runHeadlessUdhaarCheck);
 
   runApp(
     ProviderScope(

@@ -42,4 +42,4 @@ final class NotificationListenerStreamProvider
 }
 
 String _$notificationListenerStreamHash() =>
-    r'5967dc51160ca78f1f699364281b128d923eddf1';
+    r'44bbb7c32c376db2e7b74551979dda41d9ab8abd';

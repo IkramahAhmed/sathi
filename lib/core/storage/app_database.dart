@@ -7,15 +7,15 @@ import 'tables.dart';
 part 'app_database.g.dart';
 
 @DriftDatabase(
-  tables: [PrayerLogs, SettingsHistory, PauseRanges, QazaBalance, QazaHistory, Expenses, UdhaarContacts, UdhaarEntries],
-  daos: [PrayerLogsDao, SettingsHistoryDao, PauseRangesDao, QazaDao, ExpensesDao, UdhaarDao],
+  tables: [PrayerLogs, SettingsHistory, PauseRanges, QazaBalance, QazaHistory, Expenses, UdhaarContacts, UdhaarEntries, TaskLists, Tasks],
+  daos: [PrayerLogsDao, SettingsHistoryDao, PauseRangesDao, QazaDao, ExpensesDao, UdhaarDao, TaskListsDao, TasksDao],
 )
 class AppDatabase extends _$AppDatabase {
   /// Opens the on-device SQLite file, or [executor] when given (tests).
   AppDatabase([QueryExecutor? executor]) : super(executor ?? driftDatabase(name: 'saathi'));
 
   @override
-  int get schemaVersion => 8;
+  int get schemaVersion => 11;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -48,6 +48,16 @@ class AppDatabase extends _$AppDatabase {
           }
           if (from < 8) {
             await m.addColumn(expenses, expenses.source);
+          }
+          if (from < 9) {
+            await m.createTable(tasks);
+          }
+          if (from < 10) {
+            await m.addColumn(tasks, tasks.note);
+          }
+          if (from < 11) {
+            await m.createTable(taskLists);
+            await m.addColumn(tasks, tasks.listId);
           }
         },
       );

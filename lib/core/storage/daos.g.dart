@@ -86,3 +86,27 @@ class UdhaarDaoManager {
   $$UdhaarEntriesTableTableManager get udhaarEntries =>
       $$UdhaarEntriesTableTableManager(_db.attachedDatabase, _db.udhaarEntries);
 }
+
+mixin _$TaskListsDaoMixin on DatabaseAccessor<AppDatabase> {
+  $TaskListsTable get taskLists => attachedDatabase.taskLists;
+  TaskListsDaoManager get managers => TaskListsDaoManager(this);
+}
+
+class TaskListsDaoManager {
+  final _$TaskListsDaoMixin _db;
+  TaskListsDaoManager(this._db);
+  $$TaskListsTableTableManager get taskLists =>
+      $$TaskListsTableTableManager(_db.attachedDatabase, _db.taskLists);
+}
+
+mixin _$TasksDaoMixin on DatabaseAccessor<AppDatabase> {
+  $TasksTable get tasks => attachedDatabase.tasks;
+  TasksDaoManager get managers => TasksDaoManager(this);
+}
+
+class TasksDaoManager {
+  final _$TasksDaoMixin _db;
+  TasksDaoManager(this._db);
+  $$TasksTableTableManager get tasks =>
+      $$TasksTableTableManager(_db.attachedDatabase, _db.tasks);
+}

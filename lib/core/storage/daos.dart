@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 
 import 'app_database.dart';
 import 'tables.dart';
+// ignore_for_file: lines_longer_than_80_chars
 
 part 'daos.g.dart';
 
@@ -434,4 +435,133 @@ class UdhaarDao extends DatabaseAccessor<AppDatabase> with _$UdhaarDaoMixin {
       return map;
     });
   }
+}
+
+@DriftAccessor(tables: [TaskLists])
+class TaskListsDao extends DatabaseAccessor<AppDatabase> with _$TaskListsDaoMixin {
+  TaskListsDao(super.db);
+
+  Stream<List<TaskList>> watchLists() =>
+      (select(taskLists)..orderBy([(t) => OrderingTerm.asc(t.createdAt)])).watch();
+
+  Future<int> addList(TaskListsCompanion entry) => into(taskLists).insert(entry);
+
+  Future<void> updateList(TaskListsCompanion entry) =>
+      update(taskLists).replace(entry);
+
+  Future<void> deleteList(int id) =>
+      (delete(taskLists)..where((t) => t.id.equals(id))).go();
+}
+
+@DriftAccessor(tables: [Tasks])
+class TasksDao extends DatabaseAccessor<AppDatabase> with _$TasksDaoMixin {
+  TasksDao(super.db);
+
+  /// Today's tasks (pending), sorted by priority then creation time.
+  Stream<List<Task>> watchToday(String todayStr, int? listId) {
+    return (select(tasks)
+          ..where((t) {
+            final base = t.isCompleted.equals(false) &
+                (t.dueDate.isNull() | t.dueDate.equals(todayStr));
+            if (listId != null) return base & t.listId.equals(listId);
+            return base;
+          })
+          ..orderBy([
+            (t) => OrderingTerm(expression: t.priority, mode: OrderingMode.desc),
+            (t) => OrderingTerm.asc(t.createdAt),
+          ]))
+        .watch();
+  }
+
+  /// Upcoming: due after today, not yet completed.
+  Stream<List<Task>> watchUpcoming(String todayStr, int? listId) {
+    return (select(tasks)
+          ..where((t) {
+            final base = t.isCompleted.equals(false) &
+                t.dueDate.isNotNull() &
+                t.dueDate.isBiggerThan(Variable(todayStr));
+            if (listId != null) return base & t.listId.equals(listId);
+            return base;
+          })
+          ..orderBy([
+            (t) => OrderingTerm.asc(t.dueDate),
+            (t) => OrderingTerm(expression: t.priority, mode: OrderingMode.desc),
+          ]))
+        .watch();
+  }
+
+  /// Completed tasks, most recently completed first (up to 50).
+  Stream<List<Task>> watchCompleted(int? listId) {
+    return (select(tasks)
+          ..where((t) {
+            final base = t.isCompleted.equals(true);
+            if (listId != null) return base & t.listId.equals(listId);
+            return base;
+          })
+          ..orderBy([(t) => OrderingTerm.desc(t.completedAt)])
+          ..limit(50))
+        .watch();
+  }
+
+  /// Overdue: due before today, not completed.
+  Stream<List<Task>> watchOverdue(String todayStr, int? listId) {
+    return (select(tasks)
+          ..where((t) {
+            final base = t.isCompleted.equals(false) &
+                t.dueDate.isNotNull() &
+                t.dueDate.isSmallerThan(Variable(todayStr));
+            if (listId != null) return base & t.listId.equals(listId);
+            return base;
+          })
+          ..orderBy([
+            (t) => OrderingTerm.asc(t.dueDate),
+            (t) => OrderingTerm(expression: t.priority, mode: OrderingMode.desc),
+          ]))
+        .watch();
+  }
+
+  /// Tomorrow's tasks (not yet completed).
+  Stream<List<Task>> watchTomorrow(String tomorrowStr, int? listId) {
+    return (select(tasks)
+          ..where((t) {
+            final base = t.isCompleted.equals(false) &
+                t.dueDate.isNotNull() &
+                t.dueDate.equals(tomorrowStr);
+            if (listId != null) return base & t.listId.equals(listId);
+            return base;
+          })
+          ..orderBy([
+            (t) => OrderingTerm(expression: t.priority, mode: OrderingMode.desc),
+            (t) => OrderingTerm.asc(t.createdAt),
+          ]))
+        .watch();
+  }
+
+  Future<int> addTask(TasksCompanion entry) => into(tasks).insert(entry);
+
+  Future<bool> updateTask(TasksCompanion entry) =>
+      update(tasks).replace(entry);
+
+  Future<void> completeTask(int id) =>
+      (update(tasks)..where((t) => t.id.equals(id))).write(TasksCompanion(
+        isCompleted: const Value(true),
+        completedAt: Value(DateTime.now().toUtc()),
+      ));
+
+  Future<void> reopenTask(int id) =>
+      (update(tasks)..where((t) => t.id.equals(id))).write(const TasksCompanion(
+        isCompleted: Value(false),
+        completedAt: Value(null),
+      ));
+
+  Future<void> deleteTask(int id) =>
+      (delete(tasks)..where((t) => t.id.equals(id))).go();
+
+  /// Removes list assignment from all tasks in a list (before deleting the list).
+  Future<void> unassignList(int listId) =>
+      (update(tasks)..where((t) => t.listId.equals(listId)))
+          .write(const TasksCompanion(listId: Value(null)));
+
+  Future<Task?> getTask(int id) =>
+      (select(tasks)..where((t) => t.id.equals(id))).getSingleOrNull();
 }
