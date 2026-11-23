@@ -341,7 +341,7 @@ class ExpensesDao extends DatabaseAccessor<AppDatabase> with _$ExpensesDaoMixin 
   /// All entries for the given month (format: `yyyy-MM`), newest first.
   Stream<List<Expense>> watchMonth(String yearMonth) =>
       (select(expenses)
-            ..where((t) => t.date.like('$yearMonth%'))
+            ..where((t) => t.date.like('$yearMonth%') & t.source.equals('manual'))
             ..orderBy([
               (t) => OrderingTerm.desc(t.date),
               (t) => OrderingTerm.desc(t.createdAt),
@@ -361,7 +361,7 @@ class ExpensesDao extends DatabaseAccessor<AppDatabase> with _$ExpensesDaoMixin 
   /// All entries for the given month as a one-shot Future (for PDF export).
   Future<List<Expense>> getMonth(String yearMonth) =>
       (select(expenses)
-            ..where((t) => t.date.like('$yearMonth%'))
+            ..where((t) => t.date.like('$yearMonth%') & t.source.equals('manual'))
             ..orderBy([
               (t) => OrderingTerm.asc(t.date),
               (t) => OrderingTerm.asc(t.createdAt),
