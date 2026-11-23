@@ -556,3 +556,30 @@ class TasksDao extends DatabaseAccessor<AppDatabase> with _$TasksDaoMixin {
   Future<Task?> getTask(int id) =>
       (select(tasks)..where((t) => t.id.equals(id))).getSingleOrNull();
 }
+
+@DriftAccessor(tables: [RecurringExpenses])
+class RecurringExpensesDao extends DatabaseAccessor<AppDatabase>
+    with _$RecurringExpensesDaoMixin {
+  RecurringExpensesDao(super.db);
+
+  Stream<List<RecurringExpense>> watchAll() =>
+      (select(recurringExpenses)
+            ..orderBy([(t) => OrderingTerm.asc(t.nextDue)]))
+          .watch();
+
+  /// Rows whose nextDue is on or before [todayYmd].
+  Future<List<RecurringExpense>> getDue(String todayYmd) =>
+      (select(recurringExpenses)
+            ..where((t) => t.nextDue.isSmallerOrEqualValue(todayYmd)))
+          .get();
+
+  Future<void> add(RecurringExpensesCompanion entry) =>
+      into(recurringExpenses).insert(entry);
+
+  Future<void> advanceDue(int id, String nextDue) =>
+      (update(recurringExpenses)..where((t) => t.id.equals(id)))
+          .write(RecurringExpensesCompanion(nextDue: Value(nextDue)));
+
+  Future<void> remove(int id) =>
+      (delete(recurringExpenses)..where((t) => t.id.equals(id))).go();
+}

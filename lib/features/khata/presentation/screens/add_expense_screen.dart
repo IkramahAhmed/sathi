@@ -11,6 +11,7 @@ import '../../../../app/providers.dart';
 import '../../../../core/storage/app_database.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../khata/background/budget_check.dart';
+import '../../../khata/background/recurring_check.dart';
 import '../../../khata/domain/entities/expense_category.dart';
 import '../../../khata/domain/entities/income_source.dart';
 
@@ -33,6 +34,8 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
   late bool _isIncome;
   String? _receiptPath;
   bool _saving = false;
+  bool _isRecurring = false;
+  String _frequency = 'monthly';
 
   bool get _isEditing => widget.expense != null;
 
@@ -112,6 +115,22 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
           category: _category,
           addedAmount: amount,
         );
+      }
+      // Create recurring rule (new entries only)
+      if (!_isEditing && _isRecurring) {
+        final nextDue = advanceDate(_date, _frequency);
+        final nds = '${nextDue.year.toString().padLeft(4, '0')}-'
+            '${nextDue.month.toString().padLeft(2, '0')}-'
+            '${nextDue.day.toString().padLeft(2, '0')}';
+        await db.recurringExpensesDao.add(RecurringExpensesCompanion.insert(
+          amount: amount,
+          category: categoryStr,
+          type: Value(_isIncome ? 'income' : 'expense'),
+          note: Value(_noteController.text.trim()),
+          frequency: _frequency,
+          nextDue: nds,
+          createdAt: DateTime.now().toUtc(),
+        ));
       }
       if (mounted) Navigator.of(context).pop();
     } finally {
@@ -339,6 +358,35 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
             trailing: Text(dateLabel, style: text.bodyLarge),
             onTap: _pickDate,
           ),
+
+          // Repeat
+          if (!_isEditing) ...[
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              secondary: const Icon(Icons.repeat_outlined),
+              title: const Text('Repeat'),
+              value: _isRecurring,
+              onChanged: (v) => setState(() => _isRecurring = v),
+            ),
+            if (_isRecurring)
+              Padding(
+                padding: const EdgeInsets.only(left: 56, bottom: 8),
+                child: Wrap(
+                  spacing: 8,
+                  children: [
+                    for (final f in ['daily', 'weekly', 'monthly', 'yearly'])
+                      ChoiceChip(
+                        label: Text(
+                            f[0].toUpperCase() + f.substring(1)),
+                        selected: _frequency == f,
+                        onSelected: (_) =>
+                            setState(() => _frequency = f),
+                        visualDensity: VisualDensity.compact,
+                      ),
+                  ],
+                ),
+              ),
+          ],
 
           // Receipt photo
           ListTile(

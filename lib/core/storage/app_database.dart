@@ -7,15 +7,15 @@ import 'tables.dart';
 part 'app_database.g.dart';
 
 @DriftDatabase(
-  tables: [PrayerLogs, SettingsHistory, PauseRanges, QazaBalance, QazaHistory, Expenses, UdhaarContacts, UdhaarEntries, TaskLists, Tasks],
-  daos: [PrayerLogsDao, SettingsHistoryDao, PauseRangesDao, QazaDao, ExpensesDao, UdhaarDao, TaskListsDao, TasksDao],
+  tables: [PrayerLogs, SettingsHistory, PauseRanges, QazaBalance, QazaHistory, Expenses, UdhaarContacts, UdhaarEntries, TaskLists, Tasks, RecurringExpenses],
+  daos: [PrayerLogsDao, SettingsHistoryDao, PauseRangesDao, QazaDao, ExpensesDao, UdhaarDao, TaskListsDao, TasksDao, RecurringExpensesDao],
 )
 class AppDatabase extends _$AppDatabase {
   /// Opens the on-device SQLite file, or [executor] when given (tests).
   AppDatabase([QueryExecutor? executor]) : super(executor ?? driftDatabase(name: 'saathi'));
 
   @override
-  int get schemaVersion => 12;
+  int get schemaVersion => 13;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -70,6 +70,9 @@ class AppDatabase extends _$AppDatabase {
             await customStatement(
               "UPDATE expenses SET source = 'bank' WHERE source = 'manual' AND note LIKE '[%'",
             );
+          }
+          if (from < 13) {
+            await m.createTable(recurringExpenses);
           }
         },
       );

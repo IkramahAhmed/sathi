@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:workmanager/workmanager.dart';
 
 import '../../app/headless.dart';
+import '../../features/khata/background/recurring_check.dart';
 import '../../features/udhaar/background/udhaar_overdue_check.dart';
 import '../utils/logger.dart';
 
@@ -16,6 +17,7 @@ void callbackDispatcher() {
     try {
       final result = await runHeadlessReschedule();
       await runHeadlessUdhaarCheck();
+      await runHeadlessRecurringCheck();
       return result.isSuccess;
     } catch (error, stackTrace) {
       appLog.severe('Background task crashed', error, stackTrace);

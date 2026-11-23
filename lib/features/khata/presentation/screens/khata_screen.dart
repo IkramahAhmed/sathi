@@ -16,8 +16,10 @@ import '../../domain/entities/expense_category.dart';
 import '../../domain/entities/income_source.dart';
 import '../providers/khata_providers.dart';
 import '../../../../app/router.dart';
+import '../../background/recurring_check.dart';
 import 'add_expense_screen.dart';
 import 'budget_screen.dart';
+import 'recurring_screen.dart';
 
 class KhataScreen extends ConsumerStatefulWidget {
   const KhataScreen({super.key});
@@ -36,6 +38,16 @@ class _KhataScreenState extends ConsumerState<KhataScreen> {
   _TxFilter _filter = _TxFilter.all;
   String _khataQuery = '';
   final _khataSearchCtrl = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final db = ref.read(appDatabaseProvider);
+      runRecurringCheckWithDb(db.expensesDao, db.recurringExpensesDao);
+    });
+  }
 
   @override
   void dispose() {
@@ -357,6 +369,16 @@ class _KhataScreenState extends ConsumerState<KhataScreen> {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (_) =>
                         const AddExpenseScreen(startAsIncome: true)));
+              },
+            ),
+            const Divider(height: 1),
+            ListTile(
+              leading: const Icon(Icons.repeat_outlined),
+              title: const Text('Recurring'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const RecurringScreen()));
               },
             ),
           ],

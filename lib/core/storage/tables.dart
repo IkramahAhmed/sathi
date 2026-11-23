@@ -152,6 +152,20 @@ class Tasks extends Table {
   DateTimeColumn get createdAt => dateTime()();
 }
 
+/// A rule that auto-creates an [Expenses] row on a fixed schedule.
+class RecurringExpenses extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  RealColumn get amount => real()();
+  TextColumn get category => text()();
+  TextColumn get type => text().withDefault(const Constant('expense'))();
+  TextColumn get note => text().withDefault(const Constant(''))();
+  // 'daily' | 'weekly' | 'monthly' | 'yearly'
+  TextColumn get frequency => text()();
+  // YYYY-MM-DD — when this rule will next fire
+  TextColumn get nextDue => text()();
+  DateTimeColumn get createdAt => dateTime()();
+}
+
 /// Daily expense / income entries for the Khata (ledger) feature.
 class Expenses extends Table {
   IntColumn get id => integer().autoIncrement()();

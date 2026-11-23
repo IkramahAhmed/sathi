@@ -110,3 +110,19 @@ class TasksDaoManager {
   $$TasksTableTableManager get tasks =>
       $$TasksTableTableManager(_db.attachedDatabase, _db.tasks);
 }
+
+mixin _$RecurringExpensesDaoMixin on DatabaseAccessor<AppDatabase> {
+  $RecurringExpensesTable get recurringExpenses =>
+      attachedDatabase.recurringExpenses;
+  RecurringExpensesDaoManager get managers => RecurringExpensesDaoManager(this);
+}
+
+class RecurringExpensesDaoManager {
+  final _$RecurringExpensesDaoMixin _db;
+  RecurringExpensesDaoManager(this._db);
+  $$RecurringExpensesTableTableManager get recurringExpenses =>
+      $$RecurringExpensesTableTableManager(
+        _db.attachedDatabase,
+        _db.recurringExpenses,
+      );
+}
