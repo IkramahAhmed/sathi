@@ -1122,25 +1122,69 @@ class _BankFeedState extends ConsumerState<_BankFeed> {
                         final bank = _bankName(e);
                         final color = isCredit ? Colors.green.shade700 : scheme.error;
                         final sign = isCredit ? '+' : '-';
-                        return ListTile(
-                          leading: CircleAvatar(
-                            backgroundColor: color.withAlpha(28),
-                            child: Icon(Icons.account_balance_outlined, size: 20, color: color),
+                        return Dismissible(
+                          key: ValueKey(e.id),
+                          direction: DismissDirection.endToStart,
+                          confirmDismiss: (_) => showDialog<bool>(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                              title: const Text('Delete entry'),
+                              content: Text('$sign Rs ${fmt.format(e.amount)} — $bank'),
+                              actions: [
+                                TextButton(
+                                    onPressed: () => Navigator.pop(ctx, false),
+                                    child: const Text('Cancel')),
+                                FilledButton(
+                                  onPressed: () => Navigator.pop(ctx, true),
+                                  style: FilledButton.styleFrom(backgroundColor: scheme.error),
+                                  child: const Text('Delete'),
+                                ),
+                              ],
+                            ),
                           ),
-                          title: Text(
-                            '$sign Rs ${fmt.format(e.amount)}',
-                            style: text.bodyLarge?.copyWith(fontWeight: FontWeight.w700, color: color),
+                          onDismissed: (_) =>
+                              ref.read(appDatabaseProvider).expensesDao.remove(e.id),
+                          background: Container(
+                            color: scheme.error,
+                            alignment: Alignment.centerRight,
+                            padding: const EdgeInsets.only(right: 20),
+                            child: Icon(Icons.delete_outline, color: scheme.onError),
                           ),
-                          subtitle: Text(e.note, maxLines: 1, overflow: TextOverflow.ellipsis, style: text.bodySmall),
-                          trailing: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(e.date, style: text.bodySmall?.copyWith(color: scheme.onSurfaceVariant)),
-                              Text(bank, style: text.bodySmall?.copyWith(color: scheme.primary, fontWeight: FontWeight.w600)),
-                            ],
+                          child: ListTile(
+                            onTap: () => Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (_) => AddExpenseScreen(expense: e)),
+                            ),
+                            onLongPress: () => Share.share(
+                                '📅 ${e.date}\n$bank\n${sign}Rs ${fmt.format(e.amount)}\n${e.note}'),
+                            leading: CircleAvatar(
+                              backgroundColor: color.withAlpha(28),
+                              child: Icon(Icons.account_balance_outlined,
+                                  size: 20, color: color),
+                            ),
+                            title: Text(
+                              '$sign Rs ${fmt.format(e.amount)}',
+                              style: text.bodyLarge
+                                  ?.copyWith(fontWeight: FontWeight.w700, color: color),
+                            ),
+                            subtitle: Text(e.note,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: text.bodySmall),
+                            trailing: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(e.date,
+                                    style: text.bodySmall
+                                        ?.copyWith(color: scheme.onSurfaceVariant)),
+                                Text(bank,
+                                    style: text.bodySmall?.copyWith(
+                                        color: scheme.primary,
+                                        fontWeight: FontWeight.w600)),
+                              ],
+                            ),
                           ),
-                          onLongPress: () => Share.share('📅 ${e.date}\n$bank\n${sign}Rs ${fmt.format(e.amount)}\n${e.note}'),
                         );
                       },
                     ),
