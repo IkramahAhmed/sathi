@@ -10,7 +10,6 @@ import '../../../../core/notifications/local_notification_scheduler.dart';
 import '../../../../core/notifications/notification_channels.dart';
 import '../../../../core/notifications/notification_scheduler.dart';
 import '../../../../core/storage/app_database.dart';
-import '../../../../core/storage/tables.dart';
 
 // ── Notifications ─────────────────────────────────────────────────────────────
 
@@ -84,6 +83,8 @@ const _kPresetEmojis = [
 class _SelectedListIdNotifier extends Notifier<int?> {
   @override
   int? build() => null;
+
+  void select(int? id) => state = id;
 }
 
 final _selectedListIdProvider =
@@ -153,7 +154,7 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
             label: const Text('All'),
             selected: selectedListId == null,
             onSelected: (_) =>
-                ref.read(_selectedListIdProvider.notifier).state = null,
+                ref.read(_selectedListIdProvider.notifier).select(null),
           ),
           ...lists.map((list) {
             final color = _hexColor(list.color);
@@ -169,8 +170,7 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
                   selectedColor: color.withValues(alpha: 0.2),
                   checkmarkColor: color,
                   onSelected: (_) =>
-                      ref.read(_selectedListIdProvider.notifier).state =
-                          list.id,
+                      ref.read(_selectedListIdProvider.notifier).select(list.id),
                 ),
               ),
             );
@@ -339,7 +339,7 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
         await db.tasksDao.unassignList(list.id);
         await db.taskListsDao.deleteList(list.id);
         if (ref.read(_selectedListIdProvider) == list.id) {
-          ref.read(_selectedListIdProvider.notifier).state = null;
+          ref.read(_selectedListIdProvider.notifier).select(null);
         }
       }
     }

@@ -10,8 +10,6 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <!-- SMS inbox — read bank transaction alerts (HBL, Meezan, UBL, etc.). -->
-    <uses-permission android:name="android.permission.READ_SMS" />
     <!-- Camera — used to photograph the mosque timetable for OCR scanning. -->
     <uses-permission android:name="android.permission.CAMERA" />
     <!-- Location is used once to pick the calculation method and city. -->

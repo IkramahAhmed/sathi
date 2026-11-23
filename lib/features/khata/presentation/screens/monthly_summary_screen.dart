@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
-import '../../../../core/storage/app_database.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/expense_category.dart';
 import '../providers/khata_providers.dart';

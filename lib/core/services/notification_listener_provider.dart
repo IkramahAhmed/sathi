@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart' show Value;
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -61,6 +62,8 @@ Stream<void> notificationListenerStream(Ref ref) async* {
           channelId: NotificationChannels.khataAlert,
         );
       }
-    } catch (_) {}
+    } catch (e, st) {
+      debugPrint('Bank capture failed: $e\n$st');
+    }
   }
 }

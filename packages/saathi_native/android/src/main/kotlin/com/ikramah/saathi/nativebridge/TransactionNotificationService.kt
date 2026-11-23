@@ -15,18 +15,22 @@ class TransactionNotificationService : NotificationListenerService() {
 
     override fun onNotificationPosted(sbn: StatusBarNotification) {
         val pkg = sbn.packageName ?: return
-        val extras: Bundle = sbn.notification?.extras ?: return
+        // Saathi's own "transaction saved" / budget / udhaar alerts contain amounts too.
+        if (pkg == packageName) return
+        val notification = sbn.notification ?: return
+        // Grouped notifications repeat the child's text in a summary; capture the child only.
+        if (notification.flags and Notification.FLAG_GROUP_SUMMARY != 0) return
+        val extras: Bundle = notification.extras ?: return
 
-        val title = extras.getString(Notification.EXTRA_TITLE) ?: ""
+        val title = extras.getCharSequence(Notification.EXTRA_TITLE)?.toString() ?: ""
         val text = extras.getCharSequence(Notification.EXTRA_TEXT)?.toString() ?: ""
         val bigText = extras.getCharSequence(Notification.EXTRA_BIG_TEXT)?.toString() ?: ""
         val body = if (bigText.isNotEmpty()) bigText else text
 
-        Log.d(TAG, "onNotificationPosted: pkg=$pkg title=$title body=$body")
-
         if (!isBankNotification(pkg, title, body)) return
 
-        Log.d(TAG, "Bank notification matched! Sending broadcast.")
+        // Never log notification text: it contains private messages, OTPs and balances.
+        Log.d(TAG, "Transaction candidate from $pkg")
 
         val intent = Intent(ACTION_TRANSACTION_NOTIFICATION).apply {
             setPackage(packageName)   // explicit: required by Android 8+ for dynamic receivers
@@ -51,7 +55,8 @@ class TransactionNotificationService : NotificationListenerService() {
             "com.easypaisa.app",          // EasyPaisa
             "com.sadapay.app",            // SadaPay
             "com.nayapay.app",             // NayaPay
-            "com.dibpak.android",         // DIB Pakistan
+            "com.dibpak.android",         // DIB Pakistan (old)
+            "com.avanza.ambitwizdib",     // DIB Pakistan (current)
             "com.askaribank.android",     // Askari Bank
             "com.jsbl.android",           // JS Bank
             "com.faysalbank.android",     // Faysal Bank

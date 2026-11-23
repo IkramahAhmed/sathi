@@ -295,42 +295,33 @@ class ExpensesDao extends DatabaseAccessor<AppDatabase> with _$ExpensesDaoMixin 
 
   Future<void> add(ExpensesCompanion entry) => into(expenses).insert(entry);
 
-  /// Returns true if an identical auto-import already exists.
-  /// Key: amount + date + type + bank tag (extracted from note prefix "[BANK] ...").
-  /// Using bank in the key prevents false positives when two different banks
-  /// both send Rs 1,000 debits on the same day.
-  Future<bool> isDuplicate(double amount, String date, String type, String note) async {
-    final bank = _extractBankTag(note);
-    final rows = await (select(expenses)
+  /// The same transaction often arrives twice — bank-app push and SMS — a few
+  /// seconds or minutes apart, with different sender names. So the key ignores
+  /// the bank and uses amount + direction within a short time window.
+  static const dedupWindow = Duration(minutes: 10);
+
+  Future<bool> isDuplicateBankTx(double amount, String type, DateTime at) async {
+    final row = await (select(expenses)
           ..where((t) =>
+              t.source.equals('bank') &
               t.amount.equals(amount) &
-              t.date.equals(date) &
-              t.type.equals(type))
-          ..limit(20))
-        .get();
-    for (final r in rows) {
-      if (_extractBankTag(r.note) == bank) return true;
-    }
-    return false;
+              t.type.equals(type) &
+              t.createdAt.isBetweenValues(at.subtract(dedupWindow), at.add(dedupWindow)))
+          ..limit(1))
+        .getSingleOrNull();
+    return row != null;
   }
 
-  /// Inserts only if no matching auto-import (amount + date + type + bank) already exists.
+  /// Inserts a bank auto-capture unless the same transaction was already saved.
   Future<bool> addIfNew(ExpensesCompanion entry) async {
-    final note = entry.note.value ?? '';
-    final dup = await isDuplicate(
+    final dup = await isDuplicateBankTx(
       entry.amount.value,
-      entry.date.value,
-      entry.type.value ?? 'expense',
-      note,
+      entry.type.present ? entry.type.value : 'expense',
+      entry.createdAt.value,
     );
     if (dup) return false;
     await add(entry);
     return true;
-  }
-
-  static String? _extractBankTag(String note) {
-    final m = RegExp(r'^\[([^\]]+)\]').firstMatch(note);
-    return m?.group(1);
   }
 
   Future<void> updateExpense(int id, ExpensesCompanion entry) =>

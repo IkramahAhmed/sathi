@@ -7,7 +7,6 @@ import android.content.IntentFilter
 import android.hardware.GeomagneticField
 import android.os.Build
 import android.provider.Settings
-import android.provider.Telephony
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
@@ -126,33 +125,6 @@ class SaathiNativePlugin : FlutterPlugin, MethodChannel.MethodCallHandler, Event
                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     ctx.startActivity(intent)
                     result.success(null)
-                }
-                "readSmsInbox" -> {
-                    val monthsBack = call.argument<Int>("monthsBack") ?: 3
-                    val cutoffMs = System.currentTimeMillis() - (monthsBack * 31L * 24 * 60 * 60 * 1000)
-                    val messages = mutableListOf<Map<String, Any>>()
-                    val uri = Telephony.Sms.CONTENT_URI
-                    val projection = arrayOf(
-                        Telephony.Sms.ADDRESS,
-                        Telephony.Sms.BODY,
-                        Telephony.Sms.DATE,
-                    )
-                    val selection = "${Telephony.Sms.DATE} >= ? AND ${Telephony.Sms.TYPE} = ?"
-                    val selectionArgs = arrayOf(cutoffMs.toString(), Telephony.Sms.MESSAGE_TYPE_INBOX.toString())
-                    val sortOrder = "${Telephony.Sms.DATE} DESC"
-                    ctx.contentResolver.query(uri, projection, selection, selectionArgs, sortOrder)?.use { cursor ->
-                        val addrIdx = cursor.getColumnIndexOrThrow(Telephony.Sms.ADDRESS)
-                        val bodyIdx = cursor.getColumnIndexOrThrow(Telephony.Sms.BODY)
-                        val dateIdx = cursor.getColumnIndexOrThrow(Telephony.Sms.DATE)
-                        while (cursor.moveToNext()) {
-                            messages.add(mapOf(
-                                "address" to (cursor.getString(addrIdx) ?: ""),
-                                "body" to (cursor.getString(bodyIdx) ?: ""),
-                                "date" to cursor.getLong(dateIdx),
-                            ))
-                        }
-                    }
-                    result.success(messages)
                 }
                 else -> result.notImplemented()
             }
