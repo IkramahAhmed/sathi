@@ -10,6 +10,9 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!-- Biometric authentication for the Private Vault. -->
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
     <!-- Camera — used to photograph the mosque timetable for OCR scanning. -->
     <uses-permission android:name="android.permission.CAMERA" />
     <!-- Location is used once to pick the calculation method and city. -->

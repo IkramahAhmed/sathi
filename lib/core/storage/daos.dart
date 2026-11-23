@@ -329,6 +329,21 @@ class ExpensesDao extends DatabaseAccessor<AppDatabase> with _$ExpensesDaoMixin 
 
   Future<void> remove(int id) => (delete(expenses)..where((t) => t.id.equals(id))).go();
 
+  /// Move a manual entry into the vault (or back out).
+  Future<void> setSource(int id, String source) =>
+      (update(expenses)..where((t) => t.id.equals(id)))
+          .write(ExpensesCompanion(source: Value(source)));
+
+  /// All vault entries, newest first.
+  Stream<List<Expense>> watchVault() =>
+      (select(expenses)
+            ..where((t) => t.source.equals('vault'))
+            ..orderBy([
+              (t) => OrderingTerm.desc(t.date),
+              (t) => OrderingTerm.desc(t.createdAt),
+            ]))
+          .watch();
+
   /// All entries for the given month (format: `yyyy-MM`), newest first.
   Stream<List<Expense>> watchMonth(String yearMonth) =>
       (select(expenses)
@@ -366,8 +381,19 @@ class UdhaarDao extends DatabaseAccessor<AppDatabase> with _$UdhaarDaoMixin {
 
   // ── Contacts ──────────────────────────────────────────────────────────────
 
+  /// Normal (non-vault) contacts only.
   Stream<List<UdhaarContact>> watchContacts() =>
-      (select(udhaarContacts)..orderBy([(t) => OrderingTerm.asc(t.name)])).watch();
+      (select(udhaarContacts)
+            ..where((t) => t.source.isNotValue('vault'))
+            ..orderBy([(t) => OrderingTerm.asc(t.name)]))
+          .watch();
+
+  /// Vault contacts only.
+  Stream<List<UdhaarContact>> watchVaultContacts() =>
+      (select(udhaarContacts)
+            ..where((t) => t.source.equals('vault'))
+            ..orderBy([(t) => OrderingTerm.asc(t.name)]))
+          .watch();
 
   Future<int> addContact(UdhaarContactsCompanion entry) =>
       into(udhaarContacts).insert(entry);
@@ -406,7 +432,13 @@ class UdhaarDao extends DatabaseAccessor<AppDatabase> with _$UdhaarDaoMixin {
 
   Future<List<UdhaarEntry>> getAllEntries() => select(udhaarEntries).get();
 
-  Future<List<UdhaarContact>> getAllContacts() => select(udhaarContacts).get();
+  /// All non-vault contacts (used for overdue notifications).
+  Future<List<UdhaarContact>> getAllContacts() =>
+      (select(udhaarContacts)..where((t) => t.source.isNotValue('vault'))).get();
+
+  Future<void> setContactSource(int id, String source) =>
+      (update(udhaarContacts)..where((t) => t.id.equals(id)))
+          .write(UdhaarContactsCompanion(source: Value(source)));
 
   /// Net balance for each contact: positive = they owe you, negative = you owe them.
   Stream<Map<int, double>> watchBalances() {

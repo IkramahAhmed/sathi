@@ -87,6 +87,10 @@ class UdhaarContacts extends Table {
   TextColumn get phone => text().withDefault(const Constant(''))();
 
   DateTimeColumn get createdAt => dateTime()();
+
+  /// `normal` (default) or `vault` — vault contacts are hidden from the
+  /// normal Udhaar list and excluded from overdue checks.
+  TextColumn get source => text().withDefault(const Constant('normal'))();
 }
 
 /// One credit/debit entry in an [UdhaarContacts] ledger.

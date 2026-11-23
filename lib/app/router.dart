@@ -19,6 +19,7 @@ import '../features/khata/presentation/screens/khata_screen.dart';
 import '../features/khata/presentation/screens/monthly_summary_screen.dart';
 import '../features/tasks/presentation/screens/tasks_screen.dart';
 import '../features/udhaar/presentation/screens/udhaar_list_screen.dart';
+import '../features/vault/presentation/screens/vault_screen.dart';
 import 'app_shell.dart';
 
 part 'router.g.dart';
@@ -40,6 +41,7 @@ abstract final class Routes {
   static const imsakiya = '/imsakiya';
   static const monthlySummary = '/monthly-summary';
   static const tasks = '/tasks';
+  static const vault = '/vault';
 }
 
 /// The first route to show. Overridden in `main()` once onboarding state is known.
@@ -102,6 +104,9 @@ GoRouter router(Ref ref) {
           ]),
           StatefulShellBranch(routes: [
             GoRoute(path: Routes.tasks, builder: (_, _) => const TasksScreen()),
+          ]),
+          StatefulShellBranch(routes: [
+            GoRoute(path: Routes.vault, builder: (_, _) => const VaultScreen()),
           ]),
           StatefulShellBranch(routes: [
             GoRoute(path: Routes.settings, builder: (_, _) => const SettingsScreen()),

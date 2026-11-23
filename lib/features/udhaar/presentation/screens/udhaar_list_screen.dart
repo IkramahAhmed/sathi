@@ -143,10 +143,12 @@ class _UdhaarListScreenState extends ConsumerState<UdhaarListScreen> {
                 return _EmptyState(l10n: l10n, onAdd: _addContact);
               }
 
-              // Summary row at top
+              // Summary row — only count balances for contacts visible in
+              // this list (vault contacts are excluded from `all`).
               double totalOwedToMe = 0;
               double totalIOwe = 0;
-              for (final b in balances.values) {
+              for (final c in all) {
+                final b = balances[c.id] ?? 0;
                 if (b > 0) totalOwedToMe += b;
                 if (b < 0) totalIOwe += b.abs();
               }
@@ -188,6 +190,10 @@ class _UdhaarListScreenState extends ConsumerState<UdhaarListScreen> {
                                   UdhaarContactScreen(contact: c),
                             ),
                           ),
+                          onMoveToVault: () => ref
+                              .read(appDatabaseProvider)
+                              .udhaarDao
+                              .setContactSource(c.id, 'vault'),
                         );
                       },
                     ),
@@ -329,6 +335,7 @@ class _ContactTile extends StatelessWidget {
     required this.l10n,
     required this.scheme,
     required this.onTap,
+    required this.onMoveToVault,
   });
 
   final UdhaarContact contact;
@@ -337,6 +344,7 @@ class _ContactTile extends StatelessWidget {
   final AppLocalizations l10n;
   final ColorScheme scheme;
   final VoidCallback onTap;
+  final VoidCallback onMoveToVault;
 
   @override
   Widget build(BuildContext context) {
@@ -348,6 +356,25 @@ class _ContactTile extends StatelessWidget {
 
     return ListTile(
       onTap: onTap,
+      onLongPress: () => showModalBottomSheet<void>(
+        context: context,
+        builder: (_) => SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.lock_outlined),
+                title: const Text('Move to Vault'),
+                subtitle: const Text('Hide from normal Udhaar view'),
+                onTap: () {
+                  Navigator.pop(context);
+                  onMoveToVault();
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
       leading: CircleAvatar(
         backgroundColor: scheme.primaryContainer,
         child: Text(

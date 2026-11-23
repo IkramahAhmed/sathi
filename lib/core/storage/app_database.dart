@@ -15,7 +15,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? driftDatabase(name: 'saathi'));
 
   @override
-  int get schemaVersion => 13;
+  int get schemaVersion => 14;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -73,6 +73,9 @@ class AppDatabase extends _$AppDatabase {
           }
           if (from < 13) {
             await m.createTable(recurringExpenses);
+          }
+          if (from < 14 && from >= 5) {
+            await m.addColumn(udhaarContacts, udhaarContacts.source);
           }
         },
       );

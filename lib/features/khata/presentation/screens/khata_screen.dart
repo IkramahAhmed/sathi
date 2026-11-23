@@ -326,6 +326,10 @@ class _KhataScreenState extends ConsumerState<KhataScreen> {
                   l10n: l10n,
                   onDelete: (id) =>
                       ref.read(appDatabaseProvider).expensesDao.remove(id),
+                  onMoveToVault: (id) => ref
+                      .read(appDatabaseProvider)
+                      .expensesDao
+                      .setSource(id, 'vault'),
                 );
               },
             ),
@@ -781,11 +785,17 @@ class _EmptyState extends StatelessWidget {
 // ─── Expense list ─────────────────────────────────────────────────────────────
 
 class _ExpenseList extends StatelessWidget {
-  const _ExpenseList({required this.expenses, required this.l10n, required this.onDelete});
+  const _ExpenseList({
+    required this.expenses,
+    required this.l10n,
+    required this.onDelete,
+    required this.onMoveToVault,
+  });
 
   final List<Expense> expenses;
   final AppLocalizations l10n;
   final Future<void> Function(int id) onDelete;
+  final Future<void> Function(int id) onMoveToVault;
 
   @override
   Widget build(BuildContext context) {
@@ -824,6 +834,7 @@ class _ExpenseList extends StatelessWidget {
                 expense: expense,
                 l10n: l10n,
                 onDelete: onDelete,
+                onMoveToVault: onMoveToVault,
                 onEdit: (e) => Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (_) => AddExpenseScreen(expense: e),
@@ -891,12 +902,14 @@ class _ExpenseTile extends StatelessWidget {
     required this.expense,
     required this.l10n,
     required this.onDelete,
+    required this.onMoveToVault,
     required this.onEdit,
   });
 
   final Expense expense;
   final AppLocalizations l10n;
   final Future<void> Function(int id) onDelete;
+  final Future<void> Function(int id) onMoveToVault;
   final void Function(Expense e) onEdit;
 
   @override
@@ -939,7 +952,7 @@ class _ExpenseTile extends StatelessWidget {
       ),
       child: InkWell(
         onTap: () => onEdit(expense),
-        onLongPress: () => _shareWhatsApp(context),
+        onLongPress: () => _showLongPressMenu(context),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           child: Row(
@@ -1041,6 +1054,36 @@ class _ExpenseTile extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  void _showLongPressMenu(BuildContext context) {
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (_) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.share_outlined),
+              title: const Text('Share via WhatsApp'),
+              onTap: () {
+                Navigator.pop(context);
+                _shareWhatsApp(context);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.lock_outlined),
+              title: const Text('Move to Vault'),
+              subtitle: const Text('Hide from normal view'),
+              onTap: () {
+                Navigator.pop(context);
+                onMoveToVault(expense.id);
+              },
+            ),
+          ],
         ),
       ),
     );

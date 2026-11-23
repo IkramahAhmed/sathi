@@ -2271,8 +2271,18 @@ class $UdhaarContactsTable extends UdhaarContacts
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _sourceMeta = const VerificationMeta('source');
   @override
-  List<GeneratedColumn> get $columns => [id, name, phone, createdAt];
+  late final GeneratedColumn<String> source = GeneratedColumn<String>(
+    'source',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('normal'),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, name, phone, createdAt, source];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -2310,6 +2320,12 @@ class $UdhaarContactsTable extends UdhaarContacts
     } else if (isInserting) {
       context.missing(_createdAtMeta);
     }
+    if (data.containsKey('source')) {
+      context.handle(
+        _sourceMeta,
+        source.isAcceptableOrUnknown(data['source']!, _sourceMeta),
+      );
+    }
     return context;
   }
 
@@ -2335,6 +2351,10 @@ class $UdhaarContactsTable extends UdhaarContacts
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
       )!,
+      source: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source'],
+      )!,
     );
   }
 
@@ -2353,11 +2373,16 @@ class UdhaarContact extends DataClass implements Insertable<UdhaarContact> {
   /// Optional phone number (used for WhatsApp reminders later).
   final String phone;
   final DateTime createdAt;
+
+  /// `normal` (default) or `vault` — vault contacts are hidden from the
+  /// normal Udhaar list and excluded from overdue checks.
+  final String source;
   const UdhaarContact({
     required this.id,
     required this.name,
     required this.phone,
     required this.createdAt,
+    required this.source,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -2366,6 +2391,7 @@ class UdhaarContact extends DataClass implements Insertable<UdhaarContact> {
     map['name'] = Variable<String>(name);
     map['phone'] = Variable<String>(phone);
     map['created_at'] = Variable<DateTime>(createdAt);
+    map['source'] = Variable<String>(source);
     return map;
   }
 
@@ -2375,6 +2401,7 @@ class UdhaarContact extends DataClass implements Insertable<UdhaarContact> {
       name: Value(name),
       phone: Value(phone),
       createdAt: Value(createdAt),
+      source: Value(source),
     );
   }
 
@@ -2388,6 +2415,7 @@ class UdhaarContact extends DataClass implements Insertable<UdhaarContact> {
       name: serializer.fromJson<String>(json['name']),
       phone: serializer.fromJson<String>(json['phone']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      source: serializer.fromJson<String>(json['source']),
     );
   }
   @override
@@ -2398,6 +2426,7 @@ class UdhaarContact extends DataClass implements Insertable<UdhaarContact> {
       'name': serializer.toJson<String>(name),
       'phone': serializer.toJson<String>(phone),
       'createdAt': serializer.toJson<DateTime>(createdAt),
+      'source': serializer.toJson<String>(source),
     };
   }
 
@@ -2406,11 +2435,13 @@ class UdhaarContact extends DataClass implements Insertable<UdhaarContact> {
     String? name,
     String? phone,
     DateTime? createdAt,
+    String? source,
   }) => UdhaarContact(
     id: id ?? this.id,
     name: name ?? this.name,
     phone: phone ?? this.phone,
     createdAt: createdAt ?? this.createdAt,
+    source: source ?? this.source,
   );
   UdhaarContact copyWithCompanion(UdhaarContactsCompanion data) {
     return UdhaarContact(
@@ -2418,6 +2449,7 @@ class UdhaarContact extends DataClass implements Insertable<UdhaarContact> {
       name: data.name.present ? data.name.value : this.name,
       phone: data.phone.present ? data.phone.value : this.phone,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      source: data.source.present ? data.source.value : this.source,
     );
   }
 
@@ -2427,13 +2459,14 @@ class UdhaarContact extends DataClass implements Insertable<UdhaarContact> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('phone: $phone, ')
-          ..write('createdAt: $createdAt')
+          ..write('createdAt: $createdAt, ')
+          ..write('source: $source')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, name, phone, createdAt);
+  int get hashCode => Object.hash(id, name, phone, createdAt, source);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2441,7 +2474,8 @@ class UdhaarContact extends DataClass implements Insertable<UdhaarContact> {
           other.id == this.id &&
           other.name == this.name &&
           other.phone == this.phone &&
-          other.createdAt == this.createdAt);
+          other.createdAt == this.createdAt &&
+          other.source == this.source);
 }
 
 class UdhaarContactsCompanion extends UpdateCompanion<UdhaarContact> {
@@ -2449,17 +2483,20 @@ class UdhaarContactsCompanion extends UpdateCompanion<UdhaarContact> {
   final Value<String> name;
   final Value<String> phone;
   final Value<DateTime> createdAt;
+  final Value<String> source;
   const UdhaarContactsCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.phone = const Value.absent(),
     this.createdAt = const Value.absent(),
+    this.source = const Value.absent(),
   });
   UdhaarContactsCompanion.insert({
     this.id = const Value.absent(),
     required String name,
     this.phone = const Value.absent(),
     required DateTime createdAt,
+    this.source = const Value.absent(),
   }) : name = Value(name),
        createdAt = Value(createdAt);
   static Insertable<UdhaarContact> custom({
@@ -2467,12 +2504,14 @@ class UdhaarContactsCompanion extends UpdateCompanion<UdhaarContact> {
     Expression<String>? name,
     Expression<String>? phone,
     Expression<DateTime>? createdAt,
+    Expression<String>? source,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (phone != null) 'phone': phone,
       if (createdAt != null) 'created_at': createdAt,
+      if (source != null) 'source': source,
     });
   }
 
@@ -2481,12 +2520,14 @@ class UdhaarContactsCompanion extends UpdateCompanion<UdhaarContact> {
     Value<String>? name,
     Value<String>? phone,
     Value<DateTime>? createdAt,
+    Value<String>? source,
   }) {
     return UdhaarContactsCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
       phone: phone ?? this.phone,
       createdAt: createdAt ?? this.createdAt,
+      source: source ?? this.source,
     );
   }
 
@@ -2505,6 +2546,9 @@ class UdhaarContactsCompanion extends UpdateCompanion<UdhaarContact> {
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
+    if (source.present) {
+      map['source'] = Variable<String>(source.value);
+    }
     return map;
   }
 
@@ -2514,7 +2558,8 @@ class UdhaarContactsCompanion extends UpdateCompanion<UdhaarContact> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('phone: $phone, ')
-          ..write('createdAt: $createdAt')
+          ..write('createdAt: $createdAt, ')
+          ..write('source: $source')
           ..write(')'))
         .toString();
   }
@@ -5824,6 +5869,7 @@ typedef $$UdhaarContactsTableCreateCompanionBuilder =
       required String name,
       Value<String> phone,
       required DateTime createdAt,
+      Value<String> source,
     });
 typedef $$UdhaarContactsTableUpdateCompanionBuilder =
     UdhaarContactsCompanion Function({
@@ -5831,6 +5877,7 @@ typedef $$UdhaarContactsTableUpdateCompanionBuilder =
       Value<String> name,
       Value<String> phone,
       Value<DateTime> createdAt,
+      Value<String> source,
     });
 
 final class $$UdhaarContactsTableReferences
@@ -5889,6 +5936,11 @@ class $$UdhaarContactsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<String> get source => $composableBuilder(
+    column: $table.source,
+    builder: (column) => ColumnFilters(column),
+  );
+
   Expression<bool> udhaarEntriesRefs(
     Expression<bool> Function($$UdhaarEntriesTableFilterComposer f) f,
   ) {
@@ -5943,6 +5995,11 @@ class $$UdhaarContactsTableOrderingComposer
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get source => $composableBuilder(
+    column: $table.source,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$UdhaarContactsTableAnnotationComposer
@@ -5965,6 +6022,9 @@ class $$UdhaarContactsTableAnnotationComposer
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<String> get source =>
+      $composableBuilder(column: $table.source, builder: (column) => column);
 
   Expression<T> udhaarEntriesRefs<T extends Object>(
     Expression<T> Function($$UdhaarEntriesTableAnnotationComposer a) f,
@@ -6026,11 +6086,13 @@ class $$UdhaarContactsTableTableManager
                 Value<String> name = const Value.absent(),
                 Value<String> phone = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
+                Value<String> source = const Value.absent(),
               }) => UdhaarContactsCompanion(
                 id: id,
                 name: name,
                 phone: phone,
                 createdAt: createdAt,
+                source: source,
               ),
           createCompanionCallback:
               ({
@@ -6038,11 +6100,13 @@ class $$UdhaarContactsTableTableManager
                 required String name,
                 Value<String> phone = const Value.absent(),
                 required DateTime createdAt,
+                Value<String> source = const Value.absent(),
               }) => UdhaarContactsCompanion.insert(
                 id: id,
                 name: name,
                 phone: phone,
                 createdAt: createdAt,
+                source: source,
               ),
           withReferenceMapper: (p0) => p0
               .map(
