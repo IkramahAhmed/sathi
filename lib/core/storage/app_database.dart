@@ -15,7 +15,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? driftDatabase(name: 'saathi'));
 
   @override
-  int get schemaVersion => 11;
+  int get schemaVersion => 12;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -58,6 +58,13 @@ class AppDatabase extends _$AppDatabase {
           if (from < 11) {
             await m.createTable(taskLists);
             await m.addColumn(tasks, tasks.listId);
+          }
+          if (from < 12) {
+            // Fix SMS/Gmail-imported rows that defaulted to source='manual'.
+            // Bank entries always have a note starting with '['.
+            await customStatement(
+              "UPDATE expenses SET source = 'bank' WHERE source = 'manual' AND note LIKE '[%'",
+            );
           }
         },
       );

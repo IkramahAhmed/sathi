@@ -5,11 +5,8 @@ import 'package:go_router/go_router.dart';
 import '../../../../app/providers.dart';
 import '../../../../app/router.dart';
 import '../../../../core/notifications/notification_channels.dart';
-import '../../../../core/services/gmail_reader.dart';
 import '../../../../core/services/notification_capture_service.dart';
 import '../../../../core/utils/logger.dart';
-import '../../../khata/presentation/screens/gmail_sync_screen.dart';
-import '../../../khata/presentation/screens/sms_sync_screen.dart';
 import '../../../udhaar/background/udhaar_overdue_check.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/calc_method.dart';
@@ -339,14 +336,11 @@ class _BankSyncSection extends ConsumerStatefulWidget {
 
 class _BankSyncSectionState extends ConsumerState<_BankSyncSection> {
   bool _hasNotifAccess = false;
-  String? _connectedEmail;
-  bool _gmailLoading = false;
 
   @override
   void initState() {
     super.initState();
     _checkNotifAccess();
-    _restoreAccount();
   }
 
   Future<void> _checkNotifAccess() async {
@@ -354,56 +348,19 @@ class _BankSyncSectionState extends ConsumerState<_BankSyncSection> {
     if (mounted) setState(() => _hasNotifAccess = has);
   }
 
-  Future<void> _restoreAccount() async {
-    final account = await GmailReader.currentUser;
-    if (mounted) setState(() => _connectedEmail = account?.email);
-  }
-
   Future<void> _enableNotifAccess() async {
     await NotificationCaptureService.openSettings();
-    // Re-check after user returns from settings
     await Future.delayed(const Duration(seconds: 1));
     await _checkNotifAccess();
   }
 
-  Future<void> _connectOrSyncGmail() async {
-    if (_connectedEmail == null) {
-      setState(() => _gmailLoading = true);
-      final account = await GmailReader.signIn();
-      setState(() {
-        _connectedEmail = account?.email;
-        _gmailLoading = false;
-      });
-      if (account == null || !mounted) return;
-    }
-    if (!mounted) return;
-    await Navigator.of(context).push<void>(
-      MaterialPageRoute(builder: (_) => const GmailSyncScreen()),
-    );
-  }
-
-  Future<void> _disconnectGmail() async {
-    await GmailReader.signOut();
-    setState(() => _connectedEmail = null);
-  }
-
-  Future<void> _syncSms() async {
-    if (!mounted) return;
-    await Navigator.of(context).push<void>(
-      MaterialPageRoute(builder: (_) => const SmsSyncScreen()),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const _Section('Bank Sync'),
 
-        // ── Auto-capture via notifications (recommended) ───────────────────
         ListTile(
           key: const ValueKey('notif-capture'),
           leading: Icon(
@@ -423,41 +380,6 @@ class _BankSyncSectionState extends ConsumerState<_BankSyncSection> {
                   child: const Text('Enable'),
                 ),
           onTap: _hasNotifAccess ? null : _enableNotifAccess,
-        ),
-
-        // ── SMS import — historical data ──────────────────────────────────
-        ListTile(
-          key: const ValueKey('sms-sync'),
-          leading: const Icon(Icons.sms_outlined),
-          title: const Text('SMS — Import history'),
-          subtitle: const Text('Import last 3 months from your SMS inbox'),
-          onTap: _syncSms,
-        ),
-
-        // ── Gmail — advanced / optional ───────────────────────────────────
-        ListTile(
-          key: const ValueKey('gmail-sync'),
-          leading: _gmailLoading
-              ? const SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2))
-              : Icon(Icons.email_outlined, color: scheme.onSurfaceVariant),
-          title: Text(
-            _connectedEmail == null ? 'Gmail — Optional' : 'Gmail — Sync now',
-            style: TextStyle(color: scheme.onSurfaceVariant),
-          ),
-          subtitle: Text(
-            _connectedEmail == null
-                ? 'For Meezan, NayaPay, SadaPay email alerts'
-                : _connectedEmail!,
-            style: TextStyle(color: scheme.onSurfaceVariant),
-          ),
-          trailing: _connectedEmail != null
-              ? IconButton(
-                  tooltip: 'Disconnect',
-                  icon: const Icon(Icons.logout),
-                  onPressed: _disconnectGmail,
-                )
-              : null,
-          onTap: _gmailLoading ? null : _connectOrSyncGmail,
         ),
       ],
     );
