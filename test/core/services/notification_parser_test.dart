@@ -96,6 +96,50 @@ void main() {
     });
   });
 
+  group('account suffix', () {
+    test('masked suffix — A/C **4521', () {
+      expect(
+        parse('PKR 500 debited from A/C **4521. Avl Bal PKR 45,000')!.bankName,
+        'Meezan **4521',
+      );
+    });
+
+    test('prefers "your A/C" over sender A/C in IBFT alert', () {
+      // Real Meezan RAAST: sender AC# first, then "your AC# 0106338406"
+      // Last 4 of 0106338406 = 8406
+      expect(
+        parse(
+          'PKR 1.00 received from ALI AC# xxxPYMT PK55NAYA12345 as RAAST payment '
+          'to your AC# 0106338406 of UP MORH BR KHI',
+        )!.bankName,
+        'Meezan **8406',
+      );
+    });
+
+    test('no account number — no suffix', () {
+      expect(
+        parse(
+          'PKR 500.00 has been debited at 01:51 on 23-Nov-2026 TID:014120, '
+          'If you have not done this transaction, please inform us at 021111331331',
+        )!.bankName,
+        'Meezan',
+      );
+    });
+
+    test('helpline phone number after "at" is not mistaken for an account', () {
+      // "at 021111331331" must NOT produce a suffix
+      final tx = parse('PKR 1,000.00 debited. If not done by you call us at 021111331331')!;
+      expect(tx.bankName, 'Meezan');
+    });
+
+    test('8+ digit full account number', () {
+      expect(
+        parse('PKR 2,000 credited to your A/C 0106338406')!.bankName,
+        'Meezan **8406',
+      );
+    });
+  });
+
   // Real notifications captured on a device (names and account numbers changed).
   group('real-world notifications', () {
     const sms = 'com.google.android.apps.messaging';
@@ -109,8 +153,8 @@ void main() {
     test('Meezan Raast incoming', () {
       final tx = parse(
           'PKR 1.00 received from ALI KHAN AC# xxxPYMT PK00NAYA00000000 as RAAST payment to your '
-          'AC# 0100000000 of UP MORH BR KHI on 21-Nov-2026 at 20:56')!;
-      expect((tx.bankName, tx.amount, tx.isCredit), ('Meezan', 1.0, true));
+          'AC# 0100005678 of UP MORH BR KHI on 21-Nov-2026 at 20:56')!;
+      expect((tx.bankName, tx.amount, tx.isCredit), ('Meezan **5678', 1.0, true));
     });
 
     test('Meezan app debit with helpline number', () {

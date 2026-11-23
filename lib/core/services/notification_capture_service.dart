@@ -216,10 +216,12 @@ NotificationTransaction? parseNotification({
   final amount = _extractAmount(combined);
   if (amount == null || amount < 1) return null;
 
+  final baseName = _bankName(packageName, title);
+  final suffix = _extractAccountSuffix(body);
   return NotificationTransaction(
     id: '${packageName}_$timeMs',
     packageName: packageName,
-    bankName: _bankName(packageName, title),
+    bankName: suffix != null ? '$baseName **$suffix' : baseName,
     title: title,
     body: body,
     amount: amount,
@@ -352,4 +354,28 @@ String _bankName(String packageName, String title) {
   if (sender != null) return sender;
   if (t.isNotEmpty && t.length <= 20) return t;
   return packageName.split('.').last;
+}
+
+// ── Account suffix ────────────────────────────────────────────────────────────
+
+// Prefer "your A/C" / "your AC#" (receiver = me) over a bare "A/C" that
+// could refer to the sender's account in an IBFT alert.
+final _myAccountRe = RegExp(
+  r'(?:your|ur)\s+a/?c[#:\s]*(\**[\d*]{4,})',
+  caseSensitive: false,
+);
+// Fallback: "A/C **NNNN" (masked) or "A/C NNNNNNNN" (8+ digit full number).
+// The 8-digit lower bound avoids matching "TID:014120" or helpline numbers.
+final _anyAccountRe = RegExp(
+  r'\ba/?c[#:\s]+(\*+\d{1,4}|\d{8,})',
+  caseSensitive: false,
+);
+
+/// Returns the last 4 digits of the account number found in [body], or null.
+String? _extractAccountSuffix(String body) {
+  final m = _myAccountRe.firstMatch(body) ?? _anyAccountRe.firstMatch(body);
+  if (m == null) return null;
+  final digits = m.group(1)!.replaceAll(RegExp(r'\D'), '');
+  if (digits.length < 4) return null;
+  return digits.substring(digits.length - 4);
 }
