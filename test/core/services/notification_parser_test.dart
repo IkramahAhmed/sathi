@@ -3,6 +3,15 @@ import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:saathi/core/services/notification_capture_service.dart';
 import 'package:saathi/core/storage/app_database.dart';
+import 'package:saathi/core/storage/daos.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+class _FailingDao extends ExpensesDao {
+  _FailingDao(super.db);
+
+  @override
+  Future<bool> addIfNew(ExpensesCompanion entry) => throw StateError('disk full');
+}
 
 NotificationTransaction? parse(String body, {String pkg = 'invo8.meezan.mb', String title = 'Meezan Bank'}) =>
     parseNotification(packageName: pkg, title: title, body: body, timeMs: 1763900000000);
@@ -131,6 +140,70 @@ void main() {
 
     test('SMS promo with no money verb is ignored', () {
       expect(parse('Flat Rs. 200 off on your next order! Use code SAVE200', pkg: sms, title: 'DARAZ'), isNull);
+    });
+  });
+
+  group('queue processing', () {
+    late AppDatabase db;
+    setUp(() {
+      SharedPreferences.setMockInitialValues({});
+      db = AppDatabase(NativeDatabase.memory());
+    });
+    tearDown(() => db.close());
+
+    final t0 = DateTime(2026, 11, 23, 1, 51).millisecondsSinceEpoch;
+    QueuedNotification q(String id, String body, int timeMs, {String pkg = 'invo8.meezan.mb', String title = 'Meezan'}) =>
+        QueuedNotification(id: id, packageName: pkg, title: title, body: body, timeMs: timeMs);
+
+    Future<List<Expense>> bankRows() =>
+        (db.select(db.expenses)..where((t) => t.source.equals('bank'))).get();
+
+    test('saves a transaction and marks every item handled, including non-transactions', () async {
+      final handled = await processQueued([
+        q('a', 'PKR 500.00 has been debited', t0),
+        q('b', 'Your OTP is 123456', t0),
+      ], db.expensesDao);
+      expect(handled, ['a', 'b']);
+      expect((await bankRows()).single.amount, 500);
+    });
+
+    test('catch-up re-delivering the same notification hours later is not saved again', () async {
+      await processQueued([q('a', 'PKR 500.00 has been debited', t0)], db.expensesDao);
+      final handled = await processQueued([q('a', 'PKR 500.00 has been debited', t0)], db.expensesDao);
+      expect(handled, ['a']);
+      expect(await bankRows(), hasLength(1));
+    });
+
+    test('an entry the user deleted does not come back on re-delivery', () async {
+      await processQueued([q('a', 'PKR 500.00 has been debited', t0)], db.expensesDao);
+      await db.expensesDao.remove((await bankRows()).single.id);
+      await processQueued([q('a', 'PKR 500.00 has been debited', t0)], db.expensesDao);
+      expect(await bankRows(), isEmpty);
+    });
+
+    test('two stacked SMS messages are two transactions', () async {
+      const sms = 'com.google.android.apps.messaging';
+      await processQueued([
+        q('s1', 'PKR 1,000.00 has been debited', t0, pkg: sms, title: '8079'),
+        q('s2', 'PKR 250.00 has been debited', t0 + 60000, pkg: sms, title: '8079'),
+      ], db.expensesDao);
+      expect((await bankRows()).map((e) => e.amount).toSet(), {1000.0, 250.0});
+    });
+
+    test('app push and its SMS a minute later are saved once, both handled', () async {
+      final handled = await processQueued([
+        q('push', 'PKR 500.00 has been debited', t0),
+        q('sms', 'PKR 500.00 has been debited', t0 + 60000,
+            pkg: 'com.google.android.apps.messaging', title: '8079'),
+      ], db.expensesDao);
+      expect(handled, ['push', 'sms']);
+      expect(await bankRows(), hasLength(1));
+    });
+
+    test('a save that fails stays in the queue for the next drain', () async {
+      final handled = await processQueued([q('a', 'PKR 500.00 has been debited', t0)], _FailingDao(db));
+      expect(handled, isEmpty);
+      expect(await NotificationCaptureService.alreadyCaptured('a'), isFalse, reason: 'must be retried');
     });
   });
 

@@ -335,51 +335,89 @@ class _BankSyncSection extends ConsumerStatefulWidget {
 }
 
 class _BankSyncSectionState extends ConsumerState<_BankSyncSection> {
-  bool _hasNotifAccess = false;
+  CaptureHealth? _health;
 
   @override
   void initState() {
     super.initState();
-    _checkNotifAccess();
+    _check();
   }
 
-  Future<void> _checkNotifAccess() async {
-    final has = await NotificationCaptureService.hasAccess();
-    if (mounted) setState(() => _hasNotifAccess = has);
+  Future<void> _check() async {
+    final h = await NotificationCaptureService.health();
+    if (mounted) setState(() => _health = h);
   }
 
   Future<void> _enableNotifAccess() async {
     await NotificationCaptureService.openSettings();
     await Future.delayed(const Duration(seconds: 1));
-    await _checkNotifAccess();
+    await _check();
+  }
+
+  /// Android sometimes drops the listener (often after an app update) while
+  /// the permission still shows as granted.
+  Future<void> _restart() async {
+    await NotificationCaptureService.rebind();
+    await Future.delayed(const Duration(seconds: 2));
+    await _check();
+    if (!mounted || (_health?.connected ?? false)) return;
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text('Turn Saathi off and on again in Notification access'),
+    ));
+    await _enableNotifAccess();
+  }
+
+  static String _ago(DateTime t) {
+    final d = DateTime.now().difference(t);
+    if (d.inMinutes < 1) return 'just now';
+    if (d.inHours < 1) return '${d.inMinutes} min ago';
+    if (d.inDays < 1) return '${d.inHours} h ago';
+    return '${d.inDays} d ago';
   }
 
   @override
   Widget build(BuildContext context) {
+    final h = _health;
+    final scheme = Theme.of(context).colorScheme;
+
+    final (Color? color, String subtitle, Widget? trailing, VoidCallback? onTap) = switch (h) {
+      null => (null, 'Checking…', null, null),
+      CaptureHealth(hasAccess: false) => (
+          null,
+          'Tap to enable — no login needed, works with all bank apps',
+          FilledButton.tonal(onPressed: _enableNotifAccess, child: const Text('Enable')),
+          _enableNotifAccess,
+        ),
+      CaptureHealth(connected: false) => (
+          scheme.error,
+          'Paused by Android — transactions are not being captured',
+          FilledButton.tonal(onPressed: _restart, child: const Text('Restart')),
+          _restart,
+        ),
+      _ => (
+          Colors.green.shade700,
+          [
+            h.lastCandidateAt == null
+                ? 'Active — waiting for the first bank alert'
+                : 'Active — last bank alert ${_ago(h.lastCandidateAt!)}',
+            if (h.pending > 0) '${h.pending} waiting to be saved',
+          ].join(' · '),
+          Icon(Icons.check_circle, color: Colors.green.shade700, size: 20),
+          _check,
+        ),
+    };
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const _Section('Bank Sync'),
-
         ListTile(
           key: const ValueKey('notif-capture'),
-          leading: Icon(
-            Icons.notifications_active_outlined,
-            color: _hasNotifAccess ? Colors.green.shade700 : null,
-          ),
+          leading: Icon(Icons.notifications_active_outlined, color: color),
           title: const Text('Auto-capture transactions'),
-          subtitle: Text(
-            _hasNotifAccess
-                ? 'Active — captures every bank notification automatically'
-                : 'Tap to enable — no login needed, works with all bank apps',
-          ),
-          trailing: _hasNotifAccess
-              ? Icon(Icons.check_circle, color: Colors.green.shade700, size: 20)
-              : FilledButton.tonal(
-                  onPressed: _enableNotifAccess,
-                  child: const Text('Enable'),
-                ),
-          onTap: _hasNotifAccess ? null : _enableNotifAccess,
+          subtitle: Text(subtitle),
+          trailing: trailing,
+          onTap: onTap,
         ),
       ],
     );

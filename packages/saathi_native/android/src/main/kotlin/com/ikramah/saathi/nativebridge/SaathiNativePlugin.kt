@@ -41,14 +41,9 @@ class SaathiNativePlugin : FlutterPlugin, MethodChannel.MethodCallHandler, Event
         val ctx = context ?: return
         eventSink = sink
         val receiver = object : BroadcastReceiver() {
+            // Just a wake-up: the data itself is read from CaptureQueue.
             override fun onReceive(context: Context?, intent: Intent?) {
-                val event = mapOf(
-                    "package" to (intent?.getStringExtra("package") ?: ""),
-                    "title"   to (intent?.getStringExtra("title") ?: ""),
-                    "body"    to (intent?.getStringExtra("body") ?: ""),
-                    "time"    to (intent?.getLongExtra("time", 0L) ?: 0L),
-                )
-                sink?.success(event)
+                sink?.success(true)
             }
         }
         val filter = IntentFilter(TransactionNotificationService.ACTION_TRANSACTION_NOTIFICATION)
@@ -119,6 +114,16 @@ class SaathiNativePlugin : FlutterPlugin, MethodChannel.MethodCallHandler, Event
                         "enabled_notification_listeners"
                     ) ?: ""
                     result.success(enabled.contains(ctx.packageName))
+                }
+                "peekCaptureQueue" -> result.success(CaptureQueue.peek(ctx))
+                "ackCaptureQueue" -> {
+                    CaptureQueue.ack(ctx, call.argument<List<String>>("ids") ?: emptyList())
+                    result.success(null)
+                }
+                "captureHealth" -> result.success(CaptureQueue.health(ctx))
+                "rebindCaptureListener" -> {
+                    TransactionNotificationService.rebind(ctx)
+                    result.success(null)
                 }
                 "openNotificationAccessSettings" -> {
                     val intent = Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)

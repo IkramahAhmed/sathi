@@ -1,14 +1,94 @@
+import 'package:drift/drift.dart' show Value;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../storage/app_database.dart';
+import '../storage/daos.dart';
 
 const _channel = MethodChannel('com.ikramah.saathi/native');
 const _eventChannel = EventChannel('com.ikramah.saathi/notifications');
 const _capturedIdsKey = 'notification_captured_ids';
 
+/// One notification waiting in the native capture queue.
+class QueuedNotification {
+  const QueuedNotification({
+    required this.id,
+    required this.packageName,
+    required this.title,
+    required this.body,
+    required this.timeMs,
+  });
+
+  factory QueuedNotification.fromMap(Map<Object?, Object?> m) => QueuedNotification(
+        id: m['id'] as String? ?? '',
+        packageName: m['package'] as String? ?? '',
+        title: m['title'] as String? ?? '',
+        body: m['body'] as String? ?? '',
+        timeMs: (m['time'] as num?)?.toInt() ?? 0,
+      );
+
+  final String id;
+  final String packageName;
+  final String title;
+  final String body;
+  final int timeMs;
+}
+
+/// Whether the native listener is actually running, not just permitted.
+class CaptureHealth {
+  const CaptureHealth({
+    required this.hasAccess,
+    required this.connected,
+    required this.lastCandidateAt,
+    required this.pending,
+  });
+
+  final bool hasAccess;
+  final bool connected;
+  final DateTime? lastCandidateAt;
+  final int pending;
+}
+
 class NotificationCaptureService {
-  /// Stream of raw notification events from the native side.
-  static Stream<Map<String, dynamic>> get notificationStream =>
-      _eventChannel.receiveBroadcastStream().map((e) => Map<String, dynamic>.from(e as Map));
+  /// Fires whenever the native listener queued something new.
+  static Stream<void> get wakeUps => _eventChannel.receiveBroadcastStream().map((_) {});
+
+  static Future<List<QueuedNotification>> peekQueue() async {
+    final raw = await _channel.invokeListMethod<Object?>('peekCaptureQueue') ?? const [];
+    return [for (final m in raw) QueuedNotification.fromMap(m! as Map<Object?, Object?>)];
+  }
+
+  /// Removes items from the native queue. Call only after they are handled.
+  static Future<void> ackQueue(List<String> ids) async {
+    if (ids.isEmpty) return;
+    await _channel.invokeMethod('ackCaptureQueue', {'ids': ids});
+  }
+
+  static Future<CaptureHealth> health() async {
+    final access = await hasAccess();
+    try {
+      final m = await _channel.invokeMapMethod<String, Object?>('captureHealth') ?? const {};
+      final last = (m['lastCandidateAt'] as num?)?.toInt() ?? 0;
+      return CaptureHealth(
+        hasAccess: access,
+        connected: m['connected'] as bool? ?? false,
+        lastCandidateAt: last > 0 ? DateTime.fromMillisecondsSinceEpoch(last) : null,
+        pending: (m['pending'] as num?)?.toInt() ?? 0,
+      );
+    } catch (_) {
+      return CaptureHealth(hasAccess: access, connected: false, lastCandidateAt: null, pending: 0);
+    }
+  }
+
+  /// Asks Android to reconnect the listener (it can drop after app updates).
+  static Future<void> rebind() async {
+    try {
+      await _channel.invokeMethod('rebindCaptureListener');
+    } catch (_) {}
+  }
+
   /// True if the user has granted notification listener access.
   static Future<bool> hasAccess() async {
     try {
@@ -47,6 +127,49 @@ class NotificationCaptureService {
     final ids = await _loadCapturedIds();
     return ids.contains(id);
   }
+}
+
+/// Saves queued notifications as bank transactions.
+///
+/// Returns the ids that are fully handled (saved, duplicate, or not a
+/// transaction) and so can be removed from the queue. An item whose save threw
+/// is left out, so it is retried on the next drain.
+Future<List<String>> processQueued(
+  List<QueuedNotification> items,
+  ExpensesDao dao, {
+  void Function(NotificationTransaction tx)? onSaved,
+}) async {
+  final fmt = DateFormat('yyyy-MM-dd');
+  final handled = <String>[];
+  for (final item in items) {
+    try {
+      final tx = parseNotification(
+        packageName: item.packageName,
+        title: item.title,
+        body: item.body,
+        timeMs: item.timeMs,
+      );
+      // Catch-up re-delivers whatever is still in the shade, possibly hours
+      // later, so the id check matters beyond the DB's 10-minute window.
+      if (tx != null && !await NotificationCaptureService.alreadyCaptured(item.id)) {
+        final saved = await dao.addIfNew(ExpensesCompanion.insert(
+          amount: tx.amount,
+          date: fmt.format(tx.timestamp),
+          type: Value(tx.isCredit ? 'income' : 'expense'),
+          category: tx.isCredit ? 'salary' : 'other',
+          note: Value('${tx.bankName}: ${item.body}'),
+          source: const Value('bank'),
+          createdAt: tx.timestamp,
+        ));
+        await NotificationCaptureService.markCaptured(item.id);
+        if (saved) onSaved?.call(tx);
+      }
+      handled.add(item.id);
+    } catch (e, st) {
+      debugPrint('Bank capture failed for ${item.packageName}: $e\n$st');
+    }
+  }
+  return handled;
 }
 
 /// Represents a transaction parsed from a notification.

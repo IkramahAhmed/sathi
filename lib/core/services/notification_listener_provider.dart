@@ -1,4 +1,5 @@
-import 'package:drift/drift.dart' show Value;
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
@@ -12,58 +13,53 @@ import 'notification_capture_service.dart';
 
 part 'notification_listener_provider.g.dart';
 
+/// Drains the native capture queue on start and whenever the listener pings.
 @Riverpod(keepAlive: true)
 Stream<void> notificationListenerStream(Ref ref) async* {
   final db = ref.read(appDatabaseProvider);
-  final dao = db.expensesDao;
-  final fmt = DateFormat('yyyy-MM-dd');
+  await drainCaptureQueue(db);
+  await for (final _ in NotificationCaptureService.wakeUps) {
+    await drainCaptureQueue(db);
+  }
+}
 
-  await for (final event in NotificationCaptureService.notificationStream) {
-    try {
-      final pkg = event['package'] as String? ?? '';
-      final title = event['title'] as String? ?? '';
-      final body = event['body'] as String? ?? '';
-      final timeMs = (event['time'] as num?)?.toInt() ?? DateTime.now().millisecondsSinceEpoch;
+Future<void> _lastDrain = Future.value();
 
-      final tx = parseNotification(
-        packageName: pkg,
-        title: title,
-        body: body,
-        timeMs: timeMs,
-      );
-      if (tx == null) continue;
+/// Saves everything waiting in the native queue. Calls are chained so two
+/// drains never run at once (that could insert the same transaction twice).
+Future<void> drainCaptureQueue(AppDatabase db) {
+  return _lastDrain = _lastDrain.then((_) => _drainOnce(db)).catchError((Object e, StackTrace st) {
+    debugPrint('Capture drain failed: $e\n$st');
+  });
+}
 
-      if (await NotificationCaptureService.alreadyCaptured(tx.id)) continue;
+Future<void> _drainOnce(AppDatabase db) async {
+  final items = await NotificationCaptureService.peekQueue();
+  if (items.isEmpty) return;
+  final handled = await processQueued(items, db.expensesDao, onSaved: (tx) => unawaited(_announce(tx)));
+  await NotificationCaptureService.ackQueue(handled);
+}
 
-      final date = fmt.format(tx.timestamp);
-      final note = '${tx.bankName}: $body';
+/// On resume: drain, and if Android dropped the listener, ask it to reconnect.
+Future<void> refreshCapture(AppDatabase db) async {
+  final health = await NotificationCaptureService.health();
+  if (health.hasAccess && !health.connected) await NotificationCaptureService.rebind();
+  await drainCaptureQueue(db);
+}
 
-      final saved = await dao.addIfNew(ExpensesCompanion.insert(
-        amount: tx.amount,
-        date: date,
-        type: Value(tx.isCredit ? 'income' : 'expense'),
-        category: tx.isCredit ? 'salary' : 'other',
-        note: Value(note),
-        source: const Value('bank'),
-        createdAt: tx.timestamp,
-      ));
-      await NotificationCaptureService.markCaptured(tx.id);
-
-      if (saved) {
-        final amtFmt = NumberFormat('#,##0', 'en');
-        final sign = tx.isCredit ? '+' : '-';
-        final plugin = FlutterLocalNotificationsPlugin();
-        await LocalNotificationScheduler.initialize(plugin);
-        final scheduler = LocalNotificationScheduler(plugin);
-        await scheduler.showNow(
-          id: tx.id.hashCode & 0x7fffffff,
-          title: '${tx.bankName} transaction saved',
-          body: '${sign}Rs ${amtFmt.format(tx.amount)} added to your Bank tab',
-          channelId: NotificationChannels.khataAlert,
-        );
-      }
-    } catch (e, st) {
-      debugPrint('Bank capture failed: $e\n$st');
-    }
+Future<void> _announce(NotificationTransaction tx) async {
+  try {
+    final amtFmt = NumberFormat('#,##0', 'en');
+    final sign = tx.isCredit ? '+' : '-';
+    final plugin = FlutterLocalNotificationsPlugin();
+    await LocalNotificationScheduler.initialize(plugin);
+    await LocalNotificationScheduler(plugin).showNow(
+      id: tx.id.hashCode & 0x7fffffff,
+      title: '${tx.bankName} transaction saved',
+      body: '${sign}Rs ${amtFmt.format(tx.amount)} added to your Bank tab',
+      channelId: NotificationChannels.khataAlert,
+    );
+  } catch (e) {
+    debugPrint('Capture announcement failed: $e');
   }
 }

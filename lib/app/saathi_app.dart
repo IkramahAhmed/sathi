@@ -59,7 +59,10 @@ class _SaathiAppState extends ConsumerState<SaathiApp> with WidgetsBindingObserv
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     ref.read(appLifecycleProvider.notifier).update(state);
-    if (state == AppLifecycleState.resumed) _refreshEverything();
+    if (state == AppLifecycleState.resumed) {
+      unawaited(refreshCapture(ref.read(appDatabaseProvider)));
+      _refreshEverything();
+    }
   }
 
   /// Re-schedules on start and on every resume, so the azans stay current
