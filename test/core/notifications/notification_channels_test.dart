@@ -22,6 +22,8 @@ void main() {
       'prayer_ending',
       'prayer_ending_alarm',
       'sehri_reminder',
+      'udhaar_overdue',
+      'khata_alert',
     ]);
     expect(ids.toSet().length, ids.length, reason: 'channel ids are unique');
   });

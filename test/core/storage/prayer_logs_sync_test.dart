@@ -189,7 +189,7 @@ void main() {
       expect(await upgraded.prayerLogsDao.doneFor('2026-10-12'), {'fajr', 'asr'});
     });
 
-    test('a version 2 database (cloud sync) upgrades to 3 and keeps its data', () async {
+    test('a version 2 database (cloud sync) upgrades to current and keeps its data', () async {
       final upgraded = AppDatabase(
         NativeDatabase.memory(setup: (raw) {
           raw.execute('''
@@ -225,8 +225,8 @@ void main() {
       expect(await upgraded.pauseRangesDao.startPause('2026-10-15'), isNotNull);
     });
 
-    test('a fresh database is created at version 3 with every table', () async {
-      expect(db.schemaVersion, 3);
+    test('a fresh database is created at the current schema version with every table', () async {
+      expect(db.schemaVersion, 12);
       await db.prayerLogsDao.markDone(day, 'fajr', t0);
       final row = (await db.select(db.prayerLogs).get()).single;
       expect(row.done, isTrue);

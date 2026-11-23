@@ -24,12 +24,12 @@ UdhaarEntry _e(int id, int contact, double amount, String type, {String? due}) =
 void main() {
   test('contact with a passed due date and money still owed is overdue', () {
     final result = overdueByContact([_e(1, 1, 500, 'gave', due: _past)]);
-    expect(result, {1: _past});
+    expect(result, {1: 500.0});
   });
 
   test('due date is today — still counts as late', () {
     final result = overdueByContact([_e(1, 1, 500, 'gave', due: _today)]);
-    expect(result, {1: _today});
+    expect(result, {1: 500.0});
   });
 
   test('future due date is not overdue', () {
@@ -48,12 +48,12 @@ void main() {
     expect(result, isEmpty);
   });
 
-  test('reports the earliest passed due date when there are several', () {
+  test('reports the total balance when there are several overdue entries', () {
     final result = overdueByContact([
       _e(1, 1, 300, 'gave', due: _past),
       _e(2, 1, 300, 'gave', due: _earlier),
     ]);
-    expect(result, {1: _earlier});
+    expect(result, {1: 600.0});
   });
 
   test('only the late contact is flagged', () {

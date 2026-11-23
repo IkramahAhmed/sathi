@@ -39,25 +39,30 @@ class AppDatabase extends _$AppDatabase {
             await m.createTable(udhaarContacts);
             await m.createTable(udhaarEntries);
           }
-          if (from < 6) {
+          // Guard addColumn calls: when a table is created by an earlier step in
+          // the same migration run, createTable uses the CURRENT schema (all
+          // columns), so a subsequent addColumn would duplicate an existing
+          // column. The lower-bound checks skip the ALTER when the table was
+          // just created moments ago.
+          if (from < 6 && from >= 5) {
             await m.addColumn(udhaarEntries, udhaarEntries.dueDate);
           }
-          if (from < 7) {
+          if (from < 7 && from >= 4) {
             await m.addColumn(expenses, expenses.type);
             await m.addColumn(expenses, expenses.receiptPath);
           }
-          if (from < 8) {
+          if (from < 8 && from >= 4) {
             await m.addColumn(expenses, expenses.source);
           }
           if (from < 9) {
             await m.createTable(tasks);
           }
-          if (from < 10) {
+          if (from < 10 && from >= 9) {
             await m.addColumn(tasks, tasks.note);
           }
           if (from < 11) {
             await m.createTable(taskLists);
-            await m.addColumn(tasks, tasks.listId);
+            if (from >= 9) await m.addColumn(tasks, tasks.listId);
           }
           if (from < 12) {
             // Fix SMS/Gmail-imported rows that defaulted to source='manual'.
