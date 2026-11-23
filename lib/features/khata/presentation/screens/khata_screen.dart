@@ -34,6 +34,14 @@ class _KhataScreenState extends ConsumerState<KhataScreen> {
   DateTime? _month;
   _KhataTab _tab = _KhataTab.khata;
   _TxFilter _filter = _TxFilter.all;
+  String _khataQuery = '';
+  final _khataSearchCtrl = TextEditingController();
+
+  @override
+  void dispose() {
+    _khataSearchCtrl.dispose();
+    super.dispose();
+  }
 
   void _shift(int delta) {
     final now = DateTime.now();
@@ -58,6 +66,16 @@ class _KhataScreenState extends ConsumerState<KhataScreen> {
         _TxFilter.incoming => all.where((e) => e.type == 'income').toList(),
         _TxFilter.outgoing => all.where((e) => e.type != 'income').toList(),
       };
+
+  List<Expense> _applySearch(List<Expense> all) {
+    if (_khataQuery.isEmpty) return all;
+    final q = _khataQuery.toLowerCase();
+    return all
+        .where((e) =>
+            e.note.toLowerCase().contains(q) ||
+            e.amount.toString().contains(q))
+        .toList();
+  }
 
   Future<void> _exportCsv(List<Expense> expenses, DateTime month) async {
     final monthLabel = DateFormat('yyyy-MM').format(month);
@@ -214,6 +232,36 @@ class _KhataScreenState extends ConsumerState<KhataScreen> {
             ),
           ),
 
+          // Search bar
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+            child: TextField(
+              controller: _khataSearchCtrl,
+              decoration: InputDecoration(
+                hintText: 'Search entries…',
+                prefixIcon: const Icon(Icons.search, size: 20),
+                suffixIcon: _khataQuery.isNotEmpty
+                    ? IconButton(
+                        icon: const Icon(Icons.close, size: 18),
+                        onPressed: () {
+                          _khataSearchCtrl.clear();
+                          setState(() => _khataQuery = '');
+                        },
+                      )
+                    : null,
+                isDense: true,
+                filled: true,
+                fillColor: scheme.surfaceContainerHighest,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              ),
+              onChanged: (v) => setState(() => _khataQuery = v.trim()),
+            ),
+          ),
+
           // Summary card — always based on full month, not filtered
           expensesAsync.when(
             loading: () => const LinearProgressIndicator(),
@@ -259,7 +307,7 @@ class _KhataScreenState extends ConsumerState<KhataScreen> {
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (e, _) => Center(child: Text(l10n.genericError)),
               data: (expenses) {
-                final filtered = _applyFilter(expenses);
+                final filtered = _applySearch(_applyFilter(expenses));
                 if (filtered.isEmpty) return _EmptyState(l10n: l10n, scheme: scheme, text: text);
                 return _ExpenseList(
                   expenses: filtered,
@@ -1003,7 +1051,15 @@ class _BankFeed extends ConsumerStatefulWidget {
 
 class _BankFeedState extends ConsumerState<_BankFeed> {
   _BankDirection _direction = _BankDirection.all;
-  String? _selectedBank; // null = all banks
+  String? _selectedBank;
+  String _bankQuery = '';
+  final _bankSearchCtrl = TextEditingController();
+
+  @override
+  void dispose() {
+    _bankSearchCtrl.dispose();
+    super.dispose();
+  }
 
   static String _bankName(Expense e) =>
       e.note.isNotEmpty ? e.note.split(':').first.trim() : 'Bank';
@@ -1017,6 +1073,15 @@ class _BankFeedState extends ConsumerState<_BankFeed> {
     }
     if (_selectedBank != null) {
       list = list.where((e) => _bankName(e) == _selectedBank).toList();
+    }
+    if (_bankQuery.isNotEmpty) {
+      final q = _bankQuery.toLowerCase();
+      list = list
+          .where((e) =>
+              e.note.toLowerCase().contains(q) ||
+              _bankName(e).toLowerCase().contains(q) ||
+              e.amount.toString().contains(q))
+          .toList();
     }
     return list;
   }
@@ -1046,9 +1111,39 @@ class _BankFeedState extends ConsumerState<_BankFeed> {
 
         return Column(
           children: [
+            // ── Search bar ────────────────────────────────────────
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+              child: TextField(
+                controller: _bankSearchCtrl,
+                decoration: InputDecoration(
+                  hintText: 'Search bank entries…',
+                  prefixIcon: const Icon(Icons.search, size: 20),
+                  suffixIcon: _bankQuery.isNotEmpty
+                      ? IconButton(
+                          icon: const Icon(Icons.close, size: 18),
+                          onPressed: () {
+                            _bankSearchCtrl.clear();
+                            setState(() => _bankQuery = '');
+                          },
+                        )
+                      : null,
+                  isDense: true,
+                  filled: true,
+                  fillColor: scheme.surfaceContainerHighest,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                ),
+                onChanged: (v) => setState(() => _bankQuery = v.trim()),
+              ),
+            ),
             // ── Filter row 1: Direction ──────────────────────────
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+              padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
               child: SegmentedButton<_BankDirection>(
                 segments: const [
                   ButtonSegment(value: _BankDirection.all,  label: Text('All')),
