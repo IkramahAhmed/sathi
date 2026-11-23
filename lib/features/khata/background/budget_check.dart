@@ -25,16 +25,39 @@ Future<void> checkBudgetAndNotify({
       .fold(0.0, (s, e) => s + e.amount);
 
   final previousTotal = total - addedAmount;
-  if (previousTotal >= budget || total < budget) return;
+  final pct = total / budget;
+  final prevPct = previousTotal / budget;
+
+  // Fire at 80% crossing and at 100% crossing — one notification each.
+  final crossed80 = prevPct < 0.8 && pct >= 0.8 && pct < 1.0;
+  final crossed100 = prevPct < 1.0 && pct >= 1.0;
+  if (!crossed80 && !crossed100) return;
 
   final fmt = NumberFormat('#,##0', 'en');
   final plugin = FlutterLocalNotificationsPlugin();
   await LocalNotificationScheduler.initialize(plugin);
-  await plugin.show(
-    id: 8800 + category.index,
-    title: 'Budget exceeded — ${_catLabel(category)}',
-    body: 'Rs ${fmt.format(total.round())} spent / Rs ${fmt.format(budget.round())} budget',
-    notificationDetails: NotificationDetails(
+
+  final label = _catLabel(category);
+  final body = 'Rs ${fmt.format(total.round())} of Rs ${fmt.format(budget.round())} used';
+
+  if (crossed80) {
+    await plugin.show(
+      id: 8780 + category.index,
+      title: '80% budget used — $label',
+      body: body,
+      notificationDetails: _details(),
+    );
+  } else {
+    await plugin.show(
+      id: 8800 + category.index,
+      title: 'Budget exceeded — $label',
+      body: body,
+      notificationDetails: _details(),
+    );
+  }
+}
+
+NotificationDetails _details() => const NotificationDetails(
       android: AndroidNotificationDetails(
         NotificationChannels.khataAlert,
         'Budget alerts',
@@ -43,9 +66,7 @@ Future<void> checkBudgetAndNotify({
         importance: Importance.high,
         priority: Priority.high,
       ),
-    ),
-  );
-}
+    );
 
 String _catLabel(ExpenseCategory cat) => switch (cat) {
       ExpenseCategory.food => 'Food',
