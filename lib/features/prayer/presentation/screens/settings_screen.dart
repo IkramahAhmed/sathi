@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/backup/backup_restore_service.dart';
+
 import '../../../../app/providers.dart';
 import '../../../../app/router.dart';
 import '../../../../core/notifications/notification_channels.dart';
@@ -222,6 +224,7 @@ class SettingsScreen extends ConsumerWidget {
             onTap: () => context.push(Routes.oemGuide),
           ),
           const _BankSyncSection(),
+          const _DataBackupSection(),
           ListTile(
             key: const ValueKey('audio-credits'),
             leading: const Icon(Icons.copyright_outlined),
@@ -510,6 +513,43 @@ class _PrayerSettingsCard extends ConsumerWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+// ── Data & Backup ─────────────────────────────────────────────────────────────
+
+class _DataBackupSection extends StatelessWidget {
+  const _DataBackupSection();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Divider(),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+          child: Text(
+            'Data & Backup',
+            style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+          ),
+        ),
+        ListTile(
+          leading: const Icon(Icons.backup_outlined),
+          title: const Text('Export backup'),
+          subtitle: const Text('Share your data as a .saathi file'),
+          onTap: () => BackupRestoreService.backup(context),
+        ),
+        ListTile(
+          leading: const Icon(Icons.restore_outlined),
+          title: const Text('Restore backup'),
+          subtitle: const Text('Replace current data from a .saathi file'),
+          onTap: () => BackupRestoreService.restore(context),
+        ),
+      ],
     );
   }
 }

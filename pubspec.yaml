@@ -71,6 +71,7 @@ dependencies:
   google_mlkit_image_labeling: ^0.16.1
   pdf: ^3.10.8
   local_auth: ^2.3.0
+  file_picker: ^13.4.1
 
 dev_dependencies:
   flutter_test:
