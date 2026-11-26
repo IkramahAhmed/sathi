@@ -130,7 +130,7 @@ void main() {
 
   test('scheduling the azans also refreshes the phone-side features', () async {
     final scheduler = MockScheduler();
-    when(() => scheduler.cancelAll()).thenAnswer((_) async {});
+    when(() => scheduler.cancelPrayerReminders()).thenAnswer((_) async {});
     when(() => scheduler.canScheduleExact()).thenAnswer((_) async => true);
     when(() => scheduler.scheduleAll(any())).thenAnswer((_) async {});
     final settings = FakeSettingsRepository(silent());

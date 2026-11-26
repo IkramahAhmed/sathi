@@ -1169,12 +1169,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String udhaarWhatsAppLena(String name, String amount) {
-    return 'Assalamu Alaikum $name bhai, aapka Rs. $amount mujhe lena baqi hai. - Saathi App';
+    return 'Assalamu Alaikum $name, aapka Rs. $amount mujhe lena baqi hai. - Saathi App';
   }
 
   @override
   String udhaarWhatsAppDena(String name, String amount) {
-    return 'Assalamu Alaikum $name bhai, mera Rs. $amount aapko dena baqi hai. - Saathi App';
+    return 'Assalamu Alaikum $name, mera Rs. $amount aapko dena baqi hai. - Saathi App';
   }
 
   @override
@@ -1248,6 +1248,811 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get incomeSourceOther => 'Other income';
+
+  @override
+  String get navTasks => 'Tasks';
+
+  @override
+  String get vaultTitle => 'Private vault';
+
+  @override
+  String get undo => 'Undo';
+
+  @override
+  String get todayQuickAddHint => 'Quick add — e.g. 250 chai';
+
+  @override
+  String todayQuickAddPreview(String amount, String category) {
+    return 'Will save: Rs $amount · $category';
+  }
+
+  @override
+  String get todayQuickAddNeedAmount =>
+      'Type an amount first, for example 250 chai';
+
+  @override
+  String todayQuickAdded(String amount, String category) {
+    return 'Added Rs $amount · $category';
+  }
+
+  @override
+  String todayQuickAddedIncome(String amount, String category) {
+    return 'Income Rs $amount added · $category';
+  }
+
+  @override
+  String get todayPrayers => 'Today\'s prayers';
+
+  @override
+  String get todayNothingDue => 'Nothing due today';
+
+  @override
+  String get todaySeeAll => 'See all';
+
+  @override
+  String get todayMoney => 'Money';
+
+  @override
+  String get todaySpentToday => 'Spent today';
+
+  @override
+  String get todaySpentMonth => 'This month';
+
+  @override
+  String get todayBudgetLeft => 'Budget left';
+
+  @override
+  String get todayOverBudget => 'Over budget';
+
+  @override
+  String get todayComingUp => 'Coming up';
+
+  @override
+  String get todayNothingComing => 'Nothing coming up this week';
+
+  @override
+  String todayDueTheyOwe(String name, String amount) {
+    return '$name owes you Rs $amount';
+  }
+
+  @override
+  String todayDueYouOwe(String name, String amount) {
+    return 'You owe $name Rs $amount';
+  }
+
+  @override
+  String todayDueLate(String days) {
+    return '$days days late';
+  }
+
+  @override
+  String get todayDueToday => 'due today';
+
+  @override
+  String get todayDueTomorrow => 'due tomorrow';
+
+  @override
+  String todayDueInDays(String days) {
+    return 'due in $days days';
+  }
+
+  @override
+  String todayRecurring(String what, String amount, String date) {
+    return 'Recurring $what: Rs $amount on $date';
+  }
+
+  @override
+  String get todayBackupTitle => 'Back up your data';
+
+  @override
+  String get todayBackupBody =>
+      'Share a copy so your data is safe if this phone is lost';
+
+  @override
+  String get todayBackupNow => 'Back up now';
+
+  @override
+  String get todayLater => 'Later';
+
+  @override
+  String get toolRoza => 'Roza';
+
+  @override
+  String get toolGoals => 'Savings goals';
+
+  @override
+  String get toolAccounts => 'Accounts';
+
+  @override
+  String get rozaTitle => 'Roza';
+
+  @override
+  String rozaOwed(String count) {
+    return 'Fasts to make up: $count';
+  }
+
+  @override
+  String get rozaHint => 'Tap a day to mark it kept, missed, or clear it';
+
+  @override
+  String get rozaKept => 'Kept';
+
+  @override
+  String get rozaMissed => 'Missed';
+
+  @override
+  String get rozaMadeUp => 'Made up';
+
+  @override
+  String get rozaMakeUpToday => 'I fasted today to make up one';
+
+  @override
+  String rozaKeptThisYear(String count) {
+    return 'Kept this year: $count';
+  }
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get edit => 'Edit';
+
+  @override
+  String get goalsTitle => 'Savings goals';
+
+  @override
+  String get goalsEmpty =>
+      'No goals yet. Add one, like Hajj, a wedding or a car.';
+
+  @override
+  String get goalAdd => 'New goal';
+
+  @override
+  String get goalName => 'Goal name';
+
+  @override
+  String get goalTarget => 'Target amount';
+
+  @override
+  String get goalDeadline => 'Deadline (optional)';
+
+  @override
+  String get goalAddMoney => 'Add money';
+
+  @override
+  String get goalTakeOut => 'Take money out';
+
+  @override
+  String get goalAmount => 'Amount';
+
+  @override
+  String goalSaved(String saved, String target) {
+    return 'Rs $saved of Rs $target';
+  }
+
+  @override
+  String get goalReached => 'Goal reached!';
+
+  @override
+  String goalPerMonth(String amount, String date) {
+    return 'Save about Rs $amount a month to reach it by $date';
+  }
+
+  @override
+  String get goalDeleteConfirm => 'Delete this goal?';
+
+  @override
+  String get accountsTitle => 'Accounts';
+
+  @override
+  String get accountsEmpty =>
+      'Add the places your money is kept: cash, bank, wallet.';
+
+  @override
+  String get accountAdd => 'New account';
+
+  @override
+  String get accountName => 'Account name';
+
+  @override
+  String get accountCash => 'Cash';
+
+  @override
+  String get accountBank => 'Bank';
+
+  @override
+  String get accountWallet => 'Wallet';
+
+  @override
+  String get accountOpening => 'Opening balance';
+
+  @override
+  String get accountTotal => 'Total across accounts';
+
+  @override
+  String get accountDeleteWarn =>
+      'Entries stay, but are no longer linked to this account.';
+
+  @override
+  String get accountPick => 'Account (optional)';
+
+  @override
+  String get accountNone => 'No account';
+
+  @override
+  String get add => 'Add';
+
+  @override
+  String get taskRemindBefore => 'Remind me before';
+
+  @override
+  String get taskRemindNone => 'Only at the time';
+
+  @override
+  String taskRemindMin(String minutes) {
+    return '$minutes minutes before';
+  }
+
+  @override
+  String get taskRemindHour => '1 hour before';
+
+  @override
+  String get taskRemindDay => '1 day before';
+
+  @override
+  String get taskAtTime => 'At a time';
+
+  @override
+  String get taskAroundPrayer => 'Around a prayer';
+
+  @override
+  String taskOffsetBefore(String minutes) {
+    return '$minutes min before';
+  }
+
+  @override
+  String taskOffsetAfter(String minutes) {
+    return '$minutes min after';
+  }
+
+  @override
+  String get taskOffsetAt => 'At prayer time';
+
+  @override
+  String get taskBillAmount => 'Bill amount (optional)';
+
+  @override
+  String get taskAddToKhataTitle => 'Add to Khata?';
+
+  @override
+  String taskAddToKhataBody(String amount, String title) {
+    return 'Add Rs $amount for \"$title\" to your Khata?';
+  }
+
+  @override
+  String get taskBillAdded => 'Added to Khata';
+
+  @override
+  String get filterAll => 'All';
+
+  @override
+  String get udhaarSortAmount => 'Biggest amount first';
+
+  @override
+  String get settingsDataBackup => 'Data & Backup';
+
+  @override
+  String get backupExport => 'Export backup';
+
+  @override
+  String get backupExportSub => 'Share your data as a .saathi file';
+
+  @override
+  String get backupRestore => 'Restore backup';
+
+  @override
+  String get backupRestoreSub => 'Replace current data from a .saathi file';
+
+  @override
+  String get backupAuto => 'Automatic backups';
+
+  @override
+  String backupAutoSub(String date) {
+    return 'Saved on this phone every week. Last: $date';
+  }
+
+  @override
+  String get backupAutoNone => 'Saved on this phone every week. None yet.';
+
+  @override
+  String get settingsCountBank => 'Count bank transactions in budgets';
+
+  @override
+  String get settingsCountBankSub =>
+      'Payments caught from bank notifications count towards your budgets and totals';
+
+  @override
+  String get trackerMonth => 'Last 30 days';
+
+  @override
+  String trackerCompletion(String percent) {
+    return '$percent% of prayers prayed';
+  }
+
+  @override
+  String trackerWeakest(String prayer, String done, String days) {
+    return 'Hardest prayer: $prayer ($done of $days days)';
+  }
+
+  @override
+  String get tasbeehFree => 'Free count';
+
+  @override
+  String get tasbeehSubhanallah => 'SubhanAllah';
+
+  @override
+  String get tasbeehAlhamdulillah => 'Alhamdulillah';
+
+  @override
+  String get tasbeehAllahuAkbar => 'Allahu Akbar';
+
+  @override
+  String tasbeehToday(String count) {
+    return 'Today: $count';
+  }
+
+  @override
+  String get tasbeehTargetReached => 'Target reached';
+
+  @override
+  String get trendTitle => 'Compared with last month';
+
+  @override
+  String trendMore(String amount, String percent) {
+    return 'Rs $amount more than last month ($percent%)';
+  }
+
+  @override
+  String trendLess(String amount, String percent) {
+    return 'Rs $amount less than last month ($percent%)';
+  }
+
+  @override
+  String trendMoreNoPercent(String amount) {
+    return 'Rs $amount more than last month';
+  }
+
+  @override
+  String get trendSame => 'Same as last month';
+
+  @override
+  String trendBiggestRise(String category, String amount) {
+    return 'Biggest rise: $category (+Rs $amount)';
+  }
+
+  @override
+  String get taskNewList => 'New list';
+
+  @override
+  String get taskEditList => 'Edit list';
+
+  @override
+  String get taskDeleteList => 'Delete list';
+
+  @override
+  String get taskTabToday => 'Today';
+
+  @override
+  String get taskTabUpcoming => 'Upcoming';
+
+  @override
+  String get taskEmptyUpcoming => 'No upcoming tasks';
+
+  @override
+  String get taskEmptyDone => 'Nothing completed yet';
+
+  @override
+  String get taskEmptyToday => 'Nothing to do today — MashaAllah! 🎉';
+
+  @override
+  String get taskNoneToday => 'No tasks for today';
+
+  @override
+  String taskTomorrowCount(String count) {
+    return 'Tomorrow ($count)';
+  }
+
+  @override
+  String taskOverdueCount(String count) {
+    return 'Overdue ($count)';
+  }
+
+  @override
+  String get taskNew => 'New task';
+
+  @override
+  String get taskEdit => 'Edit task';
+
+  @override
+  String get taskDeleteConfirm => 'Delete task?';
+
+  @override
+  String get taskReopen => 'Reopen';
+
+  @override
+  String get taskTitleLabel => 'Task title';
+
+  @override
+  String get taskNoteLabel => 'Note (optional)';
+
+  @override
+  String get taskListLabel => 'List';
+
+  @override
+  String get taskNoList => 'No list';
+
+  @override
+  String get taskPriority => 'Priority:';
+
+  @override
+  String get taskPriorityNormal => 'Normal';
+
+  @override
+  String get taskPriorityHigh => 'High';
+
+  @override
+  String get taskRepeat => 'Repeat';
+
+  @override
+  String get taskRepeatNone => 'Does not repeat';
+
+  @override
+  String get taskRepeatDaily => 'Every day';
+
+  @override
+  String get taskRepeatWeekly => 'Every week';
+
+  @override
+  String get taskRepeatMonthly => 'Every month';
+
+  @override
+  String get taskDailyShort => 'Daily';
+
+  @override
+  String get taskWeeklyShort => 'Weekly';
+
+  @override
+  String get taskMonthlyShort => 'Monthly';
+
+  @override
+  String get taskNoDueDate => 'No due date';
+
+  @override
+  String get taskNoTime => 'No time (no notification)';
+
+  @override
+  String get taskListName => 'List name';
+
+  @override
+  String get taskIcon => 'Icon';
+
+  @override
+  String get taskCreate => 'Create';
+
+  @override
+  String get khataIncoming => 'Incoming';
+
+  @override
+  String get khataOutgoing => 'Outgoing';
+
+  @override
+  String get khataExportPdf => 'Export PDF';
+
+  @override
+  String get khataExportCsv => 'Export CSV';
+
+  @override
+  String get khataBank => 'Bank';
+
+  @override
+  String get summaryTitle => 'Monthly summary';
+
+  @override
+  String get khataSearchEntries => 'Search entries…';
+
+  @override
+  String get recurringTitle => 'Recurring';
+
+  @override
+  String get khataShareWhatsApp => 'Share via WhatsApp';
+
+  @override
+  String get vaultMove => 'Move to Vault';
+
+  @override
+  String get vaultMoveHint => 'Hide from normal view';
+
+  @override
+  String get vaultMoveUdhaarHint => 'Hide from normal Udhaar view';
+
+  @override
+  String get bankSearch => 'Search bank entries…';
+
+  @override
+  String get bankIn => 'In';
+
+  @override
+  String get bankOut => 'Out';
+
+  @override
+  String get bankAllBanks => 'All banks';
+
+  @override
+  String get bankEmpty => 'No bank transactions yet';
+
+  @override
+  String get bankNoMatch => 'No matching transactions';
+
+  @override
+  String get bankAutoCaptured => 'Auto-captured from bank notifications';
+
+  @override
+  String get entryDelete => 'Delete entry';
+
+  @override
+  String get vaultUnlockReason => 'Unlock your Vault to view private entries';
+
+  @override
+  String get vaultUnlock => 'Unlock';
+
+  @override
+  String get vaultLock => 'Lock vault';
+
+  @override
+  String get vaultTabContacts => 'Contacts';
+
+  @override
+  String get vaultRemove => 'Remove from Vault';
+
+  @override
+  String get vaultDeleteContact => 'Delete contact';
+
+  @override
+  String get vaultDeleteContactQ => 'Delete contact?';
+
+  @override
+  String get freqDaily => 'Daily';
+
+  @override
+  String get freqWeekly => 'Weekly';
+
+  @override
+  String get freqMonthly => 'Monthly';
+
+  @override
+  String get freqYearly => 'Yearly';
+
+  @override
+  String get summaryNet => 'Net balance';
+
+  @override
+  String get summaryByCategory => 'Spending by category';
+
+  @override
+  String get summaryNoExpenses => 'No expenses this month';
+
+  @override
+  String get recurringEmpty => 'No recurring entries';
+
+  @override
+  String get recurringEmptyHint =>
+      'Turn on \"Repeat\" when adding an expense or income';
+
+  @override
+  String get recurringStopQ => 'Stop recurring?';
+
+  @override
+  String get recurringStopNote => 'This will not delete past entries.';
+
+  @override
+  String get recurringStop => 'Stop';
+
+  @override
+  String get expensePhotoTake => 'Take a photo';
+
+  @override
+  String get expensePhotoGallery => 'Choose from gallery';
+
+  @override
+  String get expenseSource => 'Source';
+
+  @override
+  String get expenseRepeat => 'Repeat';
+
+  @override
+  String get bankSyncTitle => 'Bank sync';
+
+  @override
+  String get bankSyncAuto => 'Auto-capture transactions';
+
+  @override
+  String get bankSyncChecking => 'Checking…';
+
+  @override
+  String get bankSyncEnableHint =>
+      'Tap to enable — no login needed, works with all bank apps';
+
+  @override
+  String get bankSyncEnable => 'Enable';
+
+  @override
+  String get bankSyncPaused =>
+      'Paused by Android — transactions are not being captured';
+
+  @override
+  String get bankSyncRestart => 'Restart';
+
+  @override
+  String get bankSyncWaiting => 'Active — waiting for the first bank alert';
+
+  @override
+  String bankSyncLast(String ago) {
+    return 'Active — last bank alert $ago';
+  }
+
+  @override
+  String bankSyncPending(String count) {
+    return '$count waiting to be saved';
+  }
+
+  @override
+  String get bankSyncRestartHint =>
+      'Turn Saathi off and on again in Notification access';
+
+  @override
+  String get agoJustNow => 'just now';
+
+  @override
+  String agoMinutes(String count) {
+    return '$count min ago';
+  }
+
+  @override
+  String agoHours(String count) {
+    return '$count h ago';
+  }
+
+  @override
+  String agoDays(String count) {
+    return '$count d ago';
+  }
+
+  @override
+  String get ramadanMubarak => 'Ramadan Mubarak';
+
+  @override
+  String get ramadanTimetable => 'Ramadan timetable';
+
+  @override
+  String get ramadanLabel => 'Ramadan';
+
+  @override
+  String get ramadanSehriEnded => 'Sehri has ended';
+
+  @override
+  String ramadanSehriEndsIn(String time) {
+    return 'Sehri ends in $time';
+  }
+
+  @override
+  String get ramadanStopEating => 'Stop eating before Fajr';
+
+  @override
+  String ramadanIftarIn(String time) {
+    return 'Iftar in $time';
+  }
+
+  @override
+  String get ramadanKeepGoing => 'Keep going! 💪';
+
+  @override
+  String get ramadanIftarTime => 'Iftar time! 🎉';
+
+  @override
+  String ramadanSehriIn(String time) {
+    return 'Sehri in $time';
+  }
+
+  @override
+  String get ramadanEnjoy => 'Enjoy your meal';
+
+  @override
+  String get ramadanAlhamdulillah => 'Alhamdulillah';
+
+  @override
+  String get ramadanSehriEndsSuffix => ' · Sehri ends';
+
+  @override
+  String get ramadanIftarSuffix => ' · Iftar';
+
+  @override
+  String get imsakiyaTitle => 'Ramadan timetable';
+
+  @override
+  String get imsakiyaShareFail => 'Could not share the timetable';
+
+  @override
+  String get imsakiyaNoDates => 'Could not compute Ramadan dates';
+
+  @override
+  String get imsakiyaShare => 'Share as image';
+
+  @override
+  String get imsakiyaDay => 'Day';
+
+  @override
+  String get imsakiyaDate => 'Date';
+
+  @override
+  String get imsakiyaSehri => 'Sehri ends';
+
+  @override
+  String get imsakiyaIftar => 'Iftar';
+
+  @override
+  String backupFailed(String error) {
+    return 'Backup failed: $error';
+  }
+
+  @override
+  String get backupNoAccess => 'Could not access the selected file.';
+
+  @override
+  String get backupIncomplete => 'This file is not a complete Saathi backup.';
+
+  @override
+  String get backupNotSaathi => 'This file is not a Saathi backup.';
+
+  @override
+  String get backupNewer =>
+      'This backup is from a newer version of Saathi. Update the app first.';
+
+  @override
+  String get backupDamaged => 'This backup file is damaged.';
+
+  @override
+  String get backupOlder => 'an older backup';
+
+  @override
+  String get restoreConfirmTitle => 'Restore backup?';
+
+  @override
+  String restoreConfirmBody(String when) {
+    return 'This replaces ALL current data with $when.\n\nA safety copy of your current data is kept on this phone. Saathi will close afterwards; open it again to continue.';
+  }
+
+  @override
+  String get restoreButton => 'Restore';
+
+  @override
+  String get restoreDoneTitle => 'Backup restored';
+
+  @override
+  String get restoreDoneBody =>
+      'Saathi will close now. Open it again to see your data.';
+
+  @override
+  String restoreFailedKept(String error) {
+    return 'Restore failed: $error. Close and reopen Saathi; a safety copy of your data was kept.';
+  }
+
+  @override
+  String restoreFailedSafe(String error) {
+    return 'Restore failed: $error. Your data was not changed.';
+  }
 }
 
 /// The translations for English, as used in Pakistan (`en_PK`).
@@ -2380,12 +3185,12 @@ class AppLocalizationsEnPk extends AppLocalizationsEn {
 
   @override
   String udhaarWhatsAppLena(String name, String amount) {
-    return 'Assalamu Alaikum $name bhai, aapka Rs. $amount mujhe lena baqi hai. - Saathi App';
+    return 'Assalamu Alaikum $name, aapka Rs. $amount mujhe lena baqi hai. - Saathi App';
   }
 
   @override
   String udhaarWhatsAppDena(String name, String amount) {
-    return 'Assalamu Alaikum $name bhai, mera Rs. $amount aapko dena baqi hai. - Saathi App';
+    return 'Assalamu Alaikum $name, mera Rs. $amount aapko dena baqi hai. - Saathi App';
   }
 
   @override
@@ -2459,4 +3264,812 @@ class AppLocalizationsEnPk extends AppLocalizationsEn {
 
   @override
   String get incomeSourceOther => 'Doosri income';
+
+  @override
+  String get navTasks => 'Tasks';
+
+  @override
+  String get vaultTitle => 'Private vault';
+
+  @override
+  String get undo => 'Undo';
+
+  @override
+  String get todayQuickAddHint => 'Jaldi likhein — jaise 250 chai';
+
+  @override
+  String todayQuickAddPreview(String amount, String category) {
+    return 'Save hoga: Rs $amount · $category';
+  }
+
+  @override
+  String get todayQuickAddNeedAmount => 'Pehle raqam likhein, jaise 250 chai';
+
+  @override
+  String todayQuickAdded(String amount, String category) {
+    return 'Rs $amount add ho gaya · $category';
+  }
+
+  @override
+  String todayQuickAddedIncome(String amount, String category) {
+    return 'Aamdani Rs $amount add ho gayi · $category';
+  }
+
+  @override
+  String get todayPrayers => 'Aaj ki namazein';
+
+  @override
+  String get todayNothingDue => 'Aaj koi kaam baqi nahi';
+
+  @override
+  String get todaySeeAll => 'Sab dekhein';
+
+  @override
+  String get todayMoney => 'Paisay';
+
+  @override
+  String get todaySpentToday => 'Aaj ka kharcha';
+
+  @override
+  String get todaySpentMonth => 'Is mahine';
+
+  @override
+  String get todayBudgetLeft => 'Budget baqi';
+
+  @override
+  String get todayOverBudget => 'Budget se zyada';
+
+  @override
+  String get todayComingUp => 'Aane wala';
+
+  @override
+  String get todayNothingComing => 'Is hafte kuch nahi';
+
+  @override
+  String todayDueTheyOwe(String name, String amount) {
+    return '$name ko aap ke Rs $amount dene hain';
+  }
+
+  @override
+  String todayDueYouOwe(String name, String amount) {
+    return 'Aap ko $name ko Rs $amount dene hain';
+  }
+
+  @override
+  String todayDueLate(String days) {
+    return '$days din late';
+  }
+
+  @override
+  String get todayDueToday => 'aaj due';
+
+  @override
+  String get todayDueTomorrow => 'kal due';
+
+  @override
+  String todayDueInDays(String days) {
+    return '$days din mein due';
+  }
+
+  @override
+  String todayRecurring(String what, String amount, String date) {
+    return 'Baar baar $what: Rs $amount, $date ko';
+  }
+
+  @override
+  String get todayBackupTitle => 'Apna data backup karein';
+
+  @override
+  String get todayBackupBody =>
+      'Ek copy share karein taake phone kho jaye to bhi data mehfooz rahe';
+
+  @override
+  String get todayBackupNow => 'Abhi backup karein';
+
+  @override
+  String get todayLater => 'Baad mein';
+
+  @override
+  String get toolRoza => 'Roza';
+
+  @override
+  String get toolGoals => 'Bachat ke goals';
+
+  @override
+  String get toolAccounts => 'Accounts';
+
+  @override
+  String get rozaTitle => 'Roza';
+
+  @override
+  String rozaOwed(String count) {
+    return 'Qaza roze: $count';
+  }
+
+  @override
+  String get rozaHint => 'Din par tap karke rakha, chhoota ya khali karein';
+
+  @override
+  String get rozaKept => 'Rakha';
+
+  @override
+  String get rozaMissed => 'Chhoota';
+
+  @override
+  String get rozaMadeUp => 'Qaza ada';
+
+  @override
+  String get rozaMakeUpToday => 'Aaj qaza roza rakha';
+
+  @override
+  String rozaKeptThisYear(String count) {
+    return 'Is saal rakhe: $count';
+  }
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get edit => 'Edit';
+
+  @override
+  String get goalsTitle => 'Bachat ke goals';
+
+  @override
+  String get goalsEmpty =>
+      'Abhi koi goal nahi. Hajj, shaadi ya gaari jaisa goal add karein.';
+
+  @override
+  String get goalAdd => 'Naya goal';
+
+  @override
+  String get goalName => 'Goal ka naam';
+
+  @override
+  String get goalTarget => 'Target raqam';
+
+  @override
+  String get goalDeadline => 'Akhri tareekh (ikhtiyari)';
+
+  @override
+  String get goalAddMoney => 'Raqam add karein';
+
+  @override
+  String get goalTakeOut => 'Raqam nikalein';
+
+  @override
+  String get goalAmount => 'Raqam';
+
+  @override
+  String goalSaved(String saved, String target) {
+    return 'Rs $target mein se Rs $saved';
+  }
+
+  @override
+  String get goalReached => 'Goal poora!';
+
+  @override
+  String goalPerMonth(String amount, String date) {
+    return '$date tak pohanchne ke liye har mahine taqreeban Rs $amount bachayein';
+  }
+
+  @override
+  String get goalDeleteConfirm => 'Ye goal delete karein?';
+
+  @override
+  String get accountsTitle => 'Accounts';
+
+  @override
+  String get accountsEmpty =>
+      'Wo jagahein add karein jahan aap ke paisay hain: cash, bank, wallet.';
+
+  @override
+  String get accountAdd => 'Naya account';
+
+  @override
+  String get accountName => 'Account ka naam';
+
+  @override
+  String get accountCash => 'Cash';
+
+  @override
+  String get accountBank => 'Bank';
+
+  @override
+  String get accountWallet => 'Wallet';
+
+  @override
+  String get accountOpening => 'Shuru ki raqam';
+
+  @override
+  String get accountTotal => 'Tamam accounts ka total';
+
+  @override
+  String get accountDeleteWarn =>
+      'Entries rahengi, magar is account se juri nahi rahengi.';
+
+  @override
+  String get accountPick => 'Account (ikhtiyari)';
+
+  @override
+  String get accountNone => 'Koi account nahi';
+
+  @override
+  String get add => 'Add';
+
+  @override
+  String get taskRemindBefore => 'Pehle yaad dilayein';
+
+  @override
+  String get taskRemindNone => 'Sirf waqt par';
+
+  @override
+  String taskRemindMin(String minutes) {
+    return '$minutes minute pehle';
+  }
+
+  @override
+  String get taskRemindHour => '1 ghanta pehle';
+
+  @override
+  String get taskRemindDay => '1 din pehle';
+
+  @override
+  String get taskAtTime => 'Waqt par';
+
+  @override
+  String get taskAroundPrayer => 'Namaz ke hisab se';
+
+  @override
+  String taskOffsetBefore(String minutes) {
+    return '$minutes min pehle';
+  }
+
+  @override
+  String taskOffsetAfter(String minutes) {
+    return '$minutes min baad';
+  }
+
+  @override
+  String get taskOffsetAt => 'Namaz ke waqt';
+
+  @override
+  String get taskBillAmount => 'Bill ki raqam (ikhtiyari)';
+
+  @override
+  String get taskAddToKhataTitle => 'Khata mein add karein?';
+
+  @override
+  String taskAddToKhataBody(String amount, String title) {
+    return '\"$title\" ke Rs $amount Khata mein add karein?';
+  }
+
+  @override
+  String get taskBillAdded => 'Khata mein add ho gaya';
+
+  @override
+  String get filterAll => 'Sab';
+
+  @override
+  String get udhaarSortAmount => 'Sab se bari raqam pehle';
+
+  @override
+  String get settingsDataBackup => 'Data aur Backup';
+
+  @override
+  String get backupExport => 'Backup export karein';
+
+  @override
+  String get backupExportSub =>
+      'Apna data .saathi file ki surat mein share karein';
+
+  @override
+  String get backupRestore => 'Backup restore karein';
+
+  @override
+  String get backupRestoreSub => 'Maujooda data .saathi file se badlein';
+
+  @override
+  String get backupAuto => 'Khud-kar backups';
+
+  @override
+  String backupAutoSub(String date) {
+    return 'Har hafte is phone mein save hote hain. Akhri: $date';
+  }
+
+  @override
+  String get backupAutoNone =>
+      'Har hafte is phone mein save hote hain. Abhi koi nahi.';
+
+  @override
+  String get settingsCountBank =>
+      'Bank transactions ko budget mein shamil karein';
+
+  @override
+  String get settingsCountBankSub =>
+      'Bank notification se milne wali adaigiyan budget aur totals mein shamil hongi';
+
+  @override
+  String get trackerMonth => 'Pichle 30 din';
+
+  @override
+  String trackerCompletion(String percent) {
+    return '$percent% namazein parhein';
+  }
+
+  @override
+  String trackerWeakest(String prayer, String done, String days) {
+    return 'Mushkil namaz: $prayer ($days mein se $done din)';
+  }
+
+  @override
+  String get tasbeehFree => 'Free count';
+
+  @override
+  String get tasbeehSubhanallah => 'SubhanAllah';
+
+  @override
+  String get tasbeehAlhamdulillah => 'Alhamdulillah';
+
+  @override
+  String get tasbeehAllahuAkbar => 'Allahu Akbar';
+
+  @override
+  String tasbeehToday(String count) {
+    return 'Aaj: $count';
+  }
+
+  @override
+  String get tasbeehTargetReached => 'Target poora';
+
+  @override
+  String get trendTitle => 'Pichle mahine ke muqable mein';
+
+  @override
+  String trendMore(String amount, String percent) {
+    return 'Pichle mahine se Rs $amount zyada ($percent%)';
+  }
+
+  @override
+  String trendLess(String amount, String percent) {
+    return 'Pichle mahine se Rs $amount kam ($percent%)';
+  }
+
+  @override
+  String trendMoreNoPercent(String amount) {
+    return 'Pichle mahine se Rs $amount zyada';
+  }
+
+  @override
+  String get trendSame => 'Pichle mahine ke barabar';
+
+  @override
+  String trendBiggestRise(String category, String amount) {
+    return 'Sab se zyada izafa: $category (+Rs $amount)';
+  }
+
+  @override
+  String get taskNewList => 'Nayi list';
+
+  @override
+  String get taskEditList => 'List edit karein';
+
+  @override
+  String get taskDeleteList => 'List delete karein';
+
+  @override
+  String get taskTabToday => 'Aaj';
+
+  @override
+  String get taskTabUpcoming => 'Baad Mein';
+
+  @override
+  String get taskEmptyUpcoming => 'Koi upcoming task nahi';
+
+  @override
+  String get taskEmptyDone => 'Abhi tak kuch complete nahi hua';
+
+  @override
+  String get taskEmptyToday => 'Aaj koi kaam nahi — MashaAllah! 🎉';
+
+  @override
+  String get taskNoneToday => 'Aaj ke liye koi task nahi';
+
+  @override
+  String taskTomorrowCount(String count) {
+    return 'Kal ($count)';
+  }
+
+  @override
+  String taskOverdueCount(String count) {
+    return 'Overdue ($count)';
+  }
+
+  @override
+  String get taskNew => 'Naya task';
+
+  @override
+  String get taskEdit => 'Task edit karein';
+
+  @override
+  String get taskDeleteConfirm => 'Task delete karein?';
+
+  @override
+  String get taskReopen => 'Dobara kholein';
+
+  @override
+  String get taskTitleLabel => 'Task ka title';
+
+  @override
+  String get taskNoteLabel => 'Note (ikhtiyari)';
+
+  @override
+  String get taskListLabel => 'List';
+
+  @override
+  String get taskNoList => 'Koi list nahi';
+
+  @override
+  String get taskPriority => 'Tarjeeh:';
+
+  @override
+  String get taskPriorityNormal => 'Normal';
+
+  @override
+  String get taskPriorityHigh => 'High';
+
+  @override
+  String get taskRepeat => 'Repeat';
+
+  @override
+  String get taskRepeatNone => 'Repeat nahi hoga';
+
+  @override
+  String get taskRepeatDaily => 'Har din';
+
+  @override
+  String get taskRepeatWeekly => 'Har hafte';
+
+  @override
+  String get taskRepeatMonthly => 'Har mahine';
+
+  @override
+  String get taskDailyShort => 'Rozana';
+
+  @override
+  String get taskWeeklyShort => 'Haftawar';
+
+  @override
+  String get taskMonthlyShort => 'Mahana';
+
+  @override
+  String get taskNoDueDate => 'Koi tareekh nahi';
+
+  @override
+  String get taskNoTime => 'Koi waqt nahi (notification nahi)';
+
+  @override
+  String get taskListName => 'List ka naam';
+
+  @override
+  String get taskIcon => 'Icon';
+
+  @override
+  String get taskCreate => 'Banayein';
+
+  @override
+  String get khataIncoming => 'Incoming';
+
+  @override
+  String get khataOutgoing => 'Outgoing';
+
+  @override
+  String get khataExportPdf => 'PDF export karein';
+
+  @override
+  String get khataExportCsv => 'CSV export karein';
+
+  @override
+  String get khataBank => 'Bank';
+
+  @override
+  String get summaryTitle => 'Mahana khulasa';
+
+  @override
+  String get khataSearchEntries => 'Entries talash karein…';
+
+  @override
+  String get recurringTitle => 'Baar baar aane wale';
+
+  @override
+  String get khataShareWhatsApp => 'WhatsApp par share karein';
+
+  @override
+  String get vaultMove => 'Vault mein muntaqil karein';
+
+  @override
+  String get vaultMoveHint => 'Aam list se chhupayein';
+
+  @override
+  String get vaultMoveUdhaarHint => 'Aam Udhaar list se chhupayein';
+
+  @override
+  String get bankSearch => 'Bank entries talash karein…';
+
+  @override
+  String get bankIn => 'In';
+
+  @override
+  String get bankOut => 'Out';
+
+  @override
+  String get bankAllBanks => 'Tamam bank';
+
+  @override
+  String get bankEmpty => 'Abhi koi bank transaction nahi';
+
+  @override
+  String get bankNoMatch => 'Koi matching transaction nahi';
+
+  @override
+  String get bankAutoCaptured => 'Bank notifications se khud-kar liya gaya';
+
+  @override
+  String get entryDelete => 'Entry delete karein';
+
+  @override
+  String get vaultUnlockReason =>
+      'Private entries dekhne ke liye Vault kholein';
+
+  @override
+  String get vaultUnlock => 'Kholein';
+
+  @override
+  String get vaultLock => 'Vault band karein';
+
+  @override
+  String get vaultTabContacts => 'Contacts';
+
+  @override
+  String get vaultRemove => 'Vault se nikalein';
+
+  @override
+  String get vaultDeleteContact => 'Contact delete karein';
+
+  @override
+  String get vaultDeleteContactQ => 'Contact delete karein?';
+
+  @override
+  String get freqDaily => 'Rozana';
+
+  @override
+  String get freqWeekly => 'Haftawar';
+
+  @override
+  String get freqMonthly => 'Mahana';
+
+  @override
+  String get freqYearly => 'Salana';
+
+  @override
+  String get summaryNet => 'Net balance';
+
+  @override
+  String get summaryByCategory => 'Category ke hisab se kharcha';
+
+  @override
+  String get summaryNoExpenses => 'Is mahine koi kharcha nahi';
+
+  @override
+  String get recurringEmpty => 'Koi baar baar aane wali entry nahi';
+
+  @override
+  String get recurringEmptyHint =>
+      'Kharcha ya aamdani add karte waqt \"Repeat\" on karein';
+
+  @override
+  String get recurringStopQ => 'Repeat band karein?';
+
+  @override
+  String get recurringStopNote => 'Purani entries delete nahi hongi.';
+
+  @override
+  String get recurringStop => 'Band karein';
+
+  @override
+  String get expensePhotoTake => 'Photo lein';
+
+  @override
+  String get expensePhotoGallery => 'Gallery se chunein';
+
+  @override
+  String get expenseSource => 'Source';
+
+  @override
+  String get expenseRepeat => 'Repeat';
+
+  @override
+  String get bankSyncTitle => 'Bank sync';
+
+  @override
+  String get bankSyncAuto => 'Transactions khud-kar lein';
+
+  @override
+  String get bankSyncChecking => 'Check ho raha hai…';
+
+  @override
+  String get bankSyncEnableHint =>
+      'Enable karne ke liye tap karein — login nahi chahiye, sab bank apps ke saath chalta hai';
+
+  @override
+  String get bankSyncEnable => 'Enable';
+
+  @override
+  String get bankSyncPaused =>
+      'Android ne rok diya hai — transactions nahi liye ja rahe';
+
+  @override
+  String get bankSyncRestart => 'Restart';
+
+  @override
+  String get bankSyncWaiting => 'Active — pehle bank alert ka intezar';
+
+  @override
+  String bankSyncLast(String ago) {
+    return 'Active — akhri bank alert $ago';
+  }
+
+  @override
+  String bankSyncPending(String count) {
+    return '$count save hone ka intezar';
+  }
+
+  @override
+  String get bankSyncRestartHint =>
+      'Notification access mein Saathi ko band karke dobara on karein';
+
+  @override
+  String get agoJustNow => 'abhi';
+
+  @override
+  String agoMinutes(String count) {
+    return '$count min pehle';
+  }
+
+  @override
+  String agoHours(String count) {
+    return '$count ghante pehle';
+  }
+
+  @override
+  String agoDays(String count) {
+    return '$count din pehle';
+  }
+
+  @override
+  String get ramadanMubarak => 'Ramadan Mubarak';
+
+  @override
+  String get ramadanTimetable => 'Ramadan timetable';
+
+  @override
+  String get ramadanLabel => 'Ramadan';
+
+  @override
+  String get ramadanSehriEnded => 'Sehri khatam ho gayi';
+
+  @override
+  String ramadanSehriEndsIn(String time) {
+    return 'Sehri khatam hone mein $time';
+  }
+
+  @override
+  String get ramadanStopEating => 'Fajr se pehle khana band karein';
+
+  @override
+  String ramadanIftarIn(String time) {
+    return 'Iftar mein $time';
+  }
+
+  @override
+  String get ramadanKeepGoing => 'Himmat rakhein! 💪';
+
+  @override
+  String get ramadanIftarTime => 'Iftar ka waqt! 🎉';
+
+  @override
+  String ramadanSehriIn(String time) {
+    return 'Sehri mein $time';
+  }
+
+  @override
+  String get ramadanEnjoy => 'Khana nosh farmayein';
+
+  @override
+  String get ramadanAlhamdulillah => 'Alhamdulillah';
+
+  @override
+  String get ramadanSehriEndsSuffix => ' · Sehri khatam';
+
+  @override
+  String get ramadanIftarSuffix => ' · Iftar';
+
+  @override
+  String get imsakiyaTitle => 'Ramadan timetable';
+
+  @override
+  String get imsakiyaShareFail => 'Timetable share nahi ho saka';
+
+  @override
+  String get imsakiyaNoDates => 'Ramadan ki tareekhein maloom nahi ho sakein';
+
+  @override
+  String get imsakiyaShare => 'Image ke taur par share karein';
+
+  @override
+  String get imsakiyaDay => 'Din';
+
+  @override
+  String get imsakiyaDate => 'Tareekh';
+
+  @override
+  String get imsakiyaSehri => 'Sehri khatam';
+
+  @override
+  String get imsakiyaIftar => 'Iftar';
+
+  @override
+  String backupFailed(String error) {
+    return 'Backup nakam: $error';
+  }
+
+  @override
+  String get backupNoAccess => 'Chuni hui file tak rasai nahi ho saki.';
+
+  @override
+  String get backupIncomplete => 'Ye file mukammal Saathi backup nahi hai.';
+
+  @override
+  String get backupNotSaathi => 'Ye file Saathi ka backup nahi hai.';
+
+  @override
+  String get backupNewer =>
+      'Ye backup Saathi ke naye version ka hai. Pehle app update karein.';
+
+  @override
+  String get backupDamaged => 'Ye backup file kharab hai.';
+
+  @override
+  String get backupOlder => 'ek purana backup';
+
+  @override
+  String get restoreConfirmTitle => 'Backup restore karein?';
+
+  @override
+  String restoreConfirmBody(String when) {
+    return 'Ye aap ka tamam maujooda data $when se badal dega.\n\nMaujooda data ki ek hifazati copy is phone mein rakhi jayegi. Saathi baad mein band ho jayega; jari rakhne ke liye dobara kholein.';
+  }
+
+  @override
+  String get restoreButton => 'Restore';
+
+  @override
+  String get restoreDoneTitle => 'Backup restore ho gaya';
+
+  @override
+  String get restoreDoneBody =>
+      'Saathi ab band ho jayega. Apna data dekhne ke liye dobara kholein.';
+
+  @override
+  String restoreFailedKept(String error) {
+    return 'Restore nakam: $error. Saathi band karke dobara kholein; aap ke data ki hifazati copy rakhi gayi hai.';
+  }
+
+  @override
+  String restoreFailedSafe(String error) {
+    return 'Restore nakam: $error. Aap ka data tabdeel nahi hua.';
+  }
 }

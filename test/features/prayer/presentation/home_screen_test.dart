@@ -185,7 +185,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 50));
 
     expect((await settingsRepo.load()).azanFor(PrayerName.asr), isFalse);
-    expect(scheduler.cancelAllCalls, greaterThanOrEqualTo(1));
+    expect(scheduler.cancelPrayerCalls, greaterThanOrEqualTo(1));
     // No Asr AZAN should remain scheduled (ending reminders still include Asr).
     final azanOnly = scheduler.scheduled.where((a) => a.channelId != 'prayer_ending_alarm');
     expect(azanOnly.any((a) => a.payload.contains('"asr"')), isFalse);

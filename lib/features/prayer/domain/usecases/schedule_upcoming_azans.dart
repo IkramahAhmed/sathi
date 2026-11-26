@@ -123,7 +123,7 @@ class ScheduleUpcomingAzans {
   Future<Result<ScheduleReport>> _schedule() => guard(() async {
         final settings = await _settings.load();
         final now = _clock();
-        await _scheduler.cancelAll();
+        await _scheduler.cancelPrayerReminders();
 
         final texts = NotificationTexts.forLocale(settings.localeTag);
         final today = localDateAt(now, settings.timezoneId);

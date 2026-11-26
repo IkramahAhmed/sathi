@@ -9,7 +9,9 @@ import 'package:intl/intl.dart';
 
 import '../../../../app/providers.dart';
 import '../../../../core/storage/app_database.dart';
+import '../../../../core/storage/receipt_store.dart';
 import '../../../../l10n/app_localizations.dart';
+import 'accounts_screen.dart' show accountsProvider;
 import '../../../khata/background/budget_check.dart';
 import '../../../khata/background/recurring_check.dart';
 import '../../../khata/domain/entities/expense_category.dart';
@@ -33,6 +35,7 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
   late DateTime _date;
   late bool _isIncome;
   String? _receiptPath;
+  int? _accountId;
   bool _saving = false;
   bool _isRecurring = false;
   String _frequency = 'monthly';
@@ -56,6 +59,7 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
         : IncomeSource.salary;
     _date = e != null ? DateTime.parse(e.date) : DateTime.now();
     _receiptPath = e?.receiptPath;
+    _accountId = e?.accountId;
   }
 
   @override
@@ -90,6 +94,7 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
             note: Value(_noteController.text.trim()),
             date: Value(dateStr),
             receiptPath: Value(_receiptPath),
+            accountId: Value(_accountId),
           ),
         );
       } else {
@@ -101,6 +106,7 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
             note: Value(_noteController.text.trim()),
             date: dateStr,
             receiptPath: Value(_receiptPath),
+            accountId: Value(_accountId),
             createdAt: DateTime.now().toUtc(),
           ),
         );
@@ -109,12 +115,22 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
       if (!_isIncome) {
         final yearMonth =
             '${_date.year.toString().padLeft(4, '0')}-${_date.month.toString().padLeft(2, '0')}';
-        checkBudgetAndNotify(
-          db: db,
-          yearMonth: yearMonth,
-          category: _category,
-          addedAmount: amount,
-        );
+        // Editing adds only the difference, and only if the entry stayed in the
+        // same category and month; otherwise the whole amount is new there.
+        final old = widget.expense;
+        final sameBucket = old != null &&
+            old.type != 'income' &&
+            old.category == _category.name &&
+            old.date.startsWith(yearMonth);
+        final added = sameBucket ? amount - old.amount : amount;
+        if (added > 0) {
+          checkBudgetAndNotify(
+            db: db,
+            yearMonth: yearMonth,
+            category: _category,
+            addedAmount: added,
+          );
+        }
       }
       // Create recurring rule (new entries only)
       if (!_isEditing && _isRecurring) {
@@ -129,6 +145,7 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
           note: Value(_noteController.text.trim()),
           frequency: _frequency,
           nextDue: nds,
+          anchorDay: Value(_date.day),
           createdAt: DateTime.now().toUtc(),
         ));
       }
@@ -151,13 +168,19 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
   Future<void> _pickPhoto() async {
     final picker = ImagePicker();
     final img = await picker.pickImage(source: ImageSource.camera, imageQuality: 70);
-    if (img != null) setState(() => _receiptPath = img.path);
+    if (img != null) {
+      final kept = await ReceiptStore.persist(img.path);
+      if (mounted) setState(() => _receiptPath = kept);
+    }
   }
 
   Future<void> _pickPhotoFromGallery() async {
     final picker = ImagePicker();
     final img = await picker.pickImage(source: ImageSource.gallery, imageQuality: 70);
-    if (img != null) setState(() => _receiptPath = img.path);
+    if (img != null) {
+      final kept = await ReceiptStore.persist(img.path);
+      if (mounted) setState(() => _receiptPath = kept);
+    }
   }
 
   Future<void> _showPhotoOptions(AppLocalizations l10n) async {
@@ -169,12 +192,12 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
           children: [
             ListTile(
               leading: const Icon(Icons.camera_alt_outlined),
-              title: const Text('Take a photo'),
+              title: Text(l10n.expensePhotoTake),
               onTap: () { Navigator.pop(context); _pickPhoto(); },
             ),
             ListTile(
               leading: const Icon(Icons.photo_library_outlined),
-              title: const Text('Choose from gallery'),
+              title: Text(l10n.expensePhotoGallery),
               onTap: () { Navigator.pop(context); _pickPhotoFromGallery(); },
             ),
             if (_receiptPath != null)
@@ -304,7 +327,7 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
 
           // Category / Source chips
           Text(
-            _isIncome ? 'Source' : l10n.khataCategory,
+            _isIncome ? l10n.expenseSource : l10n.khataCategory,
             style: text.labelLarge,
           ),
           const SizedBox(height: 8),
@@ -348,6 +371,26 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
             maxLines: 2,
           ),
 
+          Builder(builder: (context) {
+            final accounts = ref.watch(accountsProvider).value ?? const <Account>[];
+            if (accounts.isEmpty) return const SizedBox.shrink();
+            return Padding(
+              padding: const EdgeInsets.only(top: 16),
+              child: DropdownButtonFormField<int?>(
+                initialValue: accounts.any((a) => a.id == _accountId) ? _accountId : null,
+                decoration: InputDecoration(
+                  labelText: l10n.accountPick,
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+                items: [
+                  DropdownMenuItem<int?>(value: null, child: Text(l10n.accountNone)),
+                  for (final a in accounts) DropdownMenuItem<int?>(value: a.id, child: Text(a.name)),
+                ],
+                onChanged: (v) => setState(() => _accountId = v),
+              ),
+            );
+          }),
+
           const SizedBox(height: 16),
 
           // Date
@@ -364,7 +407,7 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
             SwitchListTile(
               contentPadding: EdgeInsets.zero,
               secondary: const Icon(Icons.repeat_outlined),
-              title: const Text('Repeat'),
+              title: Text(l10n.expenseRepeat),
               value: _isRecurring,
               onChanged: (v) => setState(() => _isRecurring = v),
             ),
@@ -376,8 +419,12 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
                   children: [
                     for (final f in ['daily', 'weekly', 'monthly', 'yearly'])
                       ChoiceChip(
-                        label: Text(
-                            f[0].toUpperCase() + f.substring(1)),
+                        label: Text(switch (f) {
+                          'daily' => l10n.freqDaily,
+                          'weekly' => l10n.freqWeekly,
+                          'yearly' => l10n.freqYearly,
+                          _ => l10n.freqMonthly,
+                        }),
                         selected: _frequency == f,
                         onSelected: (_) =>
                             setState(() => _frequency = f),

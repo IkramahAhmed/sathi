@@ -10,6 +10,7 @@ import '../../../../app/router.dart';
 import '../../../../app/theme.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/pause_range.dart';
+import '../../domain/entities/prayer_stats.dart';
 import '../../domain/entities/prayer_name.dart';
 import '../../domain/entities/streaks.dart';
 import '../l10n_helpers.dart';
@@ -32,6 +33,8 @@ class TrackerScreen extends ConsumerWidget {
           _StreakCard(),
           SizedBox(height: 12),
           _WeekStrip(),
+          SizedBox(height: 12),
+          _MonthStatsCard(),
           SizedBox(height: 12),
           _DayDetail(),
           SizedBox(height: 12),
@@ -375,6 +378,110 @@ class _PauseCard extends ConsumerWidget {
                   },
                 ),
               ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// The last 30 days as a heatmap, how often each prayer was prayed, and the one
+/// that is missed most.
+class _MonthStatsCard extends ConsumerWidget {
+  const _MonthStatsCard();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    final text = Theme.of(context).textTheme;
+    final today = ref.watch(todayDateProvider);
+    final done = ref.watch(doneByDateProvider).value ?? const {};
+    final pauses = ref.watch(pausesProvider).value ?? const <PauseRange>[];
+    var start = ref.watch(trackingStartProvider).value ?? today;
+    for (final key in done.keys) {
+      final d = DateTime.tryParse(key);
+      if (d != null && d.isBefore(start)) start = d;
+    }
+    final stats = computePrayerStats(doneByDate: done, pauses: pauses, today: today, start: start);
+
+    Color colorFor(DayStatus s) => switch (s) {
+          DayStatus.complete => scheme.primary,
+          DayStatus.partial => scheme.tertiary,
+          DayStatus.none => scheme.surfaceContainerHighest,
+          DayStatus.paused => scheme.secondaryContainer,
+          DayStatus.future => Colors.transparent,
+        };
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(l10n.trackerMonth, style: text.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 4,
+              runSpacing: 4,
+              children: [
+                for (final entry in stats.statuses)
+                  InkWell(
+                    onTap: () => ref
+                        .read(selectedDayProvider.notifier)
+                        .select(entry.date == today ? null : entry.date),
+                    child: Container(
+                      width: 18,
+                      height: 18,
+                      decoration: BoxDecoration(
+                        color: colorFor(entry.status),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+            if (stats.days > 0) ...[
+              const SizedBox(height: 12),
+              Text(
+                l10n.trackerCompletion('${(stats.completion * 100).round()}'),
+                style: text.bodyMedium,
+              ),
+              const SizedBox(height: 8),
+              for (final p in PrayerName.obligatory)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 6),
+                  child: Row(
+                    children: [
+                      SizedBox(width: 72, child: Text(prayerLabel(l10n, p), style: text.bodySmall)),
+                      Expanded(
+                        child: LinearProgressIndicator(
+                          value: (stats.done[p] ?? 0) / stats.days,
+                          minHeight: 8,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 44,
+                        child: Text('${stats.done[p] ?? 0}/${stats.days}',
+                            textAlign: TextAlign.end, style: text.bodySmall),
+                      ),
+                    ],
+                  ),
+                ),
+              if (stats.weakest != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: Text(
+                    l10n.trackerWeakest(
+                      prayerLabel(l10n, stats.weakest!),
+                      '${stats.done[stats.weakest!] ?? 0}',
+                      '${stats.days}',
+                    ),
+                    style: text.bodyMedium?.copyWith(color: scheme.error, fontWeight: FontWeight.w600),
+                  ),
+                ),
+            ],
           ],
         ),
       ),

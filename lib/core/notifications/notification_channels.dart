@@ -17,6 +17,7 @@ abstract final class NotificationChannels {
   static const String sehriReminder = 'sehri_reminder';
   static const String udhaarOverdue = 'udhaar_overdue';
   static const String khataAlert = 'khata_alert';
+  static const String taskReminder = 'task_reminder';
   static const String drawableIcon = 'ic_stat_saathi';
 
   /// Channels from earlier versions. They are deleted on start so they do not
@@ -120,6 +121,13 @@ abstract final class NotificationChannels {
           khataAlert,
           'Budget alerts',
           description: 'Notifies when spending exceeds your budget and sends monthly reports',
+          importance: Importance.high,
+          enableVibration: true,
+        ),
+        const AndroidNotificationChannel(
+          taskReminder,
+          'Task reminders',
+          description: 'Reminds you when a task is due',
           importance: Importance.high,
           enableVibration: true,
         ),

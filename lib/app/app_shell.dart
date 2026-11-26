@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../l10n/app_localizations.dart';
 
-/// Bottom navigation around the four main tabs.
+/// Bottom navigation around the five main tabs. Settings and the vault open from the home screen.
 class AppShell extends StatelessWidget {
   const AppShell({required this.shell, super.key});
 
@@ -41,17 +41,7 @@ class AppShell extends StatelessWidget {
           NavigationDestination(
             icon: const Icon(Icons.checklist_outlined),
             selectedIcon: const Icon(Icons.checklist),
-            label: 'Tasks',
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.lock_outlined),
-            selectedIcon: const Icon(Icons.lock),
-            label: 'Vault',
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.settings_outlined),
-            selectedIcon: const Icon(Icons.settings),
-            label: l10n.navSettings,
+            label: l10n.navTasks,
           ),
         ],
       ),

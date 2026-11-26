@@ -1,3 +1,4 @@
+import '../../../../l10n/app_localizations.dart';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -47,7 +48,7 @@ class _RamadanImsakiyaScreenState
     } catch (error, stackTrace) {
       appLog.warning('Sharing the imsakiya failed', error, stackTrace);
       messenger.showSnackBar(
-          const SnackBar(content: Text('Could not share the timetable')));
+          SnackBar(content: Text(AppLocalizations.of(context).imsakiyaShareFail)));
     }
   }
 
@@ -82,8 +83,8 @@ class _RamadanImsakiyaScreenState
 
     if (ramadanStart == null) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Ramadan Timetable')),
-        body: const Center(child: Text('Could not compute Ramadan dates')),
+        appBar: AppBar(title: Text(AppLocalizations.of(context).imsakiyaTitle)),
+        body: Center(child: Text(AppLocalizations.of(context).imsakiyaNoDates)),
       );
     }
 
@@ -125,10 +126,10 @@ class _RamadanImsakiyaScreenState
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Ramadan Timetable'),
+        title: Text(AppLocalizations.of(context).imsakiyaTitle),
         actions: [
           IconButton(
-            tooltip: 'Share as image',
+            tooltip: AppLocalizations.of(context).imsakiyaShare,
             icon: const Icon(Icons.ios_share),
             onPressed: () => _share(cityName, hijriYear),
           ),
@@ -164,10 +165,10 @@ class _RamadanImsakiyaScreenState
                       dataRowMinHeight: 38,
                       dataRowMaxHeight: 38,
                       columns: [
-                        col('Day', numeric: true),
-                        col('Date'),
-                        col('Sehri ends'),
-                        col('Iftar'),
+                        col(AppLocalizations.of(context).imsakiyaDay, numeric: true),
+                        col(AppLocalizations.of(context).imsakiyaDate),
+                        col(AppLocalizations.of(context).imsakiyaSehri),
+                        col(AppLocalizations.of(context).imsakiyaIftar),
                       ],
                       rows: [
                         for (final row in rows)

@@ -3,4 +3,6 @@
     <string name="saathi_widget_label">Saathi prayer times</string>
     <string name="saathi_widget_description">The next prayer and how long until it.</string>
     <string name="saathi_widget_empty">Open Saathi to set up</string>
+    <string name="saathi_times_widget_label">Saathi all prayers</string>
+    <string name="saathi_times_widget_description">The next five prayer times at a glance.</string>
 </resources>

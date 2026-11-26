@@ -35,6 +35,7 @@ class PrayerWidgetProvider : AppWidgetProvider() {
             val manager = AppWidgetManager.getInstance(context)
             val ids = manager.getAppWidgetIds(ComponentName(context, PrayerWidgetProvider::class.java))
             if (ids.isNotEmpty()) render(context, manager, ids)
+            PrayerTimesWidgetProvider.refresh(context)
         }
 
         private fun render(context: Context, manager: AppWidgetManager, ids: IntArray) {

@@ -75,7 +75,7 @@ class _MonthlyTimetableScreenState extends ConsumerState<MonthlyTimetableScreen>
         actions: [
           if (inRamadan)
             IconButton(
-              tooltip: 'Ramadan Imsakiya',
+              tooltip: AppLocalizations.of(context).ramadanTimetable,
               icon: const Icon(Icons.nightlight_outlined),
               onPressed: () => context.push(Routes.imsakiya),
             ),

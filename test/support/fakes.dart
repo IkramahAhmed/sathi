@@ -97,12 +97,12 @@ class FakePrayerRepository implements PrayerRepository {
 
 /// Records scheduler calls instead of touching the platform.
 class RecordingScheduler implements NotificationScheduler {
-  int cancelAllCalls = 0;
+  int cancelPrayerCalls = 0;
   List<ScheduledAlarm> scheduled = const [];
   bool exact = true;
 
   @override
-  Future<void> cancelAll() async => cancelAllCalls++;
+  Future<void> cancelPrayerReminders() async => cancelPrayerCalls++;
 
   final List<int> cancelled = [];
 

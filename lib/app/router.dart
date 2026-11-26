@@ -19,6 +19,9 @@ import '../features/khata/presentation/screens/khata_screen.dart';
 import '../features/khata/presentation/screens/monthly_summary_screen.dart';
 import '../features/tasks/presentation/screens/tasks_screen.dart';
 import '../features/udhaar/presentation/screens/udhaar_list_screen.dart';
+import '../features/khata/presentation/screens/accounts_screen.dart';
+import '../features/khata/presentation/screens/goals_screen.dart';
+import '../features/prayer/presentation/screens/roza_screen.dart';
 import '../features/vault/presentation/screens/vault_screen.dart';
 import 'app_shell.dart';
 
@@ -42,6 +45,9 @@ abstract final class Routes {
   static const monthlySummary = '/monthly-summary';
   static const tasks = '/tasks';
   static const vault = '/vault';
+  static const roza = '/roza';
+  static const goals = '/goals';
+  static const accounts = '/accounts';
 }
 
 /// The first route to show. Overridden in `main()` once onboarding state is known.
@@ -65,6 +71,11 @@ GoRouter router(Ref ref) {
       GoRoute(path: Routes.imsakiya, builder: (_, _) => const RamadanImsakiyaScreen()),
       GoRoute(path: Routes.setupCheck, builder: (_, _) => const SetupCheckScreen()),
       GoRoute(path: Routes.monthlySummary, builder: (_, _) => const MonthlySummaryScreen()),
+      GoRoute(path: Routes.vault, builder: (_, _) => const VaultScreen()),
+      GoRoute(path: Routes.roza, builder: (_, _) => const RozaScreen()),
+      GoRoute(path: Routes.goals, builder: (_, _) => const GoalsScreen()),
+      GoRoute(path: Routes.accounts, builder: (_, _) => const AccountsScreen()),
+      GoRoute(path: Routes.settings, builder: (_, _) => const SettingsScreen()),
       GoRoute(
         path: Routes.verify,
         builder: (_, state) {
@@ -104,12 +115,6 @@ GoRouter router(Ref ref) {
           ]),
           StatefulShellBranch(routes: [
             GoRoute(path: Routes.tasks, builder: (_, _) => const TasksScreen()),
-          ]),
-          StatefulShellBranch(routes: [
-            GoRoute(path: Routes.vault, builder: (_, _) => const VaultScreen()),
-          ]),
-          StatefulShellBranch(routes: [
-            GoRoute(path: Routes.settings, builder: (_, _) => const SettingsScreen()),
           ]),
         ],
       ),

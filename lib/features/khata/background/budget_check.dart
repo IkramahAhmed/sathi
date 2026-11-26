@@ -19,7 +19,9 @@ Future<void> checkBudgetAndNotify({
   final budget = prefs.getDouble('khata_budget_${category.name}') ?? 0;
   if (budget <= 0) return;
 
-  final entries = await db.expensesDao.getMonth(yearMonth);
+  final includeBank = prefs.getBool('khata_count_bank') ?? true;
+  final entries = await db.expensesDao
+      .getMonthFrom(yearMonth, includeBank ? ['manual', 'bank'] : ['manual']);
   final total = entries
       .where((e) => e.type != 'income' && e.category == category.name)
       .fold(0.0, (s, e) => s + e.amount);

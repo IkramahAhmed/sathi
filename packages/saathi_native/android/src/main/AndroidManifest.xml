@@ -27,5 +27,16 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/saathi_widget_info" />
         </receiver>
+        <receiver
+            android:name=".PrayerTimesWidgetProvider"
+            android:exported="false"
+            android:label="@string/saathi_times_widget_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/saathi_times_widget_info" />
+        </receiver>
     </application>
 </manifest>

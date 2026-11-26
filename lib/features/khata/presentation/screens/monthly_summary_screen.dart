@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/expense_category.dart';
+import '../../domain/month_trend.dart';
 import '../providers/khata_providers.dart';
 
 class MonthlySummaryScreen extends ConsumerStatefulWidget {
@@ -19,6 +20,8 @@ class _MonthlySummaryScreenState extends ConsumerState<MonthlySummaryScreen> {
   void _shift(int delta) =>
       setState(() => _month = DateTime(_month.year, _month.month + delta));
 
+  DateTime get _prevMonth => DateTime(_month.year, _month.month - 1);
+
   bool _isCurrent() =>
       _month.year == DateTime.now().year && _month.month == DateTime.now().month;
 
@@ -30,12 +33,12 @@ class _MonthlySummaryScreenState extends ConsumerState<MonthlySummaryScreen> {
     final monthLabel = DateFormat('MMMM yyyy').format(_month);
     final fmt = NumberFormat('#,##0', 'en');
 
-    final expensesAsync = ref.watch(monthExpensesProvider((_month.year, _month.month)));
+    final expensesAsync = ref.watch(monthSpendingProvider((_month.year, _month.month)));
     final budgets = ref.watch(budgetNotifierProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Monthly Summary'),
+        title: Text(l10n.summaryTitle),
         centerTitle: true,
       ),
       body: expensesAsync.when(
@@ -83,14 +86,14 @@ class _MonthlySummaryScreenState extends ConsumerState<MonthlySummaryScreen> {
               Row(
                 children: [
                   _SummaryCard(
-                    label: 'Income',
+                    label: l10n.khataIncome,
                     amount: 'Rs ${fmt.format(income)}',
                     color: Colors.green.shade700,
                     icon: Icons.arrow_downward_rounded,
                   ),
                   const SizedBox(width: 10),
                   _SummaryCard(
-                    label: 'Expense',
+                    label: l10n.khataExpense,
                     amount: 'Rs ${fmt.format(expense)}',
                     color: scheme.error,
                     icon: Icons.arrow_upward_rounded,
@@ -115,7 +118,7 @@ class _MonthlySummaryScreenState extends ConsumerState<MonthlySummaryScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Net Balance',
+                    Text(l10n.summaryNet,
                         style: text.titleMedium?.copyWith(fontWeight: FontWeight.w600)),
                     Text(
                       '${net >= 0 ? '+' : ''}Rs ${fmt.format(net.abs())}',
@@ -127,10 +130,17 @@ class _MonthlySummaryScreenState extends ConsumerState<MonthlySummaryScreen> {
                   ],
                 ),
               ),
+              const SizedBox(height: 10),
+              _TrendCard(
+                trend: compareMonths(
+                  entries,
+                  ref.watch(monthSpendingProvider((_prevMonth.year, _prevMonth.month))).value ?? const [],
+                ),
+              ),
               const SizedBox(height: 24),
 
               if (expense > 0) ...[
-                Text('Spending by Category',
+                Text(l10n.summaryByCategory,
                     style: text.titleSmall?.copyWith(
                         fontWeight: FontWeight.w700,
                         color: scheme.onSurfaceVariant)),
@@ -149,7 +159,7 @@ class _MonthlySummaryScreenState extends ConsumerState<MonthlySummaryScreen> {
                 Center(
                   child: Padding(
                     padding: const EdgeInsets.only(top: 32),
-                    child: Text('No expenses this month',
+                    child: Text(l10n.summaryNoExpenses,
                         style: text.bodyMedium
                             ?.copyWith(color: scheme.onSurfaceVariant)),
                   ),
@@ -282,6 +292,72 @@ class _CategoryRow extends StatelessWidget {
               ),
             ),
         ],
+      ),
+    );
+  }
+}
+
+class _TrendCard extends StatelessWidget {
+  const _TrendCard({required this.trend});
+
+  final MonthTrend trend;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    final text = Theme.of(context).textTheme;
+    final fmt = NumberFormat('#,##0', 'en');
+    if (trend.previous == 0 && trend.current == 0) return const SizedBox.shrink();
+
+    final up = trend.change > 0;
+    final amount = fmt.format(trend.change.abs());
+    final percent = trend.percent?.abs().round();
+    final String line;
+    if (trend.change == 0) {
+      line = l10n.trendSame;
+    } else if (percent == null) {
+      line = l10n.trendMoreNoPercent(amount);
+    } else {
+      line = up ? l10n.trendMore(amount, '') : l10n.trendLess(amount, '');
+    }
+    final color = trend.change == 0
+        ? scheme.onSurfaceVariant
+        : up
+            ? scheme.error
+            : Colors.green.shade700;
+
+    return Card(
+      margin: EdgeInsets.zero,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(l10n.trendTitle, style: text.labelMedium?.copyWith(color: scheme.onSurfaceVariant)),
+            const SizedBox(height: 6),
+            Row(
+              children: [
+                Icon(
+                  trend.change == 0 ? Icons.drag_handle : up ? Icons.trending_up : Icons.trending_down,
+                  color: color,
+                ),
+                const SizedBox(width: 8),
+                Expanded(child: Text(line, style: text.bodyLarge?.copyWith(color: color, fontWeight: FontWeight.w600))),
+              ],
+            ),
+            if (trend.biggestRise != null) ...[
+              const SizedBox(height: 6),
+              Text(
+                l10n.trendBiggestRise(
+                  trend.biggestRise!.category.label(l10n),
+                  fmt.format(trend.biggestRise!.change),
+                ),
+                style: text.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
+              ),
+            ],
+          ],
+        ),
       ),
     );
   }

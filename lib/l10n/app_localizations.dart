@@ -2172,13 +2172,13 @@ abstract class AppLocalizations {
   /// No description provided for @udhaarWhatsAppLena.
   ///
   /// In en, this message translates to:
-  /// **'Assalamu Alaikum {name} bhai, aapka Rs. {amount} mujhe lena baqi hai. - Saathi App'**
+  /// **'Assalamu Alaikum {name}, aapka Rs. {amount} mujhe lena baqi hai. - Saathi App'**
   String udhaarWhatsAppLena(String name, String amount);
 
   /// No description provided for @udhaarWhatsAppDena.
   ///
   /// In en, this message translates to:
-  /// **'Assalamu Alaikum {name} bhai, mera Rs. {amount} aapko dena baqi hai. - Saathi App'**
+  /// **'Assalamu Alaikum {name}, mera Rs. {amount} aapko dena baqi hai. - Saathi App'**
   String udhaarWhatsAppDena(String name, String amount);
 
   /// No description provided for @udhaarWhatsAppNotFound.
@@ -2324,6 +2324,1440 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Other income'**
   String get incomeSourceOther;
+
+  /// No description provided for @navTasks.
+  ///
+  /// In en, this message translates to:
+  /// **'Tasks'**
+  String get navTasks;
+
+  /// No description provided for @vaultTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Private vault'**
+  String get vaultTitle;
+
+  /// No description provided for @undo.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo'**
+  String get undo;
+
+  /// No description provided for @todayQuickAddHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick add — e.g. 250 chai'**
+  String get todayQuickAddHint;
+
+  /// No description provided for @todayQuickAddPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Will save: Rs {amount} · {category}'**
+  String todayQuickAddPreview(String amount, String category);
+
+  /// No description provided for @todayQuickAddNeedAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Type an amount first, for example 250 chai'**
+  String get todayQuickAddNeedAmount;
+
+  /// No description provided for @todayQuickAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Added Rs {amount} · {category}'**
+  String todayQuickAdded(String amount, String category);
+
+  /// No description provided for @todayQuickAddedIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'Income Rs {amount} added · {category}'**
+  String todayQuickAddedIncome(String amount, String category);
+
+  /// No description provided for @todayPrayers.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s prayers'**
+  String get todayPrayers;
+
+  /// No description provided for @todayNothingDue.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing due today'**
+  String get todayNothingDue;
+
+  /// No description provided for @todaySeeAll.
+  ///
+  /// In en, this message translates to:
+  /// **'See all'**
+  String get todaySeeAll;
+
+  /// No description provided for @todayMoney.
+  ///
+  /// In en, this message translates to:
+  /// **'Money'**
+  String get todayMoney;
+
+  /// No description provided for @todaySpentToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Spent today'**
+  String get todaySpentToday;
+
+  /// No description provided for @todaySpentMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'This month'**
+  String get todaySpentMonth;
+
+  /// No description provided for @todayBudgetLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget left'**
+  String get todayBudgetLeft;
+
+  /// No description provided for @todayOverBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Over budget'**
+  String get todayOverBudget;
+
+  /// No description provided for @todayComingUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Coming up'**
+  String get todayComingUp;
+
+  /// No description provided for @todayNothingComing.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing coming up this week'**
+  String get todayNothingComing;
+
+  /// No description provided for @todayDueTheyOwe.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} owes you Rs {amount}'**
+  String todayDueTheyOwe(String name, String amount);
+
+  /// No description provided for @todayDueYouOwe.
+  ///
+  /// In en, this message translates to:
+  /// **'You owe {name} Rs {amount}'**
+  String todayDueYouOwe(String name, String amount);
+
+  /// No description provided for @todayDueLate.
+  ///
+  /// In en, this message translates to:
+  /// **'{days} days late'**
+  String todayDueLate(String days);
+
+  /// No description provided for @todayDueToday.
+  ///
+  /// In en, this message translates to:
+  /// **'due today'**
+  String get todayDueToday;
+
+  /// No description provided for @todayDueTomorrow.
+  ///
+  /// In en, this message translates to:
+  /// **'due tomorrow'**
+  String get todayDueTomorrow;
+
+  /// No description provided for @todayDueInDays.
+  ///
+  /// In en, this message translates to:
+  /// **'due in {days} days'**
+  String todayDueInDays(String days);
+
+  /// No description provided for @todayRecurring.
+  ///
+  /// In en, this message translates to:
+  /// **'Recurring {what}: Rs {amount} on {date}'**
+  String todayRecurring(String what, String amount, String date);
+
+  /// No description provided for @todayBackupTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Back up your data'**
+  String get todayBackupTitle;
+
+  /// No description provided for @todayBackupBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Share a copy so your data is safe if this phone is lost'**
+  String get todayBackupBody;
+
+  /// No description provided for @todayBackupNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Back up now'**
+  String get todayBackupNow;
+
+  /// No description provided for @todayLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Later'**
+  String get todayLater;
+
+  /// No description provided for @toolRoza.
+  ///
+  /// In en, this message translates to:
+  /// **'Roza'**
+  String get toolRoza;
+
+  /// No description provided for @toolGoals.
+  ///
+  /// In en, this message translates to:
+  /// **'Savings goals'**
+  String get toolGoals;
+
+  /// No description provided for @toolAccounts.
+  ///
+  /// In en, this message translates to:
+  /// **'Accounts'**
+  String get toolAccounts;
+
+  /// No description provided for @rozaTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Roza'**
+  String get rozaTitle;
+
+  /// No description provided for @rozaOwed.
+  ///
+  /// In en, this message translates to:
+  /// **'Fasts to make up: {count}'**
+  String rozaOwed(String count);
+
+  /// No description provided for @rozaHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a day to mark it kept, missed, or clear it'**
+  String get rozaHint;
+
+  /// No description provided for @rozaKept.
+  ///
+  /// In en, this message translates to:
+  /// **'Kept'**
+  String get rozaKept;
+
+  /// No description provided for @rozaMissed.
+  ///
+  /// In en, this message translates to:
+  /// **'Missed'**
+  String get rozaMissed;
+
+  /// No description provided for @rozaMadeUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Made up'**
+  String get rozaMadeUp;
+
+  /// No description provided for @rozaMakeUpToday.
+  ///
+  /// In en, this message translates to:
+  /// **'I fasted today to make up one'**
+  String get rozaMakeUpToday;
+
+  /// No description provided for @rozaKeptThisYear.
+  ///
+  /// In en, this message translates to:
+  /// **'Kept this year: {count}'**
+  String rozaKeptThisYear(String count);
+
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// No description provided for @edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get edit;
+
+  /// No description provided for @goalsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Savings goals'**
+  String get goalsTitle;
+
+  /// No description provided for @goalsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No goals yet. Add one, like Hajj, a wedding or a car.'**
+  String get goalsEmpty;
+
+  /// No description provided for @goalAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'New goal'**
+  String get goalAdd;
+
+  /// No description provided for @goalName.
+  ///
+  /// In en, this message translates to:
+  /// **'Goal name'**
+  String get goalName;
+
+  /// No description provided for @goalTarget.
+  ///
+  /// In en, this message translates to:
+  /// **'Target amount'**
+  String get goalTarget;
+
+  /// No description provided for @goalDeadline.
+  ///
+  /// In en, this message translates to:
+  /// **'Deadline (optional)'**
+  String get goalDeadline;
+
+  /// No description provided for @goalAddMoney.
+  ///
+  /// In en, this message translates to:
+  /// **'Add money'**
+  String get goalAddMoney;
+
+  /// No description provided for @goalTakeOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Take money out'**
+  String get goalTakeOut;
+
+  /// No description provided for @goalAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get goalAmount;
+
+  /// No description provided for @goalSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Rs {saved} of Rs {target}'**
+  String goalSaved(String saved, String target);
+
+  /// No description provided for @goalReached.
+  ///
+  /// In en, this message translates to:
+  /// **'Goal reached!'**
+  String get goalReached;
+
+  /// No description provided for @goalPerMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Save about Rs {amount} a month to reach it by {date}'**
+  String goalPerMonth(String amount, String date);
+
+  /// No description provided for @goalDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this goal?'**
+  String get goalDeleteConfirm;
+
+  /// No description provided for @accountsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Accounts'**
+  String get accountsTitle;
+
+  /// No description provided for @accountsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Add the places your money is kept: cash, bank, wallet.'**
+  String get accountsEmpty;
+
+  /// No description provided for @accountAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'New account'**
+  String get accountAdd;
+
+  /// No description provided for @accountName.
+  ///
+  /// In en, this message translates to:
+  /// **'Account name'**
+  String get accountName;
+
+  /// No description provided for @accountCash.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash'**
+  String get accountCash;
+
+  /// No description provided for @accountBank.
+  ///
+  /// In en, this message translates to:
+  /// **'Bank'**
+  String get accountBank;
+
+  /// No description provided for @accountWallet.
+  ///
+  /// In en, this message translates to:
+  /// **'Wallet'**
+  String get accountWallet;
+
+  /// No description provided for @accountOpening.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening balance'**
+  String get accountOpening;
+
+  /// No description provided for @accountTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total across accounts'**
+  String get accountTotal;
+
+  /// No description provided for @accountDeleteWarn.
+  ///
+  /// In en, this message translates to:
+  /// **'Entries stay, but are no longer linked to this account.'**
+  String get accountDeleteWarn;
+
+  /// No description provided for @accountPick.
+  ///
+  /// In en, this message translates to:
+  /// **'Account (optional)'**
+  String get accountPick;
+
+  /// No description provided for @accountNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No account'**
+  String get accountNone;
+
+  /// No description provided for @add.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get add;
+
+  /// No description provided for @taskRemindBefore.
+  ///
+  /// In en, this message translates to:
+  /// **'Remind me before'**
+  String get taskRemindBefore;
+
+  /// No description provided for @taskRemindNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Only at the time'**
+  String get taskRemindNone;
+
+  /// No description provided for @taskRemindMin.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} minutes before'**
+  String taskRemindMin(String minutes);
+
+  /// No description provided for @taskRemindHour.
+  ///
+  /// In en, this message translates to:
+  /// **'1 hour before'**
+  String get taskRemindHour;
+
+  /// No description provided for @taskRemindDay.
+  ///
+  /// In en, this message translates to:
+  /// **'1 day before'**
+  String get taskRemindDay;
+
+  /// No description provided for @taskAtTime.
+  ///
+  /// In en, this message translates to:
+  /// **'At a time'**
+  String get taskAtTime;
+
+  /// No description provided for @taskAroundPrayer.
+  ///
+  /// In en, this message translates to:
+  /// **'Around a prayer'**
+  String get taskAroundPrayer;
+
+  /// No description provided for @taskOffsetBefore.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min before'**
+  String taskOffsetBefore(String minutes);
+
+  /// No description provided for @taskOffsetAfter.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min after'**
+  String taskOffsetAfter(String minutes);
+
+  /// No description provided for @taskOffsetAt.
+  ///
+  /// In en, this message translates to:
+  /// **'At prayer time'**
+  String get taskOffsetAt;
+
+  /// No description provided for @taskBillAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Bill amount (optional)'**
+  String get taskBillAmount;
+
+  /// No description provided for @taskAddToKhataTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to Khata?'**
+  String get taskAddToKhataTitle;
+
+  /// No description provided for @taskAddToKhataBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Rs {amount} for \"{title}\" to your Khata?'**
+  String taskAddToKhataBody(String amount, String title);
+
+  /// No description provided for @taskBillAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Added to Khata'**
+  String get taskBillAdded;
+
+  /// No description provided for @filterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get filterAll;
+
+  /// No description provided for @udhaarSortAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Biggest amount first'**
+  String get udhaarSortAmount;
+
+  /// No description provided for @settingsDataBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'Data & Backup'**
+  String get settingsDataBackup;
+
+  /// No description provided for @backupExport.
+  ///
+  /// In en, this message translates to:
+  /// **'Export backup'**
+  String get backupExport;
+
+  /// No description provided for @backupExportSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Share your data as a .saathi file'**
+  String get backupExportSub;
+
+  /// No description provided for @backupRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore backup'**
+  String get backupRestore;
+
+  /// No description provided for @backupRestoreSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace current data from a .saathi file'**
+  String get backupRestoreSub;
+
+  /// No description provided for @backupAuto.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic backups'**
+  String get backupAuto;
+
+  /// No description provided for @backupAutoSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved on this phone every week. Last: {date}'**
+  String backupAutoSub(String date);
+
+  /// No description provided for @backupAutoNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved on this phone every week. None yet.'**
+  String get backupAutoNone;
+
+  /// No description provided for @settingsCountBank.
+  ///
+  /// In en, this message translates to:
+  /// **'Count bank transactions in budgets'**
+  String get settingsCountBank;
+
+  /// No description provided for @settingsCountBankSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Payments caught from bank notifications count towards your budgets and totals'**
+  String get settingsCountBankSub;
+
+  /// No description provided for @trackerMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Last 30 days'**
+  String get trackerMonth;
+
+  /// No description provided for @trackerCompletion.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% of prayers prayed'**
+  String trackerCompletion(String percent);
+
+  /// No description provided for @trackerWeakest.
+  ///
+  /// In en, this message translates to:
+  /// **'Hardest prayer: {prayer} ({done} of {days} days)'**
+  String trackerWeakest(String prayer, String done, String days);
+
+  /// No description provided for @tasbeehFree.
+  ///
+  /// In en, this message translates to:
+  /// **'Free count'**
+  String get tasbeehFree;
+
+  /// No description provided for @tasbeehSubhanallah.
+  ///
+  /// In en, this message translates to:
+  /// **'SubhanAllah'**
+  String get tasbeehSubhanallah;
+
+  /// No description provided for @tasbeehAlhamdulillah.
+  ///
+  /// In en, this message translates to:
+  /// **'Alhamdulillah'**
+  String get tasbeehAlhamdulillah;
+
+  /// No description provided for @tasbeehAllahuAkbar.
+  ///
+  /// In en, this message translates to:
+  /// **'Allahu Akbar'**
+  String get tasbeehAllahuAkbar;
+
+  /// No description provided for @tasbeehToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today: {count}'**
+  String tasbeehToday(String count);
+
+  /// No description provided for @tasbeehTargetReached.
+  ///
+  /// In en, this message translates to:
+  /// **'Target reached'**
+  String get tasbeehTargetReached;
+
+  /// No description provided for @trendTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Compared with last month'**
+  String get trendTitle;
+
+  /// No description provided for @trendMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Rs {amount} more than last month ({percent}%)'**
+  String trendMore(String amount, String percent);
+
+  /// No description provided for @trendLess.
+  ///
+  /// In en, this message translates to:
+  /// **'Rs {amount} less than last month ({percent}%)'**
+  String trendLess(String amount, String percent);
+
+  /// No description provided for @trendMoreNoPercent.
+  ///
+  /// In en, this message translates to:
+  /// **'Rs {amount} more than last month'**
+  String trendMoreNoPercent(String amount);
+
+  /// No description provided for @trendSame.
+  ///
+  /// In en, this message translates to:
+  /// **'Same as last month'**
+  String get trendSame;
+
+  /// No description provided for @trendBiggestRise.
+  ///
+  /// In en, this message translates to:
+  /// **'Biggest rise: {category} (+Rs {amount})'**
+  String trendBiggestRise(String category, String amount);
+
+  /// No description provided for @taskNewList.
+  ///
+  /// In en, this message translates to:
+  /// **'New list'**
+  String get taskNewList;
+
+  /// No description provided for @taskEditList.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit list'**
+  String get taskEditList;
+
+  /// No description provided for @taskDeleteList.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete list'**
+  String get taskDeleteList;
+
+  /// No description provided for @taskTabToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get taskTabToday;
+
+  /// No description provided for @taskTabUpcoming.
+  ///
+  /// In en, this message translates to:
+  /// **'Upcoming'**
+  String get taskTabUpcoming;
+
+  /// No description provided for @taskEmptyUpcoming.
+  ///
+  /// In en, this message translates to:
+  /// **'No upcoming tasks'**
+  String get taskEmptyUpcoming;
+
+  /// No description provided for @taskEmptyDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing completed yet'**
+  String get taskEmptyDone;
+
+  /// No description provided for @taskEmptyToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing to do today — MashaAllah! 🎉'**
+  String get taskEmptyToday;
+
+  /// No description provided for @taskNoneToday.
+  ///
+  /// In en, this message translates to:
+  /// **'No tasks for today'**
+  String get taskNoneToday;
+
+  /// No description provided for @taskTomorrowCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Tomorrow ({count})'**
+  String taskTomorrowCount(String count);
+
+  /// No description provided for @taskOverdueCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Overdue ({count})'**
+  String taskOverdueCount(String count);
+
+  /// No description provided for @taskNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New task'**
+  String get taskNew;
+
+  /// No description provided for @taskEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit task'**
+  String get taskEdit;
+
+  /// No description provided for @taskDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete task?'**
+  String get taskDeleteConfirm;
+
+  /// No description provided for @taskReopen.
+  ///
+  /// In en, this message translates to:
+  /// **'Reopen'**
+  String get taskReopen;
+
+  /// No description provided for @taskTitleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Task title'**
+  String get taskTitleLabel;
+
+  /// No description provided for @taskNoteLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Note (optional)'**
+  String get taskNoteLabel;
+
+  /// No description provided for @taskListLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'List'**
+  String get taskListLabel;
+
+  /// No description provided for @taskNoList.
+  ///
+  /// In en, this message translates to:
+  /// **'No list'**
+  String get taskNoList;
+
+  /// No description provided for @taskPriority.
+  ///
+  /// In en, this message translates to:
+  /// **'Priority:'**
+  String get taskPriority;
+
+  /// No description provided for @taskPriorityNormal.
+  ///
+  /// In en, this message translates to:
+  /// **'Normal'**
+  String get taskPriorityNormal;
+
+  /// No description provided for @taskPriorityHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'High'**
+  String get taskPriorityHigh;
+
+  /// No description provided for @taskRepeat.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeat'**
+  String get taskRepeat;
+
+  /// No description provided for @taskRepeatNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Does not repeat'**
+  String get taskRepeatNone;
+
+  /// No description provided for @taskRepeatDaily.
+  ///
+  /// In en, this message translates to:
+  /// **'Every day'**
+  String get taskRepeatDaily;
+
+  /// No description provided for @taskRepeatWeekly.
+  ///
+  /// In en, this message translates to:
+  /// **'Every week'**
+  String get taskRepeatWeekly;
+
+  /// No description provided for @taskRepeatMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Every month'**
+  String get taskRepeatMonthly;
+
+  /// No description provided for @taskDailyShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily'**
+  String get taskDailyShort;
+
+  /// No description provided for @taskWeeklyShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly'**
+  String get taskWeeklyShort;
+
+  /// No description provided for @taskMonthlyShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly'**
+  String get taskMonthlyShort;
+
+  /// No description provided for @taskNoDueDate.
+  ///
+  /// In en, this message translates to:
+  /// **'No due date'**
+  String get taskNoDueDate;
+
+  /// No description provided for @taskNoTime.
+  ///
+  /// In en, this message translates to:
+  /// **'No time (no notification)'**
+  String get taskNoTime;
+
+  /// No description provided for @taskListName.
+  ///
+  /// In en, this message translates to:
+  /// **'List name'**
+  String get taskListName;
+
+  /// No description provided for @taskIcon.
+  ///
+  /// In en, this message translates to:
+  /// **'Icon'**
+  String get taskIcon;
+
+  /// No description provided for @taskCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get taskCreate;
+
+  /// No description provided for @khataIncoming.
+  ///
+  /// In en, this message translates to:
+  /// **'Incoming'**
+  String get khataIncoming;
+
+  /// No description provided for @khataOutgoing.
+  ///
+  /// In en, this message translates to:
+  /// **'Outgoing'**
+  String get khataOutgoing;
+
+  /// No description provided for @khataExportPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Export PDF'**
+  String get khataExportPdf;
+
+  /// No description provided for @khataExportCsv.
+  ///
+  /// In en, this message translates to:
+  /// **'Export CSV'**
+  String get khataExportCsv;
+
+  /// No description provided for @khataBank.
+  ///
+  /// In en, this message translates to:
+  /// **'Bank'**
+  String get khataBank;
+
+  /// No description provided for @summaryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly summary'**
+  String get summaryTitle;
+
+  /// No description provided for @khataSearchEntries.
+  ///
+  /// In en, this message translates to:
+  /// **'Search entries…'**
+  String get khataSearchEntries;
+
+  /// No description provided for @recurringTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recurring'**
+  String get recurringTitle;
+
+  /// No description provided for @khataShareWhatsApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Share via WhatsApp'**
+  String get khataShareWhatsApp;
+
+  /// No description provided for @vaultMove.
+  ///
+  /// In en, this message translates to:
+  /// **'Move to Vault'**
+  String get vaultMove;
+
+  /// No description provided for @vaultMoveHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide from normal view'**
+  String get vaultMoveHint;
+
+  /// No description provided for @vaultMoveUdhaarHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide from normal Udhaar view'**
+  String get vaultMoveUdhaarHint;
+
+  /// No description provided for @bankSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search bank entries…'**
+  String get bankSearch;
+
+  /// No description provided for @bankIn.
+  ///
+  /// In en, this message translates to:
+  /// **'In'**
+  String get bankIn;
+
+  /// No description provided for @bankOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Out'**
+  String get bankOut;
+
+  /// No description provided for @bankAllBanks.
+  ///
+  /// In en, this message translates to:
+  /// **'All banks'**
+  String get bankAllBanks;
+
+  /// No description provided for @bankEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No bank transactions yet'**
+  String get bankEmpty;
+
+  /// No description provided for @bankNoMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'No matching transactions'**
+  String get bankNoMatch;
+
+  /// No description provided for @bankAutoCaptured.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-captured from bank notifications'**
+  String get bankAutoCaptured;
+
+  /// No description provided for @entryDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete entry'**
+  String get entryDelete;
+
+  /// No description provided for @vaultUnlockReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock your Vault to view private entries'**
+  String get vaultUnlockReason;
+
+  /// No description provided for @vaultUnlock.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock'**
+  String get vaultUnlock;
+
+  /// No description provided for @vaultLock.
+  ///
+  /// In en, this message translates to:
+  /// **'Lock vault'**
+  String get vaultLock;
+
+  /// No description provided for @vaultTabContacts.
+  ///
+  /// In en, this message translates to:
+  /// **'Contacts'**
+  String get vaultTabContacts;
+
+  /// No description provided for @vaultRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from Vault'**
+  String get vaultRemove;
+
+  /// No description provided for @vaultDeleteContact.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete contact'**
+  String get vaultDeleteContact;
+
+  /// No description provided for @vaultDeleteContactQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete contact?'**
+  String get vaultDeleteContactQ;
+
+  /// No description provided for @freqDaily.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily'**
+  String get freqDaily;
+
+  /// No description provided for @freqWeekly.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly'**
+  String get freqWeekly;
+
+  /// No description provided for @freqMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly'**
+  String get freqMonthly;
+
+  /// No description provided for @freqYearly.
+  ///
+  /// In en, this message translates to:
+  /// **'Yearly'**
+  String get freqYearly;
+
+  /// No description provided for @summaryNet.
+  ///
+  /// In en, this message translates to:
+  /// **'Net balance'**
+  String get summaryNet;
+
+  /// No description provided for @summaryByCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Spending by category'**
+  String get summaryByCategory;
+
+  /// No description provided for @summaryNoExpenses.
+  ///
+  /// In en, this message translates to:
+  /// **'No expenses this month'**
+  String get summaryNoExpenses;
+
+  /// No description provided for @recurringEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No recurring entries'**
+  String get recurringEmpty;
+
+  /// No description provided for @recurringEmptyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on \"Repeat\" when adding an expense or income'**
+  String get recurringEmptyHint;
+
+  /// No description provided for @recurringStopQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop recurring?'**
+  String get recurringStopQ;
+
+  /// No description provided for @recurringStopNote.
+  ///
+  /// In en, this message translates to:
+  /// **'This will not delete past entries.'**
+  String get recurringStopNote;
+
+  /// No description provided for @recurringStop.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop'**
+  String get recurringStop;
+
+  /// No description provided for @expensePhotoTake.
+  ///
+  /// In en, this message translates to:
+  /// **'Take a photo'**
+  String get expensePhotoTake;
+
+  /// No description provided for @expensePhotoGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose from gallery'**
+  String get expensePhotoGallery;
+
+  /// No description provided for @expenseSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Source'**
+  String get expenseSource;
+
+  /// No description provided for @expenseRepeat.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeat'**
+  String get expenseRepeat;
+
+  /// No description provided for @bankSyncTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bank sync'**
+  String get bankSyncTitle;
+
+  /// No description provided for @bankSyncAuto.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-capture transactions'**
+  String get bankSyncAuto;
+
+  /// No description provided for @bankSyncChecking.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking…'**
+  String get bankSyncChecking;
+
+  /// No description provided for @bankSyncEnableHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to enable — no login needed, works with all bank apps'**
+  String get bankSyncEnableHint;
+
+  /// No description provided for @bankSyncEnable.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable'**
+  String get bankSyncEnable;
+
+  /// No description provided for @bankSyncPaused.
+  ///
+  /// In en, this message translates to:
+  /// **'Paused by Android — transactions are not being captured'**
+  String get bankSyncPaused;
+
+  /// No description provided for @bankSyncRestart.
+  ///
+  /// In en, this message translates to:
+  /// **'Restart'**
+  String get bankSyncRestart;
+
+  /// No description provided for @bankSyncWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Active — waiting for the first bank alert'**
+  String get bankSyncWaiting;
+
+  /// No description provided for @bankSyncLast.
+  ///
+  /// In en, this message translates to:
+  /// **'Active — last bank alert {ago}'**
+  String bankSyncLast(String ago);
+
+  /// No description provided for @bankSyncPending.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} waiting to be saved'**
+  String bankSyncPending(String count);
+
+  /// No description provided for @bankSyncRestartHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn Saathi off and on again in Notification access'**
+  String get bankSyncRestartHint;
+
+  /// No description provided for @agoJustNow.
+  ///
+  /// In en, this message translates to:
+  /// **'just now'**
+  String get agoJustNow;
+
+  /// No description provided for @agoMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} min ago'**
+  String agoMinutes(String count);
+
+  /// No description provided for @agoHours.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} h ago'**
+  String agoHours(String count);
+
+  /// No description provided for @agoDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} d ago'**
+  String agoDays(String count);
+
+  /// No description provided for @ramadanMubarak.
+  ///
+  /// In en, this message translates to:
+  /// **'Ramadan Mubarak'**
+  String get ramadanMubarak;
+
+  /// No description provided for @ramadanTimetable.
+  ///
+  /// In en, this message translates to:
+  /// **'Ramadan timetable'**
+  String get ramadanTimetable;
+
+  /// No description provided for @ramadanLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Ramadan'**
+  String get ramadanLabel;
+
+  /// No description provided for @ramadanSehriEnded.
+  ///
+  /// In en, this message translates to:
+  /// **'Sehri has ended'**
+  String get ramadanSehriEnded;
+
+  /// No description provided for @ramadanSehriEndsIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sehri ends in {time}'**
+  String ramadanSehriEndsIn(String time);
+
+  /// No description provided for @ramadanStopEating.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop eating before Fajr'**
+  String get ramadanStopEating;
+
+  /// No description provided for @ramadanIftarIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Iftar in {time}'**
+  String ramadanIftarIn(String time);
+
+  /// No description provided for @ramadanKeepGoing.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep going! 💪'**
+  String get ramadanKeepGoing;
+
+  /// No description provided for @ramadanIftarTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Iftar time! 🎉'**
+  String get ramadanIftarTime;
+
+  /// No description provided for @ramadanSehriIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sehri in {time}'**
+  String ramadanSehriIn(String time);
+
+  /// No description provided for @ramadanEnjoy.
+  ///
+  /// In en, this message translates to:
+  /// **'Enjoy your meal'**
+  String get ramadanEnjoy;
+
+  /// No description provided for @ramadanAlhamdulillah.
+  ///
+  /// In en, this message translates to:
+  /// **'Alhamdulillah'**
+  String get ramadanAlhamdulillah;
+
+  /// No description provided for @ramadanSehriEndsSuffix.
+  ///
+  /// In en, this message translates to:
+  /// **' · Sehri ends'**
+  String get ramadanSehriEndsSuffix;
+
+  /// No description provided for @ramadanIftarSuffix.
+  ///
+  /// In en, this message translates to:
+  /// **' · Iftar'**
+  String get ramadanIftarSuffix;
+
+  /// No description provided for @imsakiyaTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ramadan timetable'**
+  String get imsakiyaTitle;
+
+  /// No description provided for @imsakiyaShareFail.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not share the timetable'**
+  String get imsakiyaShareFail;
+
+  /// No description provided for @imsakiyaNoDates.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not compute Ramadan dates'**
+  String get imsakiyaNoDates;
+
+  /// No description provided for @imsakiyaShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share as image'**
+  String get imsakiyaShare;
+
+  /// No description provided for @imsakiyaDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Day'**
+  String get imsakiyaDay;
+
+  /// No description provided for @imsakiyaDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get imsakiyaDate;
+
+  /// No description provided for @imsakiyaSehri.
+  ///
+  /// In en, this message translates to:
+  /// **'Sehri ends'**
+  String get imsakiyaSehri;
+
+  /// No description provided for @imsakiyaIftar.
+  ///
+  /// In en, this message translates to:
+  /// **'Iftar'**
+  String get imsakiyaIftar;
+
+  /// No description provided for @backupFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup failed: {error}'**
+  String backupFailed(String error);
+
+  /// No description provided for @backupNoAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not access the selected file.'**
+  String get backupNoAccess;
+
+  /// No description provided for @backupIncomplete.
+  ///
+  /// In en, this message translates to:
+  /// **'This file is not a complete Saathi backup.'**
+  String get backupIncomplete;
+
+  /// No description provided for @backupNotSaathi.
+  ///
+  /// In en, this message translates to:
+  /// **'This file is not a Saathi backup.'**
+  String get backupNotSaathi;
+
+  /// No description provided for @backupNewer.
+  ///
+  /// In en, this message translates to:
+  /// **'This backup is from a newer version of Saathi. Update the app first.'**
+  String get backupNewer;
+
+  /// No description provided for @backupDamaged.
+  ///
+  /// In en, this message translates to:
+  /// **'This backup file is damaged.'**
+  String get backupDamaged;
+
+  /// No description provided for @backupOlder.
+  ///
+  /// In en, this message translates to:
+  /// **'an older backup'**
+  String get backupOlder;
+
+  /// No description provided for @restoreConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore backup?'**
+  String get restoreConfirmTitle;
+
+  /// No description provided for @restoreConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This replaces ALL current data with {when}.\n\nA safety copy of your current data is kept on this phone. Saathi will close afterwards; open it again to continue.'**
+  String restoreConfirmBody(String when);
+
+  /// No description provided for @restoreButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get restoreButton;
+
+  /// No description provided for @restoreDoneTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup restored'**
+  String get restoreDoneTitle;
+
+  /// No description provided for @restoreDoneBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Saathi will close now. Open it again to see your data.'**
+  String get restoreDoneBody;
+
+  /// No description provided for @restoreFailedKept.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore failed: {error}. Close and reopen Saathi; a safety copy of your data was kept.'**
+  String restoreFailedKept(String error);
+
+  /// No description provided for @restoreFailedSafe.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore failed: {error}. Your data was not changed.'**
+  String restoreFailedSafe(String error);
 }
 
 class _AppLocalizationsDelegate

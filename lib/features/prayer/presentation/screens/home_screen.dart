@@ -139,9 +139,9 @@ class HomeScreen extends ConsumerWidget {
               if (prayerTime == null) return const SizedBox.shrink();
               final ramadanSuffix = inRamadan
                   ? (prayer == PrayerName.fajr
-                      ? ' · Sehri ends'
+                      ? AppLocalizations.of(context).ramadanSehriEndsSuffix
                       : prayer == PrayerName.maghrib
-                          ? ' · Iftar'
+                          ? AppLocalizations.of(context).ramadanIftarSuffix
                           : null)
                   : null;
               return PrayerRow(

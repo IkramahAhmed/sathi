@@ -1,15 +1,18 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart' show DateFormat;
 
 import '../../../../core/backup/backup_restore_service.dart';
+import '../../../khata/presentation/providers/khata_providers.dart';
 
 import '../../../../app/providers.dart';
 import '../../../../app/router.dart';
 import '../../../../core/notifications/notification_channels.dart';
 import '../../../../core/services/notification_capture_service.dart';
 import '../../../../core/utils/logger.dart';
-import '../../../udhaar/background/udhaar_overdue_check.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/calc_method.dart';
 import '../../domain/entities/prayer_name.dart';
@@ -204,13 +207,6 @@ class SettingsScreen extends ConsumerWidget {
             onTap: () => _scheduleTest(context, ref),
           ),
           ListTile(
-            key: const ValueKey('test-udhaar-notification'),
-            leading: const Icon(Icons.money_off_outlined),
-            title: const Text('Test: Udhaar overdue notification'),
-            subtitle: const Text('Fires the overdue alert right now'),
-            onTap: () => _testUdhaarNotif(context),
-          ),
-          ListTile(
             key: const ValueKey('check-setup'),
             leading: const Icon(Icons.fact_check_outlined),
             title: Text(l10n.checkSetupTitle),
@@ -266,12 +262,6 @@ class SettingsScreen extends ConsumerWidget {
     } catch (error, stackTrace) {
       appLog.warning('Sound preview failed', error, stackTrace);
     }
-  }
-
-  Future<void> _testUdhaarNotif(BuildContext context) async {
-    final messenger = ScaffoldMessenger.of(context);
-    await runHeadlessUdhaarCheck(ignoreDate: true);
-    messenger.showSnackBar(const SnackBar(content: Text('Udhaar notification fired — check your notification shade')));
   }
 
   Future<void> _scheduleTest(BuildContext context, WidgetRef ref) async {
@@ -364,46 +354,47 @@ class _BankSyncSectionState extends ConsumerState<_BankSyncSection> {
     await Future.delayed(const Duration(seconds: 2));
     await _check();
     if (!mounted || (_health?.connected ?? false)) return;
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-      content: Text('Turn Saathi off and on again in Notification access'),
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(AppLocalizations.of(context).bankSyncRestartHint),
     ));
     await _enableNotifAccess();
   }
 
-  static String _ago(DateTime t) {
+  static String _ago(AppLocalizations l10n, DateTime t) {
     final d = DateTime.now().difference(t);
-    if (d.inMinutes < 1) return 'just now';
-    if (d.inHours < 1) return '${d.inMinutes} min ago';
-    if (d.inDays < 1) return '${d.inHours} h ago';
-    return '${d.inDays} d ago';
+    if (d.inMinutes < 1) return l10n.agoJustNow;
+    if (d.inHours < 1) return l10n.agoMinutes('${d.inMinutes}');
+    if (d.inDays < 1) return l10n.agoHours('${d.inHours}');
+    return l10n.agoDays('${d.inDays}');
   }
 
   @override
   Widget build(BuildContext context) {
     final h = _health;
+    final l10n = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
 
     final (Color? color, String subtitle, Widget? trailing, VoidCallback? onTap) = switch (h) {
-      null => (null, 'Checking…', null, null),
+      null => (null, l10n.bankSyncChecking, null, null),
       CaptureHealth(hasAccess: false) => (
           null,
-          'Tap to enable — no login needed, works with all bank apps',
-          FilledButton.tonal(onPressed: _enableNotifAccess, child: const Text('Enable')),
+          l10n.bankSyncEnableHint,
+          FilledButton.tonal(onPressed: _enableNotifAccess, child: Text(l10n.bankSyncEnable)),
           _enableNotifAccess,
         ),
       CaptureHealth(connected: false) => (
           scheme.error,
-          'Paused by Android — transactions are not being captured',
-          FilledButton.tonal(onPressed: _restart, child: const Text('Restart')),
+          l10n.bankSyncPaused,
+          FilledButton.tonal(onPressed: _restart, child: Text(l10n.bankSyncRestart)),
           _restart,
         ),
       _ => (
           Colors.green.shade700,
           [
             h.lastCandidateAt == null
-                ? 'Active — waiting for the first bank alert'
-                : 'Active — last bank alert ${_ago(h.lastCandidateAt!)}',
-            if (h.pending > 0) '${h.pending} waiting to be saved',
+                ? l10n.bankSyncWaiting
+                : l10n.bankSyncLast(_ago(l10n, h.lastCandidateAt!)),
+            if (h.pending > 0) l10n.bankSyncPending('${h.pending}'),
           ].join(' · '),
           Icon(Icons.check_circle, color: Colors.green.shade700, size: 20),
           _check,
@@ -413,11 +404,11 @@ class _BankSyncSectionState extends ConsumerState<_BankSyncSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const _Section('Bank Sync'),
+        _Section(l10n.bankSyncTitle),
         ListTile(
           key: const ValueKey('notif-capture'),
           leading: Icon(Icons.notifications_active_outlined, color: color),
-          title: const Text('Auto-capture transactions'),
+          title: Text(l10n.bankSyncAuto),
           subtitle: Text(subtitle),
           trailing: trailing,
           onTap: onTap,
@@ -519,11 +510,55 @@ class _PrayerSettingsCard extends ConsumerWidget {
 
 // ── Data & Backup ─────────────────────────────────────────────────────────────
 
-class _DataBackupSection extends StatelessWidget {
+class _DataBackupSection extends ConsumerWidget {
   const _DataBackupSection();
 
+  Future<void> _pickAutoBackup(BuildContext context, WidgetRef ref) async {
+    final files = await BackupRestoreService.autoBackups();
+    if (!context.mounted || files.isEmpty) return;
+    final l10n = AppLocalizations.of(context);
+    final chosen = await showModalBottomSheet<File>(
+      context: context,
+      builder: (sheet) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            for (final f in files)
+              ListTile(
+                leading: const Icon(Icons.history),
+                title: Text(_autoBackupLabel(f)),
+                subtitle: Text(l10n.backupRestore),
+                onTap: () => Navigator.pop(sheet, f),
+              ),
+          ],
+        ),
+      ),
+    );
+    if (chosen == null || !context.mounted) return;
+    await BackupRestoreService.restoreFile(
+      context,
+      ref.read(appDatabaseProvider),
+      ref.read(sharedPreferencesProvider),
+      chosen,
+    );
+  }
+
+  /// "saathi_auto_2026-11-26_1530.saathi" → "26 Nov 2026, 15:30".
+  static String _autoBackupLabel(File f) {
+    final m = RegExp(r'(\d{4}-\d{2}-\d{2})_(\d{2})(\d{2})').firstMatch(f.path);
+    if (m == null) return f.path.split('/').last;
+    final date = DateTime.tryParse(m.group(1)!);
+    if (date == null) return f.path.split('/').last;
+    return '${DateFormat('d MMM yyyy').format(date)}, ${m.group(2)}:${m.group(3)}';
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final prefs = ref.watch(sharedPreferencesProvider);
+    final lastAuto = prefs.getInt('auto_backup_at');
+    final countBank = ref.watch(countBankProvider);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -531,7 +566,7 @@ class _DataBackupSection extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
           child: Text(
-            'Data & Backup',
+            l10n.settingsDataBackup,
             style: Theme.of(context).textTheme.labelLarge?.copyWith(
                   color: Theme.of(context).colorScheme.primary,
                 ),
@@ -539,15 +574,38 @@ class _DataBackupSection extends StatelessWidget {
         ),
         ListTile(
           leading: const Icon(Icons.backup_outlined),
-          title: const Text('Export backup'),
-          subtitle: const Text('Share your data as a .saathi file'),
-          onTap: () => BackupRestoreService.backup(context),
+          title: Text(l10n.backupExport),
+          subtitle: Text(l10n.backupExportSub),
+          onTap: () => BackupRestoreService.backup(
+            context,
+            ref.read(appDatabaseProvider),
+            ref.read(sharedPreferencesProvider),
+          ),
         ),
         ListTile(
           leading: const Icon(Icons.restore_outlined),
-          title: const Text('Restore backup'),
-          subtitle: const Text('Replace current data from a .saathi file'),
-          onTap: () => BackupRestoreService.restore(context),
+          title: Text(l10n.backupRestore),
+          subtitle: Text(l10n.backupRestoreSub),
+          onTap: () => BackupRestoreService.restore(
+            context,
+            ref.read(appDatabaseProvider),
+            ref.read(sharedPreferencesProvider),
+          ),
+        ),
+        ListTile(
+          leading: const Icon(Icons.history_outlined),
+          title: Text(l10n.backupAuto),
+          subtitle: Text(lastAuto == null
+              ? l10n.backupAutoNone
+              : l10n.backupAutoSub(DateFormat('d MMM yyyy').format(DateTime.fromMillisecondsSinceEpoch(lastAuto)))),
+          onTap: () => _pickAutoBackup(context, ref),
+        ),
+        SwitchListTile(
+          secondary: const Icon(Icons.account_balance_outlined),
+          title: Text(l10n.settingsCountBank),
+          subtitle: Text(l10n.settingsCountBankSub),
+          value: countBank,
+          onChanged: (v) => ref.read(countBankProvider.notifier).set(v),
         ),
       ],
     );

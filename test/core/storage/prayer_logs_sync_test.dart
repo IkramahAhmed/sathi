@@ -226,7 +226,7 @@ void main() {
     });
 
     test('a fresh database is created at the current schema version with every table', () async {
-      expect(db.schemaVersion, 14);
+      expect(db.schemaVersion, 16);
       await db.prayerLogsDao.markDone(day, 'fajr', t0);
       final row = (await db.select(db.prayerLogs).get()).single;
       expect(row.done, isTrue);

@@ -40,7 +40,11 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused ||
         state == AppLifecycleState.detached) {
-      if (mounted) setState(() { _unlocked = false; _error = null; });
+      if (!mounted) return;
+      // Close any entry opened from the vault, so it is not still on screen when
+      // the app comes back.
+      Navigator.of(context).popUntil((route) => route.isFirst);
+      setState(() { _unlocked = false; _error = null; });
     }
   }
 
@@ -62,7 +66,7 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
     setState(() { _busy = true; _error = null; });
     try {
       final ok = await auth.authenticate(
-        localizedReason: 'Unlock your Vault to view private entries',
+        localizedReason: AppLocalizations.of(context).vaultUnlockReason,
         options: const AuthenticationOptions(biometricOnly: true),
       );
       if (ok && mounted) setState(() => _unlocked = true);
@@ -104,7 +108,7 @@ class _LockedVault extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final text = Theme.of(context).textTheme;
     return Scaffold(
-      appBar: AppBar(title: const Text('Vault')),
+      appBar: AppBar(title: Text(AppLocalizations.of(context).vaultTitle)),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 32),
@@ -114,7 +118,7 @@ class _LockedVault extends StatelessWidget {
               Icon(Icons.lock_outlined, size: 72, color: scheme.primary),
               const SizedBox(height: 20),
               Text(
-                'Private Vault',
+                AppLocalizations.of(context).vaultTitle,
                 style: text.headlineSmall
                     ?.copyWith(fontWeight: FontWeight.w700),
               ),
@@ -147,7 +151,7 @@ class _LockedVault extends StatelessWidget {
                   : FilledButton.icon(
                       onPressed: onUnlock,
                       icon: const Icon(Icons.fingerprint),
-                      label: const Text('Unlock'),
+                      label: Text(AppLocalizations.of(context).vaultUnlock),
                       style: FilledButton.styleFrom(
                         minimumSize: const Size(180, 48),
                       ),
@@ -191,19 +195,19 @@ class _UnlockedVaultState extends ConsumerState<_UnlockedVault>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Vault'),
+        title: Text(AppLocalizations.of(context).vaultTitle),
         actions: [
           IconButton(
-            tooltip: 'Lock vault',
-            icon: const Icon(Icons.lock_outline),
+            tooltip: AppLocalizations.of(context).vaultLock,
+            icon: Icon(Icons.lock_outline),
             onPressed: widget.onLock,
           ),
         ],
         bottom: TabBar(
           controller: _tab,
-          tabs: const [
-            Tab(icon: Icon(Icons.receipt_long_outlined), text: 'Expenses'),
-            Tab(icon: Icon(Icons.handshake_outlined), text: 'Contacts'),
+          tabs: [
+            Tab(icon: Icon(Icons.receipt_long_outlined), text: AppLocalizations.of(context).khataTabExpenses),
+            Tab(icon: Icon(Icons.handshake_outlined), text: AppLocalizations.of(context).vaultTabContacts),
           ],
         ),
       ),
@@ -298,7 +302,7 @@ class _VaultExpensesTab extends ConsumerWidget {
           children: [
             ListTile(
               leading: const Icon(Icons.lock_open_outlined),
-              title: const Text('Remove from Vault'),
+              title: Text(AppLocalizations.of(ctx).vaultRemove),
               onTap: () {
                 Navigator.pop(ctx);
                 ref
@@ -310,7 +314,7 @@ class _VaultExpensesTab extends ConsumerWidget {
             ListTile(
               leading: Icon(Icons.delete_outline,
                   color: Theme.of(ctx).colorScheme.error),
-              title: Text('Delete',
+              title: Text(AppLocalizations.of(ctx).delete,
                   style: TextStyle(
                       color: Theme.of(ctx).colorScheme.error)),
               onTap: () async {
@@ -418,7 +422,7 @@ class _VaultContactsTab extends ConsumerWidget {
           children: [
             ListTile(
               leading: const Icon(Icons.lock_open_outlined),
-              title: const Text('Remove from Vault'),
+              title: Text(AppLocalizations.of(ctx).vaultRemove),
               onTap: () {
                 Navigator.pop(ctx);
                 ref
@@ -429,25 +433,25 @@ class _VaultContactsTab extends ConsumerWidget {
             ),
             ListTile(
               leading: Icon(Icons.delete_outline, color: scheme.error),
-              title: Text('Delete contact',
+              title: Text(AppLocalizations.of(ctx).vaultDeleteContact,
                   style: TextStyle(color: scheme.error)),
               onTap: () async {
                 Navigator.pop(ctx);
                 final confirmed = await showDialog<bool>(
                   context: ctx,
                   builder: (d) => AlertDialog(
-                    title: const Text('Delete contact?'),
+                    title: Text(AppLocalizations.of(ctx).vaultDeleteContactQ),
                     content: Text(
                         'This will also delete all entries for ${c.name}.'),
                     actions: [
                       TextButton(
                           onPressed: () => Navigator.pop(d, false),
-                          child: const Text('Cancel')),
+                          child: Text(AppLocalizations.of(ctx).cancel)),
                       FilledButton(
                         onPressed: () => Navigator.pop(d, true),
                         style: FilledButton.styleFrom(
                             backgroundColor: scheme.error),
-                        child: const Text('Delete'),
+                        child: Text(AppLocalizations.of(ctx).delete),
                       ),
                     ],
                   ),

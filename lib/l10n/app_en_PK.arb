@@ -347,14 +347,14 @@
   "udhaarDeleteEntry": "Yeh entry mitaein?",
   "udhaarPhone": "Phone (WhatsApp ke liye)",
   "udhaarWhatsAppReminder": "WhatsApp reminder bhejein",
-  "udhaarWhatsAppLena": "Assalamu Alaikum {name} bhai, aapka Rs. {amount} mujhe lena baqi hai. - Saathi App",
+  "udhaarWhatsAppLena": "Assalamu Alaikum {name}, aapka Rs. {amount} mujhe lena baqi hai. - Saathi App",
   "@udhaarWhatsAppLena": {
     "placeholders": {
       "name": { "type": "String" },
       "amount": { "type": "String" }
     }
   },
-  "udhaarWhatsAppDena": "Assalamu Alaikum {name} bhai, mera Rs. {amount} aapko dena baqi hai. - Saathi App",
+  "udhaarWhatsAppDena": "Assalamu Alaikum {name}, mera Rs. {amount} aapko dena baqi hai. - Saathi App",
   "@udhaarWhatsAppDena": {
     "placeholders": {
       "name": { "type": "String" },
@@ -386,5 +386,449 @@
   "incomeSourceFreelance": "Freelance",
   "incomeSourceBusiness": "Business",
   "incomeSourceGift": "Tohfa",
-  "incomeSourceOther": "Doosri income"
+  "incomeSourceOther": "Doosri income",
+  "navTasks": "Tasks",
+  "vaultTitle": "Private vault",
+  "undo": "Undo",
+  "todayQuickAddHint": "Jaldi likhein — jaise 250 chai",
+  "todayQuickAddPreview": "Save hoga: Rs {amount} · {category}",
+  "@todayQuickAddPreview": {
+    "placeholders": {
+      "amount": { "type": "String" },
+      "category": { "type": "String" }
+    }
+  },
+  "todayQuickAddNeedAmount": "Pehle raqam likhein, jaise 250 chai",
+  "todayQuickAdded": "Rs {amount} add ho gaya · {category}",
+  "@todayQuickAdded": {
+    "placeholders": {
+      "amount": { "type": "String" },
+      "category": { "type": "String" }
+    }
+  },
+  "todayQuickAddedIncome": "Aamdani Rs {amount} add ho gayi · {category}",
+  "@todayQuickAddedIncome": {
+    "placeholders": {
+      "amount": { "type": "String" },
+      "category": { "type": "String" }
+    }
+  },
+  "todayPrayers": "Aaj ki namazein",
+  "todayNothingDue": "Aaj koi kaam baqi nahi",
+  "todaySeeAll": "Sab dekhein",
+  "todayMoney": "Paisay",
+  "todaySpentToday": "Aaj ka kharcha",
+  "todaySpentMonth": "Is mahine",
+  "todayBudgetLeft": "Budget baqi",
+  "todayOverBudget": "Budget se zyada",
+  "todayComingUp": "Aane wala",
+  "todayNothingComing": "Is hafte kuch nahi",
+  "todayDueTheyOwe": "{name} ko aap ke Rs {amount} dene hain",
+  "@todayDueTheyOwe": {
+    "placeholders": {
+      "name": { "type": "String" },
+      "amount": { "type": "String" }
+    }
+  },
+  "todayDueYouOwe": "Aap ko {name} ko Rs {amount} dene hain",
+  "@todayDueYouOwe": {
+    "placeholders": {
+      "name": { "type": "String" },
+      "amount": { "type": "String" }
+    }
+  },
+  "todayDueLate": "{days} din late",
+  "@todayDueLate": {
+    "placeholders": {
+      "days": { "type": "String" }
+    }
+  },
+  "todayDueToday": "aaj due",
+  "todayDueTomorrow": "kal due",
+  "todayDueInDays": "{days} din mein due",
+  "@todayDueInDays": {
+    "placeholders": {
+      "days": { "type": "String" }
+    }
+  },
+  "todayRecurring": "Baar baar {what}: Rs {amount}, {date} ko",
+  "@todayRecurring": {
+    "placeholders": {
+      "what": { "type": "String" },
+      "amount": { "type": "String" },
+      "date": { "type": "String" }
+    }
+  },
+  "todayBackupTitle": "Apna data backup karein",
+  "todayBackupBody": "Ek copy share karein taake phone kho jaye to bhi data mehfooz rahe",
+  "todayBackupNow": "Abhi backup karein",
+  "todayLater": "Baad mein",
+  "toolRoza": "Roza",
+  "toolGoals": "Bachat ke goals",
+  "toolAccounts": "Accounts",
+  "rozaTitle": "Roza",
+  "rozaOwed": "Qaza roze: {count}",
+  "@rozaOwed": {
+    "placeholders": {
+      "count": { "type": "String" }
+    }
+  },
+  "rozaHint": "Din par tap karke rakha, chhoota ya khali karein",
+  "rozaKept": "Rakha",
+  "rozaMissed": "Chhoota",
+  "rozaMadeUp": "Qaza ada",
+  "rozaMakeUpToday": "Aaj qaza roza rakha",
+  "rozaKeptThisYear": "Is saal rakhe: {count}",
+  "@rozaKeptThisYear": {
+    "placeholders": {
+      "count": { "type": "String" }
+    }
+  },
+  "save": "Save",
+  "delete": "Delete",
+  "edit": "Edit",
+  "goalsTitle": "Bachat ke goals",
+  "goalsEmpty": "Abhi koi goal nahi. Hajj, shaadi ya gaari jaisa goal add karein.",
+  "goalAdd": "Naya goal",
+  "goalName": "Goal ka naam",
+  "goalTarget": "Target raqam",
+  "goalDeadline": "Akhri tareekh (ikhtiyari)",
+  "goalAddMoney": "Raqam add karein",
+  "goalTakeOut": "Raqam nikalein",
+  "goalAmount": "Raqam",
+  "goalSaved": "Rs {target} mein se Rs {saved}",
+  "@goalSaved": {
+    "placeholders": {
+      "saved": { "type": "String" },
+      "target": { "type": "String" }
+    }
+  },
+  "goalReached": "Goal poora!",
+  "goalPerMonth": "{date} tak pohanchne ke liye har mahine taqreeban Rs {amount} bachayein",
+  "@goalPerMonth": {
+    "placeholders": {
+      "amount": { "type": "String" },
+      "date": { "type": "String" }
+    }
+  },
+  "goalDeleteConfirm": "Ye goal delete karein?",
+  "accountsTitle": "Accounts",
+  "accountsEmpty": "Wo jagahein add karein jahan aap ke paisay hain: cash, bank, wallet.",
+  "accountAdd": "Naya account",
+  "accountName": "Account ka naam",
+  "accountCash": "Cash",
+  "accountBank": "Bank",
+  "accountWallet": "Wallet",
+  "accountOpening": "Shuru ki raqam",
+  "accountTotal": "Tamam accounts ka total",
+  "accountDeleteWarn": "Entries rahengi, magar is account se juri nahi rahengi.",
+  "accountPick": "Account (ikhtiyari)",
+  "accountNone": "Koi account nahi",
+  "add": "Add",
+  "taskRemindBefore": "Pehle yaad dilayein",
+  "taskRemindNone": "Sirf waqt par",
+  "taskRemindMin": "{minutes} minute pehle",
+  "@taskRemindMin": {
+    "placeholders": {
+      "minutes": { "type": "String" }
+    }
+  },
+  "taskRemindHour": "1 ghanta pehle",
+  "taskRemindDay": "1 din pehle",
+  "taskAtTime": "Waqt par",
+  "taskAroundPrayer": "Namaz ke hisab se",
+  "taskOffsetBefore": "{minutes} min pehle",
+  "@taskOffsetBefore": {
+    "placeholders": {
+      "minutes": { "type": "String" }
+    }
+  },
+  "taskOffsetAfter": "{minutes} min baad",
+  "@taskOffsetAfter": {
+    "placeholders": {
+      "minutes": { "type": "String" }
+    }
+  },
+  "taskOffsetAt": "Namaz ke waqt",
+  "taskBillAmount": "Bill ki raqam (ikhtiyari)",
+  "taskAddToKhataTitle": "Khata mein add karein?",
+  "taskAddToKhataBody": "\"{title}\" ke Rs {amount} Khata mein add karein?",
+  "@taskAddToKhataBody": {
+    "placeholders": {
+      "amount": { "type": "String" },
+      "title": { "type": "String" }
+    }
+  },
+  "taskBillAdded": "Khata mein add ho gaya",
+  "filterAll": "Sab",
+  "udhaarSortAmount": "Sab se bari raqam pehle",
+  "settingsDataBackup": "Data aur Backup",
+  "backupExport": "Backup export karein",
+  "backupExportSub": "Apna data .saathi file ki surat mein share karein",
+  "backupRestore": "Backup restore karein",
+  "backupRestoreSub": "Maujooda data .saathi file se badlein",
+  "backupAuto": "Khud-kar backups",
+  "backupAutoSub": "Har hafte is phone mein save hote hain. Akhri: {date}",
+  "@backupAutoSub": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "backupAutoNone": "Har hafte is phone mein save hote hain. Abhi koi nahi.",
+  "settingsCountBank": "Bank transactions ko budget mein shamil karein",
+  "settingsCountBankSub": "Bank notification se milne wali adaigiyan budget aur totals mein shamil hongi",
+  "trackerMonth": "Pichle 30 din",
+  "trackerCompletion": "{percent}% namazein parhein",
+  "@trackerCompletion": {
+    "placeholders": {
+      "percent": { "type": "String" }
+    }
+  },
+  "trackerWeakest": "Mushkil namaz: {prayer} ({days} mein se {done} din)",
+  "@trackerWeakest": {
+    "placeholders": {
+      "prayer": { "type": "String" },
+      "done": { "type": "String" },
+      "days": { "type": "String" }
+    }
+  },
+  "tasbeehFree": "Free count",
+  "tasbeehSubhanallah": "SubhanAllah",
+  "tasbeehAlhamdulillah": "Alhamdulillah",
+  "tasbeehAllahuAkbar": "Allahu Akbar",
+  "tasbeehToday": "Aaj: {count}",
+  "@tasbeehToday": {
+    "placeholders": {
+      "count": { "type": "String" }
+    }
+  },
+  "tasbeehTargetReached": "Target poora",
+  "trendTitle": "Pichle mahine ke muqable mein",
+  "trendMore": "Pichle mahine se Rs {amount} zyada ({percent}%)",
+  "@trendMore": {
+    "placeholders": {
+      "amount": { "type": "String" },
+      "percent": { "type": "String" }
+    }
+  },
+  "trendLess": "Pichle mahine se Rs {amount} kam ({percent}%)",
+  "@trendLess": {
+    "placeholders": {
+      "amount": { "type": "String" },
+      "percent": { "type": "String" }
+    }
+  },
+  "trendMoreNoPercent": "Pichle mahine se Rs {amount} zyada",
+  "@trendMoreNoPercent": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "trendSame": "Pichle mahine ke barabar",
+  "trendBiggestRise": "Sab se zyada izafa: {category} (+Rs {amount})",
+  "@trendBiggestRise": {
+    "placeholders": {
+      "category": { "type": "String" },
+      "amount": { "type": "String" }
+    }
+  },
+  "taskNewList": "Nayi list",
+  "taskEditList": "List edit karein",
+  "taskDeleteList": "List delete karein",
+  "taskTabToday": "Aaj",
+  "taskTabUpcoming": "Baad Mein",
+  "taskEmptyUpcoming": "Koi upcoming task nahi",
+  "taskEmptyDone": "Abhi tak kuch complete nahi hua",
+  "taskEmptyToday": "Aaj koi kaam nahi — MashaAllah! 🎉",
+  "taskNoneToday": "Aaj ke liye koi task nahi",
+  "taskTomorrowCount": "Kal ({count})",
+  "@taskTomorrowCount": {
+    "placeholders": {
+      "count": { "type": "String" }
+    }
+  },
+  "taskOverdueCount": "Overdue ({count})",
+  "@taskOverdueCount": {
+    "placeholders": {
+      "count": { "type": "String" }
+    }
+  },
+  "taskNew": "Naya task",
+  "taskEdit": "Task edit karein",
+  "taskDeleteConfirm": "Task delete karein?",
+  "taskReopen": "Dobara kholein",
+  "taskTitleLabel": "Task ka title",
+  "taskNoteLabel": "Note (ikhtiyari)",
+  "taskListLabel": "List",
+  "taskNoList": "Koi list nahi",
+  "taskPriority": "Tarjeeh:",
+  "taskPriorityNormal": "Normal",
+  "taskPriorityHigh": "High",
+  "taskRepeat": "Repeat",
+  "taskRepeatNone": "Repeat nahi hoga",
+  "taskRepeatDaily": "Har din",
+  "taskRepeatWeekly": "Har hafte",
+  "taskRepeatMonthly": "Har mahine",
+  "taskDailyShort": "Rozana",
+  "taskWeeklyShort": "Haftawar",
+  "taskMonthlyShort": "Mahana",
+  "taskNoDueDate": "Koi tareekh nahi",
+  "taskNoTime": "Koi waqt nahi (notification nahi)",
+  "taskListName": "List ka naam",
+  "taskIcon": "Icon",
+  "taskCreate": "Banayein",
+  "khataIncoming": "Incoming",
+  "khataOutgoing": "Outgoing",
+  "khataExportPdf": "PDF export karein",
+  "khataExportCsv": "CSV export karein",
+  "khataBank": "Bank",
+  "summaryTitle": "Mahana khulasa",
+  "khataSearchEntries": "Entries talash karein…",
+  "recurringTitle": "Baar baar aane wale",
+  "khataShareWhatsApp": "WhatsApp par share karein",
+  "vaultMove": "Vault mein muntaqil karein",
+  "vaultMoveHint": "Aam list se chhupayein",
+  "vaultMoveUdhaarHint": "Aam Udhaar list se chhupayein",
+  "bankSearch": "Bank entries talash karein…",
+  "bankIn": "In",
+  "bankOut": "Out",
+  "bankAllBanks": "Tamam bank",
+  "bankEmpty": "Abhi koi bank transaction nahi",
+  "bankNoMatch": "Koi matching transaction nahi",
+  "bankAutoCaptured": "Bank notifications se khud-kar liya gaya",
+  "entryDelete": "Entry delete karein",
+  "vaultUnlockReason": "Private entries dekhne ke liye Vault kholein",
+  "vaultUnlock": "Kholein",
+  "vaultLock": "Vault band karein",
+  "vaultTabContacts": "Contacts",
+  "vaultRemove": "Vault se nikalein",
+  "vaultDeleteContact": "Contact delete karein",
+  "vaultDeleteContactQ": "Contact delete karein?",
+  "freqDaily": "Rozana",
+  "freqWeekly": "Haftawar",
+  "freqMonthly": "Mahana",
+  "freqYearly": "Salana",
+  "summaryNet": "Net balance",
+  "summaryByCategory": "Category ke hisab se kharcha",
+  "summaryNoExpenses": "Is mahine koi kharcha nahi",
+  "recurringEmpty": "Koi baar baar aane wali entry nahi",
+  "recurringEmptyHint": "Kharcha ya aamdani add karte waqt \"Repeat\" on karein",
+  "recurringStopQ": "Repeat band karein?",
+  "recurringStopNote": "Purani entries delete nahi hongi.",
+  "recurringStop": "Band karein",
+  "expensePhotoTake": "Photo lein",
+  "expensePhotoGallery": "Gallery se chunein",
+  "expenseSource": "Source",
+  "expenseRepeat": "Repeat",
+  "bankSyncTitle": "Bank sync",
+  "bankSyncAuto": "Transactions khud-kar lein",
+  "bankSyncChecking": "Check ho raha hai…",
+  "bankSyncEnableHint": "Enable karne ke liye tap karein — login nahi chahiye, sab bank apps ke saath chalta hai",
+  "bankSyncEnable": "Enable",
+  "bankSyncPaused": "Android ne rok diya hai — transactions nahi liye ja rahe",
+  "bankSyncRestart": "Restart",
+  "bankSyncWaiting": "Active — pehle bank alert ka intezar",
+  "bankSyncLast": "Active — akhri bank alert {ago}",
+  "@bankSyncLast": {
+    "placeholders": {
+      "ago": { "type": "String" }
+    }
+  },
+  "bankSyncPending": "{count} save hone ka intezar",
+  "@bankSyncPending": {
+    "placeholders": {
+      "count": { "type": "String" }
+    }
+  },
+  "bankSyncRestartHint": "Notification access mein Saathi ko band karke dobara on karein",
+  "agoJustNow": "abhi",
+  "agoMinutes": "{count} min pehle",
+  "@agoMinutes": {
+    "placeholders": {
+      "count": { "type": "String" }
+    }
+  },
+  "agoHours": "{count} ghante pehle",
+  "@agoHours": {
+    "placeholders": {
+      "count": { "type": "String" }
+    }
+  },
+  "agoDays": "{count} din pehle",
+  "@agoDays": {
+    "placeholders": {
+      "count": { "type": "String" }
+    }
+  },
+  "ramadanMubarak": "Ramadan Mubarak",
+  "ramadanTimetable": "Ramadan timetable",
+  "ramadanLabel": "Ramadan",
+  "ramadanSehriEnded": "Sehri khatam ho gayi",
+  "ramadanSehriEndsIn": "Sehri khatam hone mein {time}",
+  "@ramadanSehriEndsIn": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "ramadanStopEating": "Fajr se pehle khana band karein",
+  "ramadanIftarIn": "Iftar mein {time}",
+  "@ramadanIftarIn": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "ramadanKeepGoing": "Himmat rakhein! 💪",
+  "ramadanIftarTime": "Iftar ka waqt! 🎉",
+  "ramadanSehriIn": "Sehri mein {time}",
+  "@ramadanSehriIn": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "ramadanEnjoy": "Khana nosh farmayein",
+  "ramadanAlhamdulillah": "Alhamdulillah",
+  "ramadanSehriEndsSuffix": " · Sehri khatam",
+  "ramadanIftarSuffix": " · Iftar",
+  "imsakiyaTitle": "Ramadan timetable",
+  "imsakiyaShareFail": "Timetable share nahi ho saka",
+  "imsakiyaNoDates": "Ramadan ki tareekhein maloom nahi ho sakein",
+  "imsakiyaShare": "Image ke taur par share karein",
+  "imsakiyaDay": "Din",
+  "imsakiyaDate": "Tareekh",
+  "imsakiyaSehri": "Sehri khatam",
+  "imsakiyaIftar": "Iftar",
+  "backupFailed": "Backup nakam: {error}",
+  "@backupFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "backupNoAccess": "Chuni hui file tak rasai nahi ho saki.",
+  "backupIncomplete": "Ye file mukammal Saathi backup nahi hai.",
+  "backupNotSaathi": "Ye file Saathi ka backup nahi hai.",
+  "backupNewer": "Ye backup Saathi ke naye version ka hai. Pehle app update karein.",
+  "backupDamaged": "Ye backup file kharab hai.",
+  "backupOlder": "ek purana backup",
+  "restoreConfirmTitle": "Backup restore karein?",
+  "restoreConfirmBody": "Ye aap ka tamam maujooda data {when} se badal dega.\n\nMaujooda data ki ek hifazati copy is phone mein rakhi jayegi. Saathi baad mein band ho jayega; jari rakhne ke liye dobara kholein.",
+  "@restoreConfirmBody": {
+    "placeholders": {
+      "when": { "type": "String" }
+    }
+  },
+  "restoreButton": "Restore",
+  "restoreDoneTitle": "Backup restore ho gaya",
+  "restoreDoneBody": "Saathi ab band ho jayega. Apna data dekhne ke liye dobara kholein.",
+  "restoreFailedKept": "Restore nakam: {error}. Saathi band karke dobara kholein; aap ke data ki hifazati copy rakhi gayi hai.",
+  "@restoreFailedKept": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "restoreFailedSafe": "Restore nakam: {error}. Aap ka data tabdeel nahi hua.",
+  "@restoreFailedSafe": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  }
 }

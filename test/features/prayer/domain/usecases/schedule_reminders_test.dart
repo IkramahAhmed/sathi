@@ -31,7 +31,7 @@ void main() {
     scheduler = MockScheduler();
     scheduled = [];
     state = FakeReminderState();
-    when(() => scheduler.cancelAll()).thenAnswer((_) async {});
+    when(() => scheduler.cancelPrayerReminders()).thenAnswer((_) async {});
     when(() => scheduler.canScheduleExact()).thenAnswer((_) async => true);
     when(() => scheduler.scheduleAll(any())).thenAnswer((i) async {
       scheduled = List.of(i.positionalArguments.first as List<ScheduledAlarm>);

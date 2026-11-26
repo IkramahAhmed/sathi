@@ -9,6 +9,8 @@ import '../../app/providers.dart';
 import '../notifications/local_notification_scheduler.dart';
 import '../notifications/notification_channels.dart';
 import '../storage/app_database.dart';
+import '../../features/khata/background/budget_check.dart';
+import '../../features/khata/domain/entities/expense_category.dart';
 import 'notification_capture_service.dart';
 
 part 'notification_listener_provider.g.dart';
@@ -36,7 +38,18 @@ Future<void> drainCaptureQueue(AppDatabase db) {
 Future<void> _drainOnce(AppDatabase db) async {
   final items = await NotificationCaptureService.peekQueue();
   if (items.isEmpty) return;
-  final handled = await processQueued(items, db.expensesDao, onSaved: (tx) => unawaited(_announce(tx)));
+  final handled = await processQueued(items, db.expensesDao, onSaved: (tx, category) {
+    unawaited(_announce(tx));
+    if (!tx.isCredit) {
+      final ym = DateFormat('yyyy-MM').format(tx.timestamp);
+      unawaited(checkBudgetAndNotify(
+        db: db,
+        yearMonth: ym,
+        category: ExpenseCategory.fromString(category),
+        addedAmount: tx.amount,
+      ));
+    }
+  });
   await NotificationCaptureService.ackQueue(handled);
 }
 

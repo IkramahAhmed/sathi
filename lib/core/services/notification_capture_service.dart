@@ -1,3 +1,4 @@
+import '../../features/khata/domain/quick_add.dart';
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -137,7 +138,7 @@ class NotificationCaptureService {
 Future<List<String>> processQueued(
   List<QueuedNotification> items,
   ExpensesDao dao, {
-  void Function(NotificationTransaction tx)? onSaved,
+  void Function(NotificationTransaction tx, String category)? onSaved,
 }) async {
   final fmt = DateFormat('yyyy-MM-dd');
   final handled = <String>[];
@@ -152,17 +153,20 @@ Future<List<String>> processQueued(
       // Catch-up re-delivers whatever is still in the shade, possibly hours
       // later, so the id check matters beyond the DB's 10-minute window.
       if (tx != null && !await NotificationCaptureService.alreadyCaptured(item.id)) {
+        final text = '${item.title} ${item.body}';
+        final category =
+            tx.isCredit ? guessIncomeSource(text).name : guessExpenseCategory(text).name;
         final saved = await dao.addIfNew(ExpensesCompanion.insert(
           amount: tx.amount,
           date: fmt.format(tx.timestamp),
           type: Value(tx.isCredit ? 'income' : 'expense'),
-          category: tx.isCredit ? 'salary' : 'other',
+          category: category,
           note: Value('${tx.bankName}: ${item.body}'),
           source: const Value('bank'),
           createdAt: tx.timestamp,
         ));
         await NotificationCaptureService.markCaptured(item.id);
-        if (saved) onSaved?.call(tx);
+        if (saved) onSaved?.call(tx, category);
       }
       handled.add(item.id);
     } catch (e, st) {

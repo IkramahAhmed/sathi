@@ -7,6 +7,7 @@ import 'package:timezone/timezone.dart' as tz;
 
 import '../utils/logger.dart';
 import 'notification_channels.dart';
+import 'notification_ids.dart';
 import 'notification_scheduler.dart';
 import 'notification_tap_bus.dart';
 
@@ -52,7 +53,11 @@ class LocalNotificationScheduler implements NotificationScheduler {
       _plugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
 
   @override
-  Future<void> cancelAll() => _plugin.cancelAll();
+  Future<void> cancelPrayerReminders() async {
+    for (final request in await _plugin.pendingNotificationRequests()) {
+      if (request.id < kFeatureNotificationIdStart) await _plugin.cancel(id: request.id);
+    }
+  }
 
   @override
   Future<void> cancel(Iterable<int> ids) async {

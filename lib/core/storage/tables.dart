@@ -153,6 +153,21 @@ class Tasks extends Table {
   /// Optional list this task belongs to.
   IntColumn get listId => integer().nullable()();
 
+  /// Minutes before the due time to remind as well (0 = only at the due time).
+  IntColumn get remindBefore => integer().withDefault(const Constant(0))();
+
+  /// A prayer (`fajr`, `dhuhr`, `asr`, `maghrib`, `isha`) the due time follows, or null.
+  TextColumn get prayerAnchor => text().nullable()();
+
+  /// Minutes after the anchored prayer (negative = before it).
+  IntColumn get prayerOffset => integer().withDefault(const Constant(0))();
+
+  /// Bill amount: finishing the task offers to add it to the Khata.
+  RealColumn get amount => real().nullable()();
+
+  /// Khata category for [amount] (an `ExpenseCategory` name).
+  TextColumn get billCategory => text().nullable()();
+
   DateTimeColumn get createdAt => dateTime()();
 }
 
@@ -167,6 +182,9 @@ class RecurringExpenses extends Table {
   TextColumn get frequency => text()();
   // YYYY-MM-DD — when this rule will next fire
   TextColumn get nextDue => text()();
+  /// Day of the month the rule was created on (0 = unknown). Lets a rule created on
+  /// the 31st fire on the 28th in February and go back to the 31st afterwards.
+  IntColumn get anchorDay => integer().withDefault(const Constant(0))();
   DateTimeColumn get createdAt => dateTime()();
 }
 
@@ -196,6 +214,48 @@ class Expenses extends Table {
   /// `manual` (user-entered) or `bank` (auto-captured from notification).
   TextColumn get source => text().withDefault(const Constant('manual'))();
 
+  /// The [Accounts] row this entry belongs to, or null when none was chosen.
+  IntColumn get accountId => integer().nullable()();
+
   /// When this row was created (UTC), used for ordering within a day.
   DateTimeColumn get createdAt => dateTime()();
+}
+
+/// A place money is kept: cash in hand, a bank account or a mobile wallet.
+class Accounts extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get name => text()();
+
+  /// `cash` | `bank` | `wallet`.
+  TextColumn get kind => text().withDefault(const Constant('cash'))();
+  RealColumn get openingBalance => real().withDefault(const Constant(0))();
+  DateTimeColumn get createdAt => dateTime()();
+}
+
+/// Something being saved for (Hajj, wedding, a car).
+class SavingsGoals extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get name => text()();
+  RealColumn get target => real()();
+  RealColumn get saved => real().withDefault(const Constant(0))();
+
+  /// `yyyy-MM-dd` or null.
+  TextColumn get deadline => text().nullable()();
+  DateTimeColumn get createdAt => dateTime()();
+}
+
+/// One row per date a fast was kept, missed, or made up.
+class FastLogs extends Table {
+  IntColumn get id => integer().autoIncrement()();
+
+  /// Calendar date as `yyyy-MM-dd`.
+  TextColumn get date => text()();
+
+  /// `kept` | `missed` | `made_up` (a missed fast kept on another day).
+  TextColumn get status => text()();
+
+  @override
+  List<Set<Column<Object>>> get uniqueKeys => [
+        {date},
+      ];
 }

@@ -10,6 +10,8 @@ import '../../../../l10n/app_localizations.dart';
 import '../../domain/overdue.dart';
 import 'udhaar_contact_screen.dart';
 
+enum _UdhaarFilter { all, lena, dena, late }
+
 class UdhaarListScreen extends ConsumerStatefulWidget {
   const UdhaarListScreen({super.key, this.embedded = false});
 
@@ -23,6 +25,8 @@ class UdhaarListScreen extends ConsumerStatefulWidget {
 class _UdhaarListScreenState extends ConsumerState<UdhaarListScreen> {
   final _search = TextEditingController();
   String _query = '';
+  _UdhaarFilter _filter = _UdhaarFilter.all;
+  bool _byAmount = false;
 
   @override
   void dispose() {
@@ -125,7 +129,7 @@ class _UdhaarListScreenState extends ConsumerState<UdhaarListScreen> {
             balances[e.contactId] =
                 (balances[e.contactId] ?? 0) + (e.type == 'gave' ? e.amount : -e.amount);
           }
-          final overdue = overdueByContact(entries);
+          final allOverdue = overdueByContact(entries);
           return StreamBuilder<List<UdhaarContact>>(
             stream: db.udhaarDao.watchContacts(),
             builder: (context, snap) {
@@ -133,6 +137,10 @@ class _UdhaarListScreenState extends ConsumerState<UdhaarListScreen> {
                 return const Center(child: CircularProgressIndicator());
               }
               final all = snap.data!;
+              final overdue = {
+                for (final c in all)
+                  if (allOverdue.containsKey(c.id)) c.id: allOverdue[c.id]!,
+              };
               final filtered = _query.isEmpty
                   ? all
                   : all
@@ -141,6 +149,19 @@ class _UdhaarListScreenState extends ConsumerState<UdhaarListScreen> {
 
               if (all.isEmpty) {
                 return _EmptyState(l10n: l10n, onAdd: _addContact);
+              }
+
+              final rows = filtered.where((c) {
+                final b = balances[c.id] ?? 0;
+                return switch (_filter) {
+                  _UdhaarFilter.all => true,
+                  _UdhaarFilter.lena => b > 0,
+                  _UdhaarFilter.dena => b < 0,
+                  _UdhaarFilter.late => overdue.containsKey(c.id),
+                };
+              }).toList();
+              if (_byAmount) {
+                rows.sort((a, b) => (balances[b.id] ?? 0).abs().compareTo((balances[a.id] ?? 0).abs()));
               }
 
               // Summary row — only count balances for contacts visible in
@@ -169,13 +190,48 @@ class _UdhaarListScreenState extends ConsumerState<UdhaarListScreen> {
                       l10n: l10n,
                       scheme: scheme,
                     ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(12, 8, 4, 0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children: [
+                                for (final f in _UdhaarFilter.values)
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 8),
+                                    child: ChoiceChip(
+                                      label: Text(switch (f) {
+                                        _UdhaarFilter.all => l10n.filterAll,
+                                        _UdhaarFilter.lena => l10n.udhaarOwes,
+                                        _UdhaarFilter.dena => l10n.udhaarYouOwe,
+                                        _UdhaarFilter.late => l10n.udhaarLateTitle,
+                                      }),
+                                      selected: _filter == f,
+                                      onSelected: (_) => setState(() => _filter = f),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                          tooltip: l10n.udhaarSortAmount,
+                          icon: Icon(Icons.sort, color: _byAmount ? scheme.primary : null),
+                          onPressed: () => setState(() => _byAmount = !_byAmount),
+                        ),
+                      ],
+                    ),
+                  ),
                   Expanded(
                     child: ListView.separated(
-                      itemCount: filtered.length,
+                      itemCount: rows.length,
                       separatorBuilder: (_, __) =>
                           const Divider(height: 1, indent: 72),
                       itemBuilder: (_, i) {
-                        final c = filtered[i];
+                        final c = rows[i];
                         final bal = balances[c.id] ?? 0;
                         return _ContactTile(
                           contact: c,
@@ -364,8 +420,8 @@ class _ContactTile extends StatelessWidget {
             children: [
               ListTile(
                 leading: const Icon(Icons.lock_outlined),
-                title: const Text('Move to Vault'),
-                subtitle: const Text('Hide from normal Udhaar view'),
+                title: Text(l10n.vaultMove),
+                subtitle: Text(l10n.vaultMoveUdhaarHint),
                 onTap: () {
                   Navigator.pop(context);
                   onMoveToVault();

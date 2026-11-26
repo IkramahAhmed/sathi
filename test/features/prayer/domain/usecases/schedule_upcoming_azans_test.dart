@@ -24,7 +24,7 @@ void main() {
   setUp(() {
     scheduler = MockScheduler();
     captured = [];
-    when(() => scheduler.cancelAll()).thenAnswer((_) async {});
+    when(() => scheduler.cancelPrayerReminders()).thenAnswer((_) async {});
     when(() => scheduler.canScheduleExact()).thenAnswer((_) async => true);
     when(() => scheduler.scheduleAll(any())).thenAnswer((invocation) async {
       captured = List.of(invocation.positionalArguments.first as List<ScheduledAlarm>);
@@ -66,7 +66,7 @@ void main() {
   test('cancels first, then schedules, and skips past prayers', () async {
     final report = (await build(PrayerSettings.defaults(), noonKarachi)()).valueOrNull!;
 
-    verifyInOrder([() => scheduler.cancelAll(), () => scheduler.scheduleAll(any())]);
+    verifyInOrder([() => scheduler.cancelPrayerReminders(), () => scheduler.scheduleAll(any())]);
     expect(report.scheduledCount, captured.length);
     expect(captured.every((a) => a.at.isAfter(noonKarachi)), isTrue);
 
@@ -135,7 +135,7 @@ void main() {
     );
     final report = (await build(off, noonKarachi)()).valueOrNull!;
     expect(report.scheduledCount, 0);
-    verify(() => scheduler.cancelAll()).called(1);
+    verify(() => scheduler.cancelPrayerReminders()).called(1);
     verifyNever(() => scheduler.scheduleAll(any()));
   });
 

@@ -364,14 +364,14 @@
   "udhaarDeleteEntry": "یہ اندراج حذف کریں؟",
   "udhaarPhone": "فون (واٹس ایپ کے لیے)",
   "udhaarWhatsAppReminder": "واٹس ایپ یاد دہانی",
-  "udhaarWhatsAppLena": "السلام علیکم {name} بھائی، آپ کا Rs. {amount} مجھے لینا باقی ہے۔ - ساتھی ایپ",
+  "udhaarWhatsAppLena": "السلام علیکم {name}، آپ کا Rs. {amount} مجھے لینا باقی ہے۔ - ساتھی ایپ",
   "@udhaarWhatsAppLena": {
     "placeholders": {
       "name": { "type": "String" },
       "amount": { "type": "String" }
     }
   },
-  "udhaarWhatsAppDena": "السلام علیکم {name} بھائی، میرا Rs. {amount} آپ کو دینا باقی ہے۔ - ساتھی ایپ",
+  "udhaarWhatsAppDena": "السلام علیکم {name}، میرا Rs. {amount} آپ کو دینا باقی ہے۔ - ساتھی ایپ",
   "@udhaarWhatsAppDena": {
     "placeholders": {
       "name": { "type": "String" },
@@ -403,5 +403,449 @@
   "incomeSourceFreelance": "فری لانس",
   "incomeSourceBusiness": "کاروبار",
   "incomeSourceGift": "تحفہ",
-  "incomeSourceOther": "دیگر آمدنی"
+  "incomeSourceOther": "دیگر آمدنی",
+  "navTasks": "ٹاسکس",
+  "vaultTitle": "نجی والٹ",
+  "undo": "واپس",
+  "todayQuickAddHint": "فوری اندراج — مثلاً 250 چائے",
+  "todayQuickAddPreview": "محفوظ ہوگا: Rs {amount} · {category}",
+  "@todayQuickAddPreview": {
+    "placeholders": {
+      "amount": { "type": "String" },
+      "category": { "type": "String" }
+    }
+  },
+  "todayQuickAddNeedAmount": "پہلے رقم لکھیں، مثلاً 250 چائے",
+  "todayQuickAdded": "Rs {amount} شامل ہو گیا · {category}",
+  "@todayQuickAdded": {
+    "placeholders": {
+      "amount": { "type": "String" },
+      "category": { "type": "String" }
+    }
+  },
+  "todayQuickAddedIncome": "آمدنی Rs {amount} شامل ہو گئی · {category}",
+  "@todayQuickAddedIncome": {
+    "placeholders": {
+      "amount": { "type": "String" },
+      "category": { "type": "String" }
+    }
+  },
+  "todayPrayers": "آج کی نمازیں",
+  "todayNothingDue": "آج کوئی کام باقی نہیں",
+  "todaySeeAll": "سب دیکھیں",
+  "todayMoney": "پیسے",
+  "todaySpentToday": "آج کا خرچ",
+  "todaySpentMonth": "اس مہینے",
+  "todayBudgetLeft": "بجٹ باقی",
+  "todayOverBudget": "بجٹ سے زیادہ",
+  "todayComingUp": "آنے والا",
+  "todayNothingComing": "اس ہفتے کچھ نہیں",
+  "todayDueTheyOwe": "{name} کو آپ کے Rs {amount} دینے ہیں",
+  "@todayDueTheyOwe": {
+    "placeholders": {
+      "name": { "type": "String" },
+      "amount": { "type": "String" }
+    }
+  },
+  "todayDueYouOwe": "آپ کو {name} کو Rs {amount} دینے ہیں",
+  "@todayDueYouOwe": {
+    "placeholders": {
+      "name": { "type": "String" },
+      "amount": { "type": "String" }
+    }
+  },
+  "todayDueLate": "{days} دن لیٹ",
+  "@todayDueLate": {
+    "placeholders": {
+      "days": { "type": "String" }
+    }
+  },
+  "todayDueToday": "آج واجب",
+  "todayDueTomorrow": "کل واجب",
+  "todayDueInDays": "{days} دن میں واجب",
+  "@todayDueInDays": {
+    "placeholders": {
+      "days": { "type": "String" }
+    }
+  },
+  "todayRecurring": "بار بار آنے والا {what}: Rs {amount}، {date} کو",
+  "@todayRecurring": {
+    "placeholders": {
+      "what": { "type": "String" },
+      "amount": { "type": "String" },
+      "date": { "type": "String" }
+    }
+  },
+  "todayBackupTitle": "اپنا ڈیٹا بیک اپ کریں",
+  "todayBackupBody": "ایک کاپی شیئر کریں تاکہ فون کھو جانے پر بھی ڈیٹا محفوظ رہے",
+  "todayBackupNow": "ابھی بیک اپ کریں",
+  "todayLater": "بعد میں",
+  "toolRoza": "روزہ",
+  "toolGoals": "بچت کے مقاصد",
+  "toolAccounts": "اکاؤنٹس",
+  "rozaTitle": "روزہ",
+  "rozaOwed": "قضا روزے: {count}",
+  "@rozaOwed": {
+    "placeholders": {
+      "count": { "type": "String" }
+    }
+  },
+  "rozaHint": "دن پر ٹیپ کر کے رکھا، چھوٹا یا خالی کریں",
+  "rozaKept": "رکھا",
+  "rozaMissed": "چھوٹا",
+  "rozaMadeUp": "قضا ادا",
+  "rozaMakeUpToday": "آج قضا روزہ رکھا",
+  "rozaKeptThisYear": "اس سال رکھے: {count}",
+  "@rozaKeptThisYear": {
+    "placeholders": {
+      "count": { "type": "String" }
+    }
+  },
+  "save": "محفوظ کریں",
+  "delete": "حذف کریں",
+  "edit": "ترمیم",
+  "goalsTitle": "بچت کے مقاصد",
+  "goalsEmpty": "ابھی کوئی مقصد نہیں۔ حج، شادی یا گاڑی جیسا کوئی مقصد شامل کریں۔",
+  "goalAdd": "نیا مقصد",
+  "goalName": "مقصد کا نام",
+  "goalTarget": "مطلوبہ رقم",
+  "goalDeadline": "آخری تاریخ (اختیاری)",
+  "goalAddMoney": "رقم شامل کریں",
+  "goalTakeOut": "رقم نکالیں",
+  "goalAmount": "رقم",
+  "goalSaved": "Rs {target} میں سے Rs {saved}",
+  "@goalSaved": {
+    "placeholders": {
+      "saved": { "type": "String" },
+      "target": { "type": "String" }
+    }
+  },
+  "goalReached": "مقصد حاصل!",
+  "goalPerMonth": "{date} تک پہنچنے کے لیے ہر مہینے تقریباً Rs {amount} بچائیں",
+  "@goalPerMonth": {
+    "placeholders": {
+      "amount": { "type": "String" },
+      "date": { "type": "String" }
+    }
+  },
+  "goalDeleteConfirm": "یہ مقصد حذف کریں؟",
+  "accountsTitle": "اکاؤنٹس",
+  "accountsEmpty": "وہ جگہیں شامل کریں جہاں آپ کے پیسے ہیں: نقد، بینک، والیٹ۔",
+  "accountAdd": "نیا اکاؤنٹ",
+  "accountName": "اکاؤنٹ کا نام",
+  "accountCash": "نقد",
+  "accountBank": "بینک",
+  "accountWallet": "والیٹ",
+  "accountOpening": "ابتدائی رقم",
+  "accountTotal": "تمام اکاؤنٹس کا مجموعہ",
+  "accountDeleteWarn": "اندراجات رہیں گے مگر اس اکاؤنٹ سے جڑے نہیں رہیں گے۔",
+  "accountPick": "اکاؤنٹ (اختیاری)",
+  "accountNone": "کوئی اکاؤنٹ نہیں",
+  "add": "شامل کریں",
+  "taskRemindBefore": "پہلے یاد دلائیں",
+  "taskRemindNone": "صرف وقت پر",
+  "taskRemindMin": "{minutes} منٹ پہلے",
+  "@taskRemindMin": {
+    "placeholders": {
+      "minutes": { "type": "String" }
+    }
+  },
+  "taskRemindHour": "1 گھنٹہ پہلے",
+  "taskRemindDay": "1 دن پہلے",
+  "taskAtTime": "وقت پر",
+  "taskAroundPrayer": "نماز کے حساب سے",
+  "taskOffsetBefore": "{minutes} منٹ پہلے",
+  "@taskOffsetBefore": {
+    "placeholders": {
+      "minutes": { "type": "String" }
+    }
+  },
+  "taskOffsetAfter": "{minutes} منٹ بعد",
+  "@taskOffsetAfter": {
+    "placeholders": {
+      "minutes": { "type": "String" }
+    }
+  },
+  "taskOffsetAt": "نماز کے وقت",
+  "taskBillAmount": "بل کی رقم (اختیاری)",
+  "taskAddToKhataTitle": "کھاتے میں شامل کریں؟",
+  "taskAddToKhataBody": "\"{title}\" کے Rs {amount} کھاتے میں شامل کریں؟",
+  "@taskAddToKhataBody": {
+    "placeholders": {
+      "amount": { "type": "String" },
+      "title": { "type": "String" }
+    }
+  },
+  "taskBillAdded": "کھاتے میں شامل ہو گیا",
+  "filterAll": "سب",
+  "udhaarSortAmount": "سب سے بڑی رقم پہلے",
+  "settingsDataBackup": "ڈیٹا اور بیک اپ",
+  "backupExport": "بیک اپ برآمد کریں",
+  "backupExportSub": "اپنا ڈیٹا .saathi فائل کی صورت میں شیئر کریں",
+  "backupRestore": "بیک اپ بحال کریں",
+  "backupRestoreSub": "موجودہ ڈیٹا .saathi فائل سے بدلیں",
+  "backupAuto": "خودکار بیک اپ",
+  "backupAutoSub": "ہر ہفتے اس فون میں محفوظ ہوتے ہیں۔ آخری: {date}",
+  "@backupAutoSub": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "backupAutoNone": "ہر ہفتے اس فون میں محفوظ ہوتے ہیں۔ ابھی کوئی نہیں۔",
+  "settingsCountBank": "بینک لین دین کو بجٹ میں شمار کریں",
+  "settingsCountBankSub": "بینک نوٹیفکیشن سے ملنے والی ادائیگیاں بجٹ اور مجموعے میں شامل ہوں گی",
+  "trackerMonth": "پچھلے 30 دن",
+  "trackerCompletion": "{percent}% نمازیں پڑھیں",
+  "@trackerCompletion": {
+    "placeholders": {
+      "percent": { "type": "String" }
+    }
+  },
+  "trackerWeakest": "مشکل ترین نماز: {prayer} ({days} میں سے {done} دن)",
+  "@trackerWeakest": {
+    "placeholders": {
+      "prayer": { "type": "String" },
+      "done": { "type": "String" },
+      "days": { "type": "String" }
+    }
+  },
+  "tasbeehFree": "آزاد گنتی",
+  "tasbeehSubhanallah": "سبحان اللہ",
+  "tasbeehAlhamdulillah": "الحمد للہ",
+  "tasbeehAllahuAkbar": "اللہ اکبر",
+  "tasbeehToday": "آج: {count}",
+  "@tasbeehToday": {
+    "placeholders": {
+      "count": { "type": "String" }
+    }
+  },
+  "tasbeehTargetReached": "ہدف مکمل",
+  "trendTitle": "پچھلے مہینے کے مقابلے میں",
+  "trendMore": "پچھلے مہینے سے Rs {amount} زیادہ ({percent}%)",
+  "@trendMore": {
+    "placeholders": {
+      "amount": { "type": "String" },
+      "percent": { "type": "String" }
+    }
+  },
+  "trendLess": "پچھلے مہینے سے Rs {amount} کم ({percent}%)",
+  "@trendLess": {
+    "placeholders": {
+      "amount": { "type": "String" },
+      "percent": { "type": "String" }
+    }
+  },
+  "trendMoreNoPercent": "پچھلے مہینے سے Rs {amount} زیادہ",
+  "@trendMoreNoPercent": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "trendSame": "پچھلے مہینے کے برابر",
+  "trendBiggestRise": "سب سے زیادہ اضافہ: {category} (+Rs {amount})",
+  "@trendBiggestRise": {
+    "placeholders": {
+      "category": { "type": "String" },
+      "amount": { "type": "String" }
+    }
+  },
+  "taskNewList": "نئی فہرست",
+  "taskEditList": "فہرست میں ترمیم",
+  "taskDeleteList": "فہرست حذف کریں",
+  "taskTabToday": "آج",
+  "taskTabUpcoming": "آنے والے",
+  "taskEmptyUpcoming": "کوئی آنے والا کام نہیں",
+  "taskEmptyDone": "ابھی تک کچھ مکمل نہیں ہوا",
+  "taskEmptyToday": "آج کوئی کام نہیں — ماشاءاللہ! 🎉",
+  "taskNoneToday": "آج کے لیے کوئی کام نہیں",
+  "taskTomorrowCount": "کل ({count})",
+  "@taskTomorrowCount": {
+    "placeholders": {
+      "count": { "type": "String" }
+    }
+  },
+  "taskOverdueCount": "تاخیر شدہ ({count})",
+  "@taskOverdueCount": {
+    "placeholders": {
+      "count": { "type": "String" }
+    }
+  },
+  "taskNew": "نیا کام",
+  "taskEdit": "کام میں ترمیم",
+  "taskDeleteConfirm": "کام حذف کریں؟",
+  "taskReopen": "دوبارہ کھولیں",
+  "taskTitleLabel": "کام کا عنوان",
+  "taskNoteLabel": "نوٹ (اختیاری)",
+  "taskListLabel": "فہرست",
+  "taskNoList": "کوئی فہرست نہیں",
+  "taskPriority": "ترجیح:",
+  "taskPriorityNormal": "عام",
+  "taskPriorityHigh": "اہم",
+  "taskRepeat": "دہرائیں",
+  "taskRepeatNone": "نہیں دہرائے گا",
+  "taskRepeatDaily": "ہر دن",
+  "taskRepeatWeekly": "ہر ہفتے",
+  "taskRepeatMonthly": "ہر مہینے",
+  "taskDailyShort": "روزانہ",
+  "taskWeeklyShort": "ہفتہ وار",
+  "taskMonthlyShort": "ماہانہ",
+  "taskNoDueDate": "کوئی تاریخ نہیں",
+  "taskNoTime": "کوئی وقت نہیں (نوٹیفکیشن نہیں)",
+  "taskListName": "فہرست کا نام",
+  "taskIcon": "آئیکن",
+  "taskCreate": "بنائیں",
+  "khataIncoming": "آمد",
+  "khataOutgoing": "روانگی",
+  "khataExportPdf": "PDF برآمد کریں",
+  "khataExportCsv": "CSV برآمد کریں",
+  "khataBank": "بینک",
+  "summaryTitle": "ماہانہ خلاصہ",
+  "khataSearchEntries": "اندراجات تلاش کریں…",
+  "recurringTitle": "بار بار آنے والے",
+  "khataShareWhatsApp": "واٹس ایپ پر شیئر کریں",
+  "vaultMove": "والٹ میں منتقل کریں",
+  "vaultMoveHint": "عام فہرست سے چھپائیں",
+  "vaultMoveUdhaarHint": "عام ادھار فہرست سے چھپائیں",
+  "bankSearch": "بینک اندراجات تلاش کریں…",
+  "bankIn": "آمد",
+  "bankOut": "روانگی",
+  "bankAllBanks": "تمام بینک",
+  "bankEmpty": "ابھی کوئی بینک لین دین نہیں",
+  "bankNoMatch": "کوئی مماثل لین دین نہیں",
+  "bankAutoCaptured": "بینک نوٹیفکیشنز سے خودکار طور پر لیا گیا",
+  "entryDelete": "اندراج حذف کریں",
+  "vaultUnlockReason": "نجی اندراجات دیکھنے کے لیے والٹ کھولیں",
+  "vaultUnlock": "کھولیں",
+  "vaultLock": "والٹ بند کریں",
+  "vaultTabContacts": "رابطے",
+  "vaultRemove": "والٹ سے نکالیں",
+  "vaultDeleteContact": "رابطہ حذف کریں",
+  "vaultDeleteContactQ": "رابطہ حذف کریں؟",
+  "freqDaily": "روزانہ",
+  "freqWeekly": "ہفتہ وار",
+  "freqMonthly": "ماہانہ",
+  "freqYearly": "سالانہ",
+  "summaryNet": "خالص بیلنس",
+  "summaryByCategory": "زمرے کے لحاظ سے خرچ",
+  "summaryNoExpenses": "اس مہینے کوئی خرچ نہیں",
+  "recurringEmpty": "کوئی بار بار آنے والا اندراج نہیں",
+  "recurringEmptyHint": "خرچ یا آمدنی شامل کرتے وقت \"دہرائیں\" آن کریں",
+  "recurringStopQ": "دہرانا بند کریں؟",
+  "recurringStopNote": "پرانے اندراجات حذف نہیں ہوں گے۔",
+  "recurringStop": "بند کریں",
+  "expensePhotoTake": "تصویر لیں",
+  "expensePhotoGallery": "گیلری سے چنیں",
+  "expenseSource": "ذریعہ",
+  "expenseRepeat": "دہرائیں",
+  "bankSyncTitle": "بینک سنک",
+  "bankSyncAuto": "لین دین خودکار طور پر لیں",
+  "bankSyncChecking": "جانچ جاری ہے…",
+  "bankSyncEnableHint": "آن کرنے کے لیے ٹیپ کریں — لاگ اِن نہیں چاہیے، تمام بینک ایپس کے ساتھ کام کرتا ہے",
+  "bankSyncEnable": "آن کریں",
+  "bankSyncPaused": "اینڈرائیڈ نے روک دیا ہے — لین دین نہیں لیے جا رہے",
+  "bankSyncRestart": "دوبارہ شروع کریں",
+  "bankSyncWaiting": "فعال — پہلے بینک الرٹ کا انتظار",
+  "bankSyncLast": "فعال — آخری بینک الرٹ {ago}",
+  "@bankSyncLast": {
+    "placeholders": {
+      "ago": { "type": "String" }
+    }
+  },
+  "bankSyncPending": "{count} محفوظ ہونے کے منتظر",
+  "@bankSyncPending": {
+    "placeholders": {
+      "count": { "type": "String" }
+    }
+  },
+  "bankSyncRestartHint": "نوٹیفکیشن رسائی میں ساتھی کو بند کر کے دوبارہ آن کریں",
+  "agoJustNow": "ابھی",
+  "agoMinutes": "{count} منٹ پہلے",
+  "@agoMinutes": {
+    "placeholders": {
+      "count": { "type": "String" }
+    }
+  },
+  "agoHours": "{count} گھنٹے پہلے",
+  "@agoHours": {
+    "placeholders": {
+      "count": { "type": "String" }
+    }
+  },
+  "agoDays": "{count} دن پہلے",
+  "@agoDays": {
+    "placeholders": {
+      "count": { "type": "String" }
+    }
+  },
+  "ramadanMubarak": "رمضان مبارک",
+  "ramadanTimetable": "رمضان ٹائم ٹیبل",
+  "ramadanLabel": "رمضان",
+  "ramadanSehriEnded": "سحری ختم ہو گئی",
+  "ramadanSehriEndsIn": "سحری ختم ہونے میں {time}",
+  "@ramadanSehriEndsIn": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "ramadanStopEating": "فجر سے پہلے کھانا بند کریں",
+  "ramadanIftarIn": "افطار میں {time}",
+  "@ramadanIftarIn": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "ramadanKeepGoing": "ہمت رکھیں! 💪",
+  "ramadanIftarTime": "افطار کا وقت! 🎉",
+  "ramadanSehriIn": "سحری میں {time}",
+  "@ramadanSehriIn": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "ramadanEnjoy": "کھانا نوش فرمائیں",
+  "ramadanAlhamdulillah": "الحمد للہ",
+  "ramadanSehriEndsSuffix": " · سحری ختم",
+  "ramadanIftarSuffix": " · افطار",
+  "imsakiyaTitle": "رمضان ٹائم ٹیبل",
+  "imsakiyaShareFail": "ٹائم ٹیبل شیئر نہیں ہو سکا",
+  "imsakiyaNoDates": "رمضان کی تاریخیں معلوم نہیں ہو سکیں",
+  "imsakiyaShare": "تصویر کے طور پر شیئر کریں",
+  "imsakiyaDay": "دن",
+  "imsakiyaDate": "تاریخ",
+  "imsakiyaSehri": "سحری ختم",
+  "imsakiyaIftar": "افطار",
+  "backupFailed": "بیک اپ ناکام: {error}",
+  "@backupFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "backupNoAccess": "منتخب فائل تک رسائی نہیں ہو سکی۔",
+  "backupIncomplete": "یہ فائل مکمل ساتھی بیک اپ نہیں ہے۔",
+  "backupNotSaathi": "یہ فائل ساتھی کا بیک اپ نہیں ہے۔",
+  "backupNewer": "یہ بیک اپ ساتھی کے نئے ورژن کا ہے۔ پہلے ایپ اپ ڈیٹ کریں۔",
+  "backupDamaged": "یہ بیک اپ فائل خراب ہے۔",
+  "backupOlder": "ایک پرانا بیک اپ",
+  "restoreConfirmTitle": "بیک اپ بحال کریں؟",
+  "restoreConfirmBody": "یہ آپ کا تمام موجودہ ڈیٹا {when} سے بدل دے گا۔\n\nموجودہ ڈیٹا کی ایک حفاظتی کاپی اس فون میں رکھی جائے گی۔ ساتھی بعد میں بند ہو جائے گا؛ جاری رکھنے کے لیے دوبارہ کھولیں۔",
+  "@restoreConfirmBody": {
+    "placeholders": {
+      "when": { "type": "String" }
+    }
+  },
+  "restoreButton": "بحال کریں",
+  "restoreDoneTitle": "بیک اپ بحال ہو گیا",
+  "restoreDoneBody": "ساتھی اب بند ہو جائے گا۔ اپنا ڈیٹا دیکھنے کے لیے دوبارہ کھولیں۔",
+  "restoreFailedKept": "بحالی ناکام: {error}۔ ساتھی بند کر کے دوبارہ کھولیں؛ آپ کے ڈیٹا کی حفاظتی کاپی رکھی گئی ہے۔",
+  "@restoreFailedKept": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "restoreFailedSafe": "بحالی ناکام: {error}۔ آپ کا ڈیٹا تبدیل نہیں ہوا۔",
+  "@restoreFailedSafe": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  }
 }

@@ -126,3 +126,42 @@ class RecurringExpensesDaoManager {
         _db.recurringExpenses,
       );
 }
+
+mixin _$AccountsDaoMixin on DatabaseAccessor<AppDatabase> {
+  $AccountsTable get accounts => attachedDatabase.accounts;
+  $ExpensesTable get expenses => attachedDatabase.expenses;
+  AccountsDaoManager get managers => AccountsDaoManager(this);
+}
+
+class AccountsDaoManager {
+  final _$AccountsDaoMixin _db;
+  AccountsDaoManager(this._db);
+  $$AccountsTableTableManager get accounts =>
+      $$AccountsTableTableManager(_db.attachedDatabase, _db.accounts);
+  $$ExpensesTableTableManager get expenses =>
+      $$ExpensesTableTableManager(_db.attachedDatabase, _db.expenses);
+}
+
+mixin _$SavingsGoalsDaoMixin on DatabaseAccessor<AppDatabase> {
+  $SavingsGoalsTable get savingsGoals => attachedDatabase.savingsGoals;
+  SavingsGoalsDaoManager get managers => SavingsGoalsDaoManager(this);
+}
+
+class SavingsGoalsDaoManager {
+  final _$SavingsGoalsDaoMixin _db;
+  SavingsGoalsDaoManager(this._db);
+  $$SavingsGoalsTableTableManager get savingsGoals =>
+      $$SavingsGoalsTableTableManager(_db.attachedDatabase, _db.savingsGoals);
+}
+
+mixin _$FastLogsDaoMixin on DatabaseAccessor<AppDatabase> {
+  $FastLogsTable get fastLogs => attachedDatabase.fastLogs;
+  FastLogsDaoManager get managers => FastLogsDaoManager(this);
+}
+
+class FastLogsDaoManager {
+  final _$FastLogsDaoMixin _db;
+  FastLogsDaoManager(this._db);
+  $$FastLogsTableTableManager get fastLogs =>
+      $$FastLogsTableTableManager(_db.attachedDatabase, _db.fastLogs);
+}

@@ -6,10 +6,14 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../core/backup/backup_restore_service.dart';
 import '../core/notifications/notification_tap_bus.dart';
 import '../core/services/notification_listener_provider.dart';
 import '../features/prayer/domain/usecases/handle_reminder_action.dart';
+import '../features/tasks/data/task_reminders.dart';
+import '../features/tasks/presentation/task_providers.dart';
 import '../features/udhaar/background/udhaar_overdue_check.dart';
+import '../features/udhaar/domain/phone.dart';
 import '../core/utils/logger.dart';
 import '../features/prayer/presentation/l10n_helpers.dart';
 import '../features/prayer/presentation/providers/permissions_controller.dart';
@@ -71,6 +75,11 @@ class _SaathiAppState extends ConsumerState<SaathiApp> with WidgetsBindingObserv
     await ref.read(settingsControllerProvider.future);
     await ref.read(permissionsControllerProvider.notifier).refresh();
     await ref.read(rescheduleControllerProvider.notifier).reschedule();
+    final db = ref.read(appDatabaseProvider);
+    // A button tapped while the app was closed was handled in another isolate.
+    db.markTablesUpdated([db.tasks]);
+    unawaited(rescheduleAllTaskReminders(db, prayerTime: ref.read(prayerTimeResolverProvider)));
+    unawaited(BackupRestoreService.autoBackupIfDue(db, ref.read(sharedPreferencesProvider)));
     unawaited(ref.read(prayerActionsProvider).reconcileQaza());
     try {
       await ref.read(settingsControllerProvider.notifier).followIfMoved();
@@ -83,6 +92,14 @@ class _SaathiAppState extends ConsumerState<SaathiApp> with WidgetsBindingObserv
 
   /// Handles a tap on a notification or one of its buttons.
   Future<void> _onTap(NotificationTap tap) async {
+    // Task reminders: Done / Snooze buttons, or a tap that opens the task list.
+    if (taskIdFromPayload(tap.payload) != null) {
+      await handleTaskNotificationAction(ref.read(appDatabaseProvider),
+          actionId: tap.actionId, payload: tap.payload);
+      if (tap.actionId == null) ref.read(routerProvider).go(Routes.tasks);
+      return;
+    }
+
     // Handle "Send reminder" WhatsApp action from Udhaar overdue notifications.
     if (tap.actionId == kUdhaarWaActionId) {
       await _openWhatsAppFromPayload(tap.payload);
@@ -135,11 +152,11 @@ class _SaathiAppState extends ConsumerState<SaathiApp> with WidgetsBindingObserv
       if (balance <= 0) return;
 
       final amountStr = balance.toStringAsFixed(0);
-      final message = 'Assalam o Alaikum $name bhai, $amountStr Rs wapis karne ka waqt aa gaya hai. Shukriya!';
+      final message = 'Assalam o Alaikum $name, $amountStr Rs wapis karne ka waqt aa gaya hai. Shukriya!';
 
-      if (phone.isNotEmpty) {
-        final normalized = phone.startsWith('0') ? '92${phone.substring(1)}' : phone;
-        final uri = Uri.parse('https://wa.me/$normalized?text=${Uri.encodeComponent(message)}');
+      final number = whatsAppNumber(phone);
+      if (number != null) {
+        final uri = Uri.parse('https://wa.me/$number?text=${Uri.encodeComponent(message)}');
         if (await canLaunchUrl(uri)) {
           await launchUrl(uri, mode: LaunchMode.externalApplication);
           return;

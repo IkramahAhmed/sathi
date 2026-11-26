@@ -21,7 +21,7 @@ class RecurringScreen extends ConsumerWidget {
     final text = Theme.of(context).textTheme;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Recurring')),
+      appBar: AppBar(title: Text(AppLocalizations.of(context).recurringTitle)),
       body: StreamBuilder<List<RecurringExpense>>(
         stream: stream,
         builder: (context, snap) {
@@ -34,12 +34,12 @@ class RecurringScreen extends ConsumerWidget {
                   Icon(Icons.repeat_outlined,
                       size: 56, color: scheme.outlineVariant),
                   const SizedBox(height: 12),
-                  Text('No recurring entries',
+                  Text(AppLocalizations.of(context).recurringEmpty,
                       style: text.bodyMedium
                           ?.copyWith(color: scheme.onSurfaceVariant)),
                   const SizedBox(height: 6),
                   Text(
-                    'Toggle "Repeat" when adding an expense or income',
+                    AppLocalizations.of(context).recurringEmptyHint,
                     style: text.bodySmall
                         ?.copyWith(color: scheme.outlineVariant),
                     textAlign: TextAlign.center,
@@ -106,18 +106,18 @@ class _RecurringTile extends StatelessWidget {
       confirmDismiss: (_) => showDialog<bool>(
         context: context,
         builder: (ctx) => AlertDialog(
-          title: const Text('Stop recurring?'),
+          title: Text(AppLocalizations.of(context).recurringStopQ),
           content: Text(
-              '$sign Rs ${fmt.format(item.amount)} · $label\nThis will not delete past entries.'),
+              '$sign Rs ${fmt.format(item.amount)} · $label\n${AppLocalizations.of(context).recurringStopNote}'),
           actions: [
             TextButton(
                 onPressed: () => Navigator.pop(ctx, false),
-                child: const Text('Cancel')),
+                child: Text(AppLocalizations.of(context).cancel)),
             FilledButton(
               onPressed: () => Navigator.pop(ctx, true),
               style:
                   FilledButton.styleFrom(backgroundColor: scheme.error),
-              child: const Text('Stop'),
+              child: Text(AppLocalizations.of(context).recurringStop),
             ),
           ],
         ),
@@ -178,7 +178,12 @@ class _FrequencyBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(4),
       ),
       child: Text(
-        frequency[0].toUpperCase() + frequency.substring(1),
+        switch (frequency) {
+          'daily' => AppLocalizations.of(context).freqDaily,
+          'weekly' => AppLocalizations.of(context).freqWeekly,
+          'yearly' => AppLocalizations.of(context).freqYearly,
+          _ => AppLocalizations.of(context).freqMonthly,
+        },
         style: Theme.of(context).textTheme.labelSmall?.copyWith(
               color: scheme.onPrimaryContainer,
               fontWeight: FontWeight.w600,

@@ -11,6 +11,7 @@ import '../core/utils/logger.dart';
 import '../core/utils/result.dart';
 import '../core/utils/timezone_setup.dart';
 import '../features/prayer/data/datasources/adhan_calculator.dart';
+import '../features/tasks/data/task_reminders.dart';
 import '../features/prayer/data/datasources/settings_local_data_source.dart';
 import '../features/prayer/data/reminders/drift_reminder_state.dart';
 import '../features/prayer/data/reminders/reminder_mute_store.dart';
@@ -78,6 +79,10 @@ Future<void> notificationBackgroundHandler(NotificationResponse response) async 
   await prefs.reload();
   final db = AppDatabase();
   try {
+    if (await handleTaskNotificationAction(db, actionId: response.actionId, payload: response.payload)) {
+      appLog.info('Background task action ${response.actionId}');
+      return;
+    }
     final mutes = ReminderMuteStore(PrefsKeyValueStore(prefs));
     final repo = PrayerRepositoryImpl(const AdhanCalculator(), db.prayerLogsDao);
     final handler = HandleReminderAction(

@@ -1,62 +1,41 @@
+import 'dart:async';
+
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:timezone/timezone.dart' as tz;
 
 import '../../../../app/providers.dart';
-import '../../../../core/notifications/local_notification_scheduler.dart';
-import '../../../../core/notifications/notification_channels.dart';
-import '../../../../core/notifications/notification_scheduler.dart';
 import '../../../../core/storage/app_database.dart';
-
-// ── Notifications ─────────────────────────────────────────────────────────────
-
-int _taskNotifId(int taskId) => 8000 + taskId;
-
-Future<void> _scheduleTaskNotif(Task task) async {
-  if (task.dueDate == null || task.dueTime == null || task.isCompleted) return;
-  final parts = task.dueTime!.split(':');
-  if (parts.length < 2) return;
-  final date = DateTime.tryParse(task.dueDate!);
-  if (date == null) return;
-  final at = DateTime(date.year, date.month, date.day,
-      int.tryParse(parts[0]) ?? 0, int.tryParse(parts[1]) ?? 0);
-  if (at.isBefore(DateTime.now())) return;
-
-  final plugin = FlutterLocalNotificationsPlugin();
-  await LocalNotificationScheduler.initialize(plugin);
-  final scheduler = LocalNotificationScheduler(plugin);
-  await scheduler.scheduleAll([
-    ScheduledAlarm(
-      id: _taskNotifId(task.id),
-      title: task.priority == 'high' ? '🔴 ${task.title}' : task.title,
-      body: 'Task due now',
-      at: at,
-      timezoneId: tz.local.name,
-      channelId: NotificationChannels.khataAlert,
-      payload: '{"type":"task","id":${task.id}}',
-    ),
-  ]);
-}
-
-Future<void> _cancelTaskNotif(int taskId) async {
-  final plugin = FlutterLocalNotificationsPlugin();
-  await LocalNotificationScheduler.initialize(plugin);
-  await plugin.cancel(id: _taskNotifId(taskId));
-}
+import '../../../../l10n/app_localizations.dart';
+import '../../../khata/domain/entities/expense_category.dart';
+import '../../../prayer/domain/entities/prayer_name.dart';
+import '../../../prayer/presentation/l10n_helpers.dart';
+import '../../data/task_reminders.dart';
+import '../bill_prompt.dart';
+import '../task_providers.dart';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-String _todayStr() {
-  final now = DateTime.now();
-  return '${now.year.toString().padLeft(4, '0')}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+/// Today's date. Recomputed at midnight and whenever the app is resumed, so the
+/// Overdue and Today lists never keep showing yesterday.
+class _TodayKey extends Notifier<String> {
+  @override
+  String build() {
+    ref.watch(appLifecycleProvider);
+    final now = DateTime.now();
+    final nextMidnight = DateTime(now.year, now.month, now.day + 1);
+    final timer = Timer(nextMidnight.difference(now) + const Duration(seconds: 1), ref.invalidateSelf);
+    ref.onDispose(timer.cancel);
+    return dateKey(now);
+  }
 }
 
-String _tomorrowStr() {
-  final tm = DateTime.now().add(const Duration(days: 1));
-  return '${tm.year.toString().padLeft(4, '0')}-${tm.month.toString().padLeft(2, '0')}-${tm.day.toString().padLeft(2, '0')}';
+final _todayKeyProvider = NotifierProvider<_TodayKey, String>(_TodayKey.new);
+
+String _tomorrowOf(String today) {
+  final d = DateTime.parse(today);
+  return dateKey(DateTime(d.year, d.month, d.day + 1));
 }
 
 Color _hexColor(String hex) {
@@ -101,22 +80,22 @@ final _taskListMapProvider = StreamProvider<Map<int, TaskList>>((ref) =>
 
 final _overdueTasksProvider = StreamProvider<List<Task>>((ref) {
   final listId = ref.watch(_selectedListIdProvider);
-  return ref.watch(appDatabaseProvider).tasksDao.watchOverdue(_todayStr(), listId);
+  return ref.watch(appDatabaseProvider).tasksDao.watchOverdue(ref.watch(_todayKeyProvider), listId);
 });
 
 final _todayTasksProvider = StreamProvider<List<Task>>((ref) {
   final listId = ref.watch(_selectedListIdProvider);
-  return ref.watch(appDatabaseProvider).tasksDao.watchToday(_todayStr(), listId);
+  return ref.watch(appDatabaseProvider).tasksDao.watchToday(ref.watch(_todayKeyProvider), listId);
 });
 
 final _tomorrowTasksProvider = StreamProvider<List<Task>>((ref) {
   final listId = ref.watch(_selectedListIdProvider);
-  return ref.watch(appDatabaseProvider).tasksDao.watchTomorrow(_tomorrowStr(), listId);
+  return ref.watch(appDatabaseProvider).tasksDao.watchTomorrow(_tomorrowOf(ref.watch(_todayKeyProvider)), listId);
 });
 
 final _upcomingTasksProvider = StreamProvider<List<Task>>((ref) {
   final listId = ref.watch(_selectedListIdProvider);
-  return ref.watch(appDatabaseProvider).tasksDao.watchUpcoming(_todayStr(), listId);
+  return ref.watch(appDatabaseProvider).tasksDao.watchUpcoming(ref.watch(_todayKeyProvider), listId);
 });
 
 final _completedTasksProvider = StreamProvider<List<Task>>((ref) {
@@ -151,7 +130,7 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
         padding: const EdgeInsets.fromLTRB(16, 6, 16, 6),
         children: [
           FilterChip(
-            label: const Text('All'),
+            label: Text(AppLocalizations.of(context).filterAll),
             selected: selectedListId == null,
             onSelected: (_) =>
                 ref.read(_selectedListIdProvider.notifier).select(null),
@@ -179,7 +158,7 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
             padding: const EdgeInsets.only(left: 8),
             child: ActionChip(
               avatar: const Icon(Icons.add, size: 16),
-              label: const Text('New List'),
+              label: Text(AppLocalizations.of(context).taskNewList),
               onPressed: () => _showListDialog(context),
             ),
           ),
@@ -190,18 +169,18 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
     final segmented = Padding(
       padding: const EdgeInsets.fromLTRB(16, 2, 16, 4),
       child: SegmentedButton<_TaskTab>(
-        segments: const [
+        segments: [
           ButtonSegment(
               value: _TaskTab.today,
-              label: Text('Aaj'),
+              label: Text(AppLocalizations.of(context).taskTabToday),
               icon: Icon(Icons.today_outlined)),
           ButtonSegment(
               value: _TaskTab.upcoming,
-              label: Text('Baad Mein'),
+              label: Text(AppLocalizations.of(context).taskTabUpcoming),
               icon: Icon(Icons.calendar_month_outlined)),
           ButtonSegment(
               value: _TaskTab.completed,
-              label: Text('Khatam'),
+              label: Text(AppLocalizations.of(context).done),
               icon: Icon(Icons.check_circle_outline)),
         ],
         selected: {_tab},
@@ -216,17 +195,17 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
       case _TaskTab.upcoming:
         body = _TaskList(
             provider: _upcomingTasksProvider,
-            emptyMessage: 'Koi upcoming task nahi');
+            emptyMessage: AppLocalizations.of(context).taskEmptyUpcoming);
       case _TaskTab.completed:
         body = _TaskList(
             provider: _completedTasksProvider,
-            emptyMessage: 'Abhi tak kuch complete nahi hua',
+            emptyMessage: AppLocalizations.of(context).taskEmptyDone,
             showReopen: true);
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Tasks'),
+        title: Text(AppLocalizations.of(context).navTasks),
         centerTitle: false,
         backgroundColor: scheme.surface,
       ),
@@ -234,7 +213,7 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _showAddEditDialog(context, ref),
         icon: const Icon(Icons.add),
-        label: const Text('New Task'),
+        label: Text(AppLocalizations.of(context).taskNew),
       ),
     );
   }
@@ -253,10 +232,12 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
     } else {
       await dao.updateTask(result);
       taskId = existing.id;
-      await _cancelTaskNotif(taskId);
+      await cancelTaskReminder(taskId);
     }
     final saved = await dao.getTask(taskId);
-    if (saved != null) await _scheduleTaskNotif(saved);
+    if (saved != null) {
+      await scheduleTaskReminder(saved, prayerTime: ref.read(prayerTimeResolverProvider));
+    }
   }
 
   Future<void> _showListDialog(BuildContext context, {TaskList? existing}) async {
@@ -297,13 +278,13 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
             const Divider(height: 1),
             ListTile(
               leading: const Icon(Icons.edit_outlined),
-              title: const Text('Edit List'),
+              title: Text(AppLocalizations.of(context).taskEditList),
               onTap: () => Navigator.pop(ctx, 'edit'),
             ),
             ListTile(
               leading: Icon(Icons.delete_outline,
                   color: Theme.of(ctx).colorScheme.error),
-              title: Text('Delete List',
+              title: Text(AppLocalizations.of(context).taskDeleteList,
                   style: TextStyle(
                       color: Theme.of(ctx).colorScheme.error)),
               onTap: () => Navigator.pop(ctx, 'delete'),
@@ -327,10 +308,10 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
           actions: [
             TextButton(
                 onPressed: () => Navigator.pop(ctx, false),
-                child: const Text('Cancel')),
+                child: Text(AppLocalizations.of(context).cancel)),
             FilledButton(
                 onPressed: () => Navigator.pop(ctx, true),
-                child: const Text('Delete')),
+                child: Text(AppLocalizations.of(context).delete)),
           ],
         ),
       );
@@ -370,7 +351,7 @@ class _AajTabState extends ConsumerState<_AajTab> {
     if (allEmpty) {
       return Center(
         child: Text(
-          'Aaj koi kaam nahi — MashaAllah! 🎉',
+          AppLocalizations.of(context).taskEmptyToday,
           style: Theme.of(context)
               .textTheme
               .bodyMedium
@@ -387,7 +368,7 @@ class _AajTabState extends ConsumerState<_AajTab> {
         if (overdue.isNotEmpty) ...[
           _SectionHeader(
             icon: Icons.warning_amber_rounded,
-            label: 'Overdue (${overdue.length})',
+            label: AppLocalizations.of(context).taskOverdueCount('${overdue.length}'),
             color: scheme.error,
           ),
           ...overdue.map((t) => _buildTile(t, isOverdue: true)),
@@ -396,13 +377,13 @@ class _AajTabState extends ConsumerState<_AajTab> {
 
         // Today
         if (today.isNotEmpty) ...[
-          const _SectionHeader(icon: Icons.today_outlined, label: 'Aaj'),
+          _SectionHeader(icon: Icons.today_outlined, label: AppLocalizations.of(context).taskTabToday),
           ...today.map((t) => _buildTile(t)),
         ] else if (overdue.isNotEmpty) ...[
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
             child: Text(
-              'Aaj ke liye koi task nahi',
+              AppLocalizations.of(context).taskNoneToday,
               style: Theme.of(context)
                   .textTheme
                   .bodySmall
@@ -425,7 +406,7 @@ class _AajTabState extends ConsumerState<_AajTab> {
                       size: 16, color: scheme.onSurfaceVariant),
                   const SizedBox(width: 8),
                   Text(
-                    'Kal (${tomorrow.length})',
+                    AppLocalizations.of(context).taskTomorrowCount('${tomorrow.length}'),
                     style: Theme.of(context)
                         .textTheme
                         .labelLarge
@@ -532,9 +513,11 @@ class _TaskList extends ConsumerWidget {
               if (result == null) return;
               final dao = ref.read(appDatabaseProvider).tasksDao;
               await dao.updateTask(result);
-              await _cancelTaskNotif(tasks[i].id);
+              await cancelTaskReminder(tasks[i].id);
               final saved = await dao.getTask(tasks[i].id);
-              if (saved != null) await _scheduleTaskNotif(saved);
+              if (saved != null) {
+      await scheduleTaskReminder(saved, prayerTime: ref.read(prayerTimeResolverProvider));
+    }
             },
           ),
         );
@@ -574,13 +557,24 @@ class _TaskTile extends ConsumerWidget {
       if (d != null) {
         subtitle = DateFormat('EEE, d MMM').format(d);
         if (task.dueTime != null) subtitle += '  ${task.dueTime}';
+        final anchor = PrayerName.values.where((p) => p.name == task.prayerAnchor).firstOrNull;
+        if (anchor != null) {
+          final l10n = AppLocalizations.of(context);
+          final m = task.prayerOffset;
+          final rel = m == 0
+              ? l10n.taskOffsetAt
+              : m < 0
+                  ? l10n.taskOffsetBefore('${-m}')
+                  : l10n.taskOffsetAfter('$m');
+          subtitle += '  ${prayerLabel(l10n, anchor)} · $rel';
+        }
       }
     }
     if (task.recurrence != 'none') {
       final rec = switch (task.recurrence) {
-        'daily' => 'Daily',
-        'weekly' => 'Weekly',
-        'monthly' => 'Monthly',
+        'daily' => AppLocalizations.of(context).taskDailyShort,
+        'weekly' => AppLocalizations.of(context).taskWeeklyShort,
+        'monthly' => AppLocalizations.of(context).taskMonthlyShort,
         _ => '',
       };
       subtitle = subtitle != null ? '$subtitle · $rec' : rec;
@@ -609,14 +603,14 @@ class _TaskTile extends ConsumerWidget {
         final ok = await showDialog<bool>(
           context: context,
           builder: (ctx) => AlertDialog(
-            title: const Text('Delete task?'),
+            title: Text(AppLocalizations.of(context).taskDeleteConfirm),
             actions: [
               TextButton(
                   onPressed: () => Navigator.pop(ctx, false),
-                  child: const Text('Cancel')),
+                  child: Text(AppLocalizations.of(context).cancel)),
               FilledButton(
                   onPressed: () => Navigator.pop(ctx, true),
-                  child: const Text('Delete')),
+                  child: Text(AppLocalizations.of(context).delete)),
             ],
           ),
         );
@@ -624,20 +618,18 @@ class _TaskTile extends ConsumerWidget {
       },
       onDismissed: (_) async {
         await dao.deleteTask(task.id);
-        await _cancelTaskNotif(task.id);
+        await cancelTaskReminder(task.id);
       },
       child: ListTile(
         leading: Checkbox(
           value: task.isCompleted,
           onChanged: (_) async {
+            final db = ref.read(appDatabaseProvider);
             if (task.isCompleted) {
-              await dao.reopenTask(task.id);
+              await reopenTask(db, task);
             } else {
-              await dao.completeTask(task.id);
-              await _cancelTaskNotif(task.id);
-              if (task.recurrence != 'none') {
-                await _scheduleNextRecurrence(ref, task);
-              }
+              await completeTask(db, task);
+              if (context.mounted) await offerBillToKhata(context, ref, task);
             }
           },
           shape: const CircleBorder(),
@@ -664,47 +656,19 @@ class _TaskTile extends ConsumerWidget {
             if (showReopen)
               IconButton(
                 icon: const Icon(Icons.refresh, size: 18),
-                tooltip: 'Reopen',
-                onPressed: () => dao.reopenTask(task.id),
+                tooltip: AppLocalizations.of(context).taskReopen,
+                onPressed: () => reopenTask(ref.read(appDatabaseProvider), task),
               )
             else
               IconButton(
                 icon: const Icon(Icons.edit_outlined, size: 18),
-                tooltip: 'Edit',
+                tooltip: AppLocalizations.of(context).edit,
                 onPressed: onEdit,
               ),
           ],
         ),
       ),
     );
-  }
-
-  Future<void> _scheduleNextRecurrence(WidgetRef ref, Task task) async {
-    if (task.dueDate == null) return;
-    final current = DateTime.tryParse(task.dueDate!);
-    if (current == null) return;
-    final next = switch (task.recurrence) {
-      'daily' => DateTime(current.year, current.month, current.day + 1),
-      'weekly' => DateTime(current.year, current.month, current.day + 7),
-      'monthly' => DateTime(current.year, current.month + 1, current.day),
-      _ => null,
-    };
-    if (next == null) return;
-    final nextStr =
-        '${next.year.toString().padLeft(4, '0')}-${next.month.toString().padLeft(2, '0')}-${next.day.toString().padLeft(2, '0')}';
-    final dao = ref.read(appDatabaseProvider).tasksDao;
-    final newId = await dao.addTask(TasksCompanion.insert(
-      title: task.title,
-      dueDate: Value(nextStr),
-      dueTime: Value(task.dueTime),
-      priority: Value(task.priority),
-      recurrence: Value(task.recurrence),
-      note: Value(task.note),
-      listId: Value(task.listId),
-      createdAt: DateTime.now().toUtc(),
-    ));
-    final saved = await dao.getTask(newId);
-    if (saved != null) await _scheduleTaskNotif(saved);
   }
 }
 
@@ -726,6 +690,11 @@ class _TaskDialogState extends ConsumerState<_TaskDialog> {
   DateTime? _dueDate;
   TimeOfDay? _dueTime;
   int? _listId;
+  String? _prayerAnchor;
+  int _prayerOffset = 0;
+  int _remindBefore = 0;
+  late final TextEditingController _amount;
+  ExpenseCategory _billCategory = ExpenseCategory.bills;
 
   @override
   void initState() {
@@ -733,6 +702,13 @@ class _TaskDialogState extends ConsumerState<_TaskDialog> {
     final e = widget.existing;
     _title = TextEditingController(text: e?.title ?? '');
     _note = TextEditingController(text: e?.note ?? '');
+    _prayerAnchor = e?.prayerAnchor;
+    _prayerOffset = e?.prayerOffset ?? 0;
+    _remindBefore = e?.remindBefore ?? 0;
+    _amount = TextEditingController(
+      text: e?.amount == null ? '' : e!.amount!.toStringAsFixed(e.amount! % 1 == 0 ? 0 : 2),
+    );
+    _billCategory = ExpenseCategory.fromString(e?.billCategory ?? 'bills');
     _priority = e?.priority ?? 'normal';
     _recurrence = e?.recurrence ?? 'none';
     // For new tasks, pre-select current list filter; for edits keep existing.
@@ -752,12 +728,18 @@ class _TaskDialogState extends ConsumerState<_TaskDialog> {
   void dispose() {
     _title.dispose();
     _note.dispose();
+    _amount.dispose();
     super.dispose();
   }
 
   String? get _dueDateStr {
     if (_dueDate == null) return null;
     return '${_dueDate!.year.toString().padLeft(4, '0')}-${_dueDate!.month.toString().padLeft(2, '0')}-${_dueDate!.day.toString().padLeft(2, '0')}';
+  }
+
+  double? get _billAmount {
+    final v = double.tryParse(_amount.text.trim());
+    return v != null && v > 0 ? v : null;
   }
 
   String? get _dueTimeStr {
@@ -772,7 +754,7 @@ class _TaskDialogState extends ConsumerState<_TaskDialog> {
     final lists = ref.watch(_taskListsProvider).value ?? [];
 
     return AlertDialog(
-      title: Text(e == null ? 'New Task' : 'Edit Task'),
+      title: Text(e == null ? AppLocalizations.of(context).taskNew : AppLocalizations.of(context).taskEdit),
       contentPadding: const EdgeInsets.fromLTRB(24, 12, 24, 0),
       content: SingleChildScrollView(
         child: Column(
@@ -783,8 +765,8 @@ class _TaskDialogState extends ConsumerState<_TaskDialog> {
               controller: _title,
               autofocus: true,
               textCapitalization: TextCapitalization.sentences,
-              decoration: const InputDecoration(
-                labelText: 'Task title',
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context).taskTitleLabel,
                 border: OutlineInputBorder(),
               ),
             ),
@@ -796,8 +778,8 @@ class _TaskDialogState extends ConsumerState<_TaskDialog> {
               textCapitalization: TextCapitalization.sentences,
               maxLines: 3,
               minLines: 1,
-              decoration: const InputDecoration(
-                labelText: 'Note (optional)',
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context).taskNoteLabel,
                 border: OutlineInputBorder(),
                 isDense: true,
               ),
@@ -808,13 +790,13 @@ class _TaskDialogState extends ConsumerState<_TaskDialog> {
             if (lists.isNotEmpty) ...[
               DropdownButtonFormField<int?>(
                 value: lists.any((l) => l.id == _listId) ? _listId : null,
-                decoration: const InputDecoration(
-                  labelText: 'List',
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context).taskListLabel,
                   border: OutlineInputBorder(),
                   isDense: true,
                 ),
                 items: [
-                  const DropdownMenuItem(value: null, child: Text('No list')),
+                  DropdownMenuItem(value: null, child: Text(AppLocalizations.of(context).taskNoList)),
                   ...lists.map((l) => DropdownMenuItem(
                         value: l.id,
                         child: Row(children: [
@@ -834,9 +816,9 @@ class _TaskDialogState extends ConsumerState<_TaskDialog> {
               spacing: 8,
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
-                const Text('Priority:'),
+                Text(AppLocalizations.of(context).taskPriority),
                 ChoiceChip(
-                  label: const Text('Normal'),
+                  label: Text(AppLocalizations.of(context).taskPriorityNormal),
                   selected: _priority == 'normal',
                   onSelected: (_) => setState(() => _priority = 'normal'),
                 ),
@@ -844,7 +826,7 @@ class _TaskDialogState extends ConsumerState<_TaskDialog> {
                   label: Row(mainAxisSize: MainAxisSize.min, children: [
                     Icon(Icons.flag_rounded, size: 14, color: scheme.error),
                     const SizedBox(width: 4),
-                    const Text('High'),
+                    Text(AppLocalizations.of(context).taskPriorityHigh),
                   ]),
                   selected: _priority == 'high',
                   selectedColor: scheme.errorContainer,
@@ -859,7 +841,7 @@ class _TaskDialogState extends ConsumerState<_TaskDialog> {
               contentPadding: EdgeInsets.zero,
               leading: const Icon(Icons.calendar_today_outlined),
               title: Text(_dueDate == null
-                  ? 'No due date'
+                  ? AppLocalizations.of(context).taskNoDueDate
                   : DateFormat('EEE, d MMM yyyy').format(_dueDate!)),
               trailing: _dueDate != null
                   ? IconButton(
@@ -871,11 +853,13 @@ class _TaskDialogState extends ConsumerState<_TaskDialog> {
                     )
                   : null,
               onTap: () async {
+                final now = DateTime.now();
+                final initial = _dueDate ?? now;
+                final yesterday = now.subtract(const Duration(days: 1));
                 final picked = await showDatePicker(
                   context: context,
-                  initialDate: _dueDate ?? DateTime.now(),
-                  firstDate:
-                      DateTime.now().subtract(const Duration(days: 1)),
+                  initialDate: initial,
+                  firstDate: initial.isBefore(yesterday) ? initial : yesterday,
                   lastDate:
                       DateTime.now().add(const Duration(days: 365 * 3)),
                 );
@@ -883,47 +867,168 @@ class _TaskDialogState extends ConsumerState<_TaskDialog> {
               },
             ),
 
-            if (_dueDate != null)
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: const Icon(Icons.access_time_outlined),
-                title: Text(_dueTime == null
-                    ? 'No time (no notification)'
-                    : _dueTime!.format(context)),
-                trailing: _dueTime != null
-                    ? IconButton(
-                        icon: const Icon(Icons.close, size: 18),
-                        onPressed: () => setState(() => _dueTime = null),
-                      )
-                    : null,
-                onTap: () async {
-                  final picked = await showTimePicker(
-                    context: context,
-                    initialTime: _dueTime ?? TimeOfDay.now(),
+            if (_dueDate != null) ...[
+              Builder(builder: (context) {
+                final l10n = AppLocalizations.of(context);
+                return Wrap(
+                  spacing: 8,
+                  children: [
+                    ChoiceChip(
+                      label: Text(l10n.taskAtTime),
+                      selected: _prayerAnchor == null,
+                      onSelected: (_) => setState(() => _prayerAnchor = null),
+                    ),
+                    ChoiceChip(
+                      label: Text(l10n.taskAroundPrayer),
+                      selected: _prayerAnchor != null,
+                      onSelected: (_) => setState(() {
+                        _prayerAnchor ??= PrayerName.asr.name;
+                        _dueTime = null;
+                      }),
+                    ),
+                  ],
+                );
+              }),
+              if (_prayerAnchor == null)
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.access_time_outlined),
+                  title: Text(_dueTime == null
+                      ? AppLocalizations.of(context).taskNoTime
+                      : _dueTime!.format(context)),
+                  trailing: _dueTime != null
+                      ? IconButton(
+                          icon: const Icon(Icons.close, size: 18),
+                          onPressed: () => setState(() => _dueTime = null),
+                        )
+                      : null,
+                  onTap: () async {
+                    final picked = await showTimePicker(
+                      context: context,
+                      initialTime: _dueTime ?? TimeOfDay.now(),
+                    );
+                    if (picked != null) setState(() => _dueTime = picked);
+                  },
+                )
+              else
+                Builder(builder: (context) {
+                  final l10n = AppLocalizations.of(context);
+                  String offsetLabel(int m) => m == 0
+                      ? l10n.taskOffsetAt
+                      : m < 0
+                          ? l10n.taskOffsetBefore('${-m}')
+                          : l10n.taskOffsetAfter('$m');
+                  return Row(
+                    children: [
+                      Expanded(
+                        child: DropdownButtonFormField<String>(
+                          initialValue: _prayerAnchor,
+                          isExpanded: true,
+                          decoration: const InputDecoration(isDense: true, border: OutlineInputBorder()),
+                          items: [
+                            for (final p in PrayerName.obligatory)
+                              DropdownMenuItem(value: p.name, child: Text(prayerLabel(l10n, p))),
+                          ],
+                          onChanged: (v) => setState(() => _prayerAnchor = v),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: DropdownButtonFormField<int>(
+                          initialValue: _prayerOffset,
+                          isExpanded: true,
+                          decoration: const InputDecoration(isDense: true, border: OutlineInputBorder()),
+                          items: [
+                            for (final m in const [-30, -15, 0, 15, 30, 60])
+                              DropdownMenuItem(value: m, child: Text(offsetLabel(m))),
+                          ],
+                          onChanged: (v) => setState(() => _prayerOffset = v ?? 0),
+                        ),
+                      ),
+                    ],
                   );
-                  if (picked != null) setState(() => _dueTime = picked);
-                },
-              ),
+                }),
+              if (_dueTime != null || _prayerAnchor != null) ...[
+                const SizedBox(height: 12),
+                Builder(builder: (context) {
+                  final l10n = AppLocalizations.of(context);
+                  return DropdownButtonFormField<int>(
+                    initialValue: _remindBefore,
+                    decoration: InputDecoration(
+                      labelText: l10n.taskRemindBefore,
+                      isDense: true,
+                      border: const OutlineInputBorder(),
+                    ),
+                    items: [
+                      DropdownMenuItem(value: 0, child: Text(l10n.taskRemindNone)),
+                      DropdownMenuItem(value: 10, child: Text(l10n.taskRemindMin('10'))),
+                      DropdownMenuItem(value: 60, child: Text(l10n.taskRemindHour)),
+                      DropdownMenuItem(value: 1440, child: Text(l10n.taskRemindDay)),
+                    ],
+                    onChanged: (v) => setState(() => _remindBefore = v ?? 0),
+                  );
+                }),
+              ],
+            ],
+
+            const SizedBox(height: 12),
+
+            // Bill amount
+            Builder(builder: (context) {
+              final l10n = AppLocalizations.of(context);
+              return Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _amount,
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      decoration: InputDecoration(
+                        labelText: l10n.taskBillAmount,
+                        prefixText: 'Rs. ',
+                        isDense: true,
+                        border: const OutlineInputBorder(),
+                      ),
+                      onChanged: (_) => setState(() {}),
+                    ),
+                  ),
+                  if ((double.tryParse(_amount.text) ?? 0) > 0) ...[
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: DropdownButtonFormField<ExpenseCategory>(
+                        initialValue: _billCategory,
+                        isExpanded: true,
+                        decoration: const InputDecoration(isDense: true, border: OutlineInputBorder()),
+                        items: [
+                          for (final c in ExpenseCategory.values)
+                            DropdownMenuItem(value: c, child: Text(c.label(l10n))),
+                        ],
+                        onChanged: (v) => setState(() => _billCategory = v ?? ExpenseCategory.bills),
+                      ),
+                    ),
+                  ],
+                ],
+              );
+            }),
 
             const SizedBox(height: 8),
 
             // Recurrence
             DropdownButtonFormField<String>(
               value: _recurrence,
-              decoration: const InputDecoration(
-                labelText: 'Repeat',
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context).taskRepeat,
                 border: OutlineInputBorder(),
                 isDense: true,
               ),
-              items: const [
+              items: [
                 DropdownMenuItem(
-                    value: 'none', child: Text('Does not repeat')),
+                    value: 'none', child: Text(AppLocalizations.of(context).taskRepeatNone)),
                 DropdownMenuItem(
-                    value: 'daily', child: Text('Every day')),
+                    value: 'daily', child: Text(AppLocalizations.of(context).taskRepeatDaily)),
                 DropdownMenuItem(
-                    value: 'weekly', child: Text('Every week')),
+                    value: 'weekly', child: Text(AppLocalizations.of(context).taskRepeatWeekly)),
                 DropdownMenuItem(
-                    value: 'monthly', child: Text('Every month')),
+                    value: 'monthly', child: Text(AppLocalizations.of(context).taskRepeatMonthly)),
               ],
               onChanged: (v) => setState(() => _recurrence = v ?? 'none'),
             ),
@@ -934,7 +1039,7 @@ class _TaskDialogState extends ConsumerState<_TaskDialog> {
       actions: [
         TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel')),
+            child: Text(AppLocalizations.of(context).cancel)),
         FilledButton(
           onPressed: () {
             if (_title.text.trim().isEmpty) return;
@@ -945,7 +1050,12 @@ class _TaskDialogState extends ConsumerState<_TaskDialog> {
                     note: Value(_note.text.trim()),
                     listId: Value(_listId),
                     dueDate: Value(_dueDateStr),
-                    dueTime: Value(_dueTimeStr),
+                    dueTime: Value(_prayerAnchor == null ? _dueTimeStr : null),
+                    remindBefore: Value(_remindBefore),
+                    prayerAnchor: Value(_prayerAnchor),
+                    prayerOffset: Value(_prayerOffset),
+                    amount: Value(_billAmount),
+                    billCategory: Value(_billAmount == null ? null : _billCategory.name),
                     priority: Value(_priority),
                     recurrence: Value(_recurrence),
                     isCompleted: Value(e.isCompleted),
@@ -957,14 +1067,19 @@ class _TaskDialogState extends ConsumerState<_TaskDialog> {
                     note: Value(_note.text.trim()),
                     listId: Value(_listId),
                     dueDate: Value(_dueDateStr),
-                    dueTime: Value(_dueTimeStr),
+                    dueTime: Value(_prayerAnchor == null ? _dueTimeStr : null),
+                    remindBefore: Value(_remindBefore),
+                    prayerAnchor: Value(_prayerAnchor),
+                    prayerOffset: Value(_prayerOffset),
+                    amount: Value(_billAmount),
+                    billCategory: Value(_billAmount == null ? null : _billCategory.name),
                     priority: Value(_priority),
                     recurrence: Value(_recurrence),
                     createdAt: DateTime.now().toUtc(),
                   );
             Navigator.pop(context, companion);
           },
-          child: Text(e == null ? 'Add' : 'Save'),
+          child: Text(e == null ? AppLocalizations.of(context).add : AppLocalizations.of(context).save),
         ),
       ],
     );
@@ -1008,7 +1123,7 @@ class _ListDialogState extends State<_ListDialog> {
     final pickedColor = _hexColor(_color);
 
     return AlertDialog(
-      title: Text(e == null ? 'New List' : 'Edit List'),
+      title: Text(e == null ? AppLocalizations.of(context).taskNewList : AppLocalizations.of(context).taskEditList),
       contentPadding: const EdgeInsets.fromLTRB(24, 12, 24, 0),
       content: SingleChildScrollView(
         child: Column(
@@ -1047,8 +1162,8 @@ class _ListDialogState extends State<_ListDialog> {
               controller: _name,
               autofocus: true,
               textCapitalization: TextCapitalization.sentences,
-              decoration: const InputDecoration(
-                labelText: 'List name',
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context).taskListName,
                 border: OutlineInputBorder(),
               ),
               onChanged: (_) => setState(() {}),
@@ -1056,7 +1171,7 @@ class _ListDialogState extends State<_ListDialog> {
             const SizedBox(height: 16),
 
             // Emoji picker
-            Text('Icon',
+            Text(AppLocalizations.of(context).taskIcon,
                 style: Theme.of(context).textTheme.labelMedium),
             const SizedBox(height: 8),
             Wrap(
@@ -1130,7 +1245,7 @@ class _ListDialogState extends State<_ListDialog> {
       actions: [
         TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel')),
+            child: Text(AppLocalizations.of(context).cancel)),
         FilledButton(
           onPressed: () {
             if (_name.text.trim().isEmpty) return;
@@ -1150,7 +1265,7 @@ class _ListDialogState extends State<_ListDialog> {
                   );
             Navigator.pop(context, companion);
           },
-          child: Text(e == null ? 'Create' : 'Save'),
+          child: Text(e == null ? AppLocalizations.of(context).taskCreate : AppLocalizations.of(context).save),
         ),
       ],
     );

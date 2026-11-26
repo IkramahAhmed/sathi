@@ -647,14 +647,14 @@
   "udhaarDeleteEntry": "Delete this entry?",
   "udhaarPhone": "Phone (for WhatsApp)",
   "udhaarWhatsAppReminder": "Send WhatsApp reminder",
-  "udhaarWhatsAppLena": "Assalamu Alaikum {name} bhai, aapka Rs. {amount} mujhe lena baqi hai. - Saathi App",
+  "udhaarWhatsAppLena": "Assalamu Alaikum {name}, aapka Rs. {amount} mujhe lena baqi hai. - Saathi App",
   "@udhaarWhatsAppLena": {
     "placeholders": {
       "name": { "type": "String" },
       "amount": { "type": "String" }
     }
   },
-  "udhaarWhatsAppDena": "Assalamu Alaikum {name} bhai, mera Rs. {amount} aapko dena baqi hai. - Saathi App",
+  "udhaarWhatsAppDena": "Assalamu Alaikum {name}, mera Rs. {amount} aapko dena baqi hai. - Saathi App",
   "@udhaarWhatsAppDena": {
     "placeholders": {
       "name": { "type": "String" },
@@ -686,5 +686,449 @@
   "incomeSourceFreelance": "Freelance",
   "incomeSourceBusiness": "Business",
   "incomeSourceGift": "Gift",
-  "incomeSourceOther": "Other income"
+  "incomeSourceOther": "Other income",
+  "navTasks": "Tasks",
+  "vaultTitle": "Private vault",
+  "undo": "Undo",
+  "todayQuickAddHint": "Quick add — e.g. 250 chai",
+  "todayQuickAddPreview": "Will save: Rs {amount} · {category}",
+  "@todayQuickAddPreview": {
+    "placeholders": {
+      "amount": { "type": "String" },
+      "category": { "type": "String" }
+    }
+  },
+  "todayQuickAddNeedAmount": "Type an amount first, for example 250 chai",
+  "todayQuickAdded": "Added Rs {amount} · {category}",
+  "@todayQuickAdded": {
+    "placeholders": {
+      "amount": { "type": "String" },
+      "category": { "type": "String" }
+    }
+  },
+  "todayQuickAddedIncome": "Income Rs {amount} added · {category}",
+  "@todayQuickAddedIncome": {
+    "placeholders": {
+      "amount": { "type": "String" },
+      "category": { "type": "String" }
+    }
+  },
+  "todayPrayers": "Today's prayers",
+  "todayNothingDue": "Nothing due today",
+  "todaySeeAll": "See all",
+  "todayMoney": "Money",
+  "todaySpentToday": "Spent today",
+  "todaySpentMonth": "This month",
+  "todayBudgetLeft": "Budget left",
+  "todayOverBudget": "Over budget",
+  "todayComingUp": "Coming up",
+  "todayNothingComing": "Nothing coming up this week",
+  "todayDueTheyOwe": "{name} owes you Rs {amount}",
+  "@todayDueTheyOwe": {
+    "placeholders": {
+      "name": { "type": "String" },
+      "amount": { "type": "String" }
+    }
+  },
+  "todayDueYouOwe": "You owe {name} Rs {amount}",
+  "@todayDueYouOwe": {
+    "placeholders": {
+      "name": { "type": "String" },
+      "amount": { "type": "String" }
+    }
+  },
+  "todayDueLate": "{days} days late",
+  "@todayDueLate": {
+    "placeholders": {
+      "days": { "type": "String" }
+    }
+  },
+  "todayDueToday": "due today",
+  "todayDueTomorrow": "due tomorrow",
+  "todayDueInDays": "due in {days} days",
+  "@todayDueInDays": {
+    "placeholders": {
+      "days": { "type": "String" }
+    }
+  },
+  "todayRecurring": "Recurring {what}: Rs {amount} on {date}",
+  "@todayRecurring": {
+    "placeholders": {
+      "what": { "type": "String" },
+      "amount": { "type": "String" },
+      "date": { "type": "String" }
+    }
+  },
+  "todayBackupTitle": "Back up your data",
+  "todayBackupBody": "Share a copy so your data is safe if this phone is lost",
+  "todayBackupNow": "Back up now",
+  "todayLater": "Later",
+  "toolRoza": "Roza",
+  "toolGoals": "Savings goals",
+  "toolAccounts": "Accounts",
+  "rozaTitle": "Roza",
+  "rozaOwed": "Fasts to make up: {count}",
+  "@rozaOwed": {
+    "placeholders": {
+      "count": { "type": "String" }
+    }
+  },
+  "rozaHint": "Tap a day to mark it kept, missed, or clear it",
+  "rozaKept": "Kept",
+  "rozaMissed": "Missed",
+  "rozaMadeUp": "Made up",
+  "rozaMakeUpToday": "I fasted today to make up one",
+  "rozaKeptThisYear": "Kept this year: {count}",
+  "@rozaKeptThisYear": {
+    "placeholders": {
+      "count": { "type": "String" }
+    }
+  },
+  "save": "Save",
+  "delete": "Delete",
+  "edit": "Edit",
+  "goalsTitle": "Savings goals",
+  "goalsEmpty": "No goals yet. Add one, like Hajj, a wedding or a car.",
+  "goalAdd": "New goal",
+  "goalName": "Goal name",
+  "goalTarget": "Target amount",
+  "goalDeadline": "Deadline (optional)",
+  "goalAddMoney": "Add money",
+  "goalTakeOut": "Take money out",
+  "goalAmount": "Amount",
+  "goalSaved": "Rs {saved} of Rs {target}",
+  "@goalSaved": {
+    "placeholders": {
+      "saved": { "type": "String" },
+      "target": { "type": "String" }
+    }
+  },
+  "goalReached": "Goal reached!",
+  "goalPerMonth": "Save about Rs {amount} a month to reach it by {date}",
+  "@goalPerMonth": {
+    "placeholders": {
+      "amount": { "type": "String" },
+      "date": { "type": "String" }
+    }
+  },
+  "goalDeleteConfirm": "Delete this goal?",
+  "accountsTitle": "Accounts",
+  "accountsEmpty": "Add the places your money is kept: cash, bank, wallet.",
+  "accountAdd": "New account",
+  "accountName": "Account name",
+  "accountCash": "Cash",
+  "accountBank": "Bank",
+  "accountWallet": "Wallet",
+  "accountOpening": "Opening balance",
+  "accountTotal": "Total across accounts",
+  "accountDeleteWarn": "Entries stay, but are no longer linked to this account.",
+  "accountPick": "Account (optional)",
+  "accountNone": "No account",
+  "add": "Add",
+  "taskRemindBefore": "Remind me before",
+  "taskRemindNone": "Only at the time",
+  "taskRemindMin": "{minutes} minutes before",
+  "@taskRemindMin": {
+    "placeholders": {
+      "minutes": { "type": "String" }
+    }
+  },
+  "taskRemindHour": "1 hour before",
+  "taskRemindDay": "1 day before",
+  "taskAtTime": "At a time",
+  "taskAroundPrayer": "Around a prayer",
+  "taskOffsetBefore": "{minutes} min before",
+  "@taskOffsetBefore": {
+    "placeholders": {
+      "minutes": { "type": "String" }
+    }
+  },
+  "taskOffsetAfter": "{minutes} min after",
+  "@taskOffsetAfter": {
+    "placeholders": {
+      "minutes": { "type": "String" }
+    }
+  },
+  "taskOffsetAt": "At prayer time",
+  "taskBillAmount": "Bill amount (optional)",
+  "taskAddToKhataTitle": "Add to Khata?",
+  "taskAddToKhataBody": "Add Rs {amount} for \"{title}\" to your Khata?",
+  "@taskAddToKhataBody": {
+    "placeholders": {
+      "amount": { "type": "String" },
+      "title": { "type": "String" }
+    }
+  },
+  "taskBillAdded": "Added to Khata",
+  "filterAll": "All",
+  "udhaarSortAmount": "Biggest amount first",
+  "settingsDataBackup": "Data & Backup",
+  "backupExport": "Export backup",
+  "backupExportSub": "Share your data as a .saathi file",
+  "backupRestore": "Restore backup",
+  "backupRestoreSub": "Replace current data from a .saathi file",
+  "backupAuto": "Automatic backups",
+  "backupAutoSub": "Saved on this phone every week. Last: {date}",
+  "@backupAutoSub": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "backupAutoNone": "Saved on this phone every week. None yet.",
+  "settingsCountBank": "Count bank transactions in budgets",
+  "settingsCountBankSub": "Payments caught from bank notifications count towards your budgets and totals",
+  "trackerMonth": "Last 30 days",
+  "trackerCompletion": "{percent}% of prayers prayed",
+  "@trackerCompletion": {
+    "placeholders": {
+      "percent": { "type": "String" }
+    }
+  },
+  "trackerWeakest": "Hardest prayer: {prayer} ({done} of {days} days)",
+  "@trackerWeakest": {
+    "placeholders": {
+      "prayer": { "type": "String" },
+      "done": { "type": "String" },
+      "days": { "type": "String" }
+    }
+  },
+  "tasbeehFree": "Free count",
+  "tasbeehSubhanallah": "SubhanAllah",
+  "tasbeehAlhamdulillah": "Alhamdulillah",
+  "tasbeehAllahuAkbar": "Allahu Akbar",
+  "tasbeehToday": "Today: {count}",
+  "@tasbeehToday": {
+    "placeholders": {
+      "count": { "type": "String" }
+    }
+  },
+  "tasbeehTargetReached": "Target reached",
+  "trendTitle": "Compared with last month",
+  "trendMore": "Rs {amount} more than last month ({percent}%)",
+  "@trendMore": {
+    "placeholders": {
+      "amount": { "type": "String" },
+      "percent": { "type": "String" }
+    }
+  },
+  "trendLess": "Rs {amount} less than last month ({percent}%)",
+  "@trendLess": {
+    "placeholders": {
+      "amount": { "type": "String" },
+      "percent": { "type": "String" }
+    }
+  },
+  "trendMoreNoPercent": "Rs {amount} more than last month",
+  "@trendMoreNoPercent": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "trendSame": "Same as last month",
+  "trendBiggestRise": "Biggest rise: {category} (+Rs {amount})",
+  "@trendBiggestRise": {
+    "placeholders": {
+      "category": { "type": "String" },
+      "amount": { "type": "String" }
+    }
+  },
+  "taskNewList": "New list",
+  "taskEditList": "Edit list",
+  "taskDeleteList": "Delete list",
+  "taskTabToday": "Today",
+  "taskTabUpcoming": "Upcoming",
+  "taskEmptyUpcoming": "No upcoming tasks",
+  "taskEmptyDone": "Nothing completed yet",
+  "taskEmptyToday": "Nothing to do today — MashaAllah! 🎉",
+  "taskNoneToday": "No tasks for today",
+  "taskTomorrowCount": "Tomorrow ({count})",
+  "@taskTomorrowCount": {
+    "placeholders": {
+      "count": { "type": "String" }
+    }
+  },
+  "taskOverdueCount": "Overdue ({count})",
+  "@taskOverdueCount": {
+    "placeholders": {
+      "count": { "type": "String" }
+    }
+  },
+  "taskNew": "New task",
+  "taskEdit": "Edit task",
+  "taskDeleteConfirm": "Delete task?",
+  "taskReopen": "Reopen",
+  "taskTitleLabel": "Task title",
+  "taskNoteLabel": "Note (optional)",
+  "taskListLabel": "List",
+  "taskNoList": "No list",
+  "taskPriority": "Priority:",
+  "taskPriorityNormal": "Normal",
+  "taskPriorityHigh": "High",
+  "taskRepeat": "Repeat",
+  "taskRepeatNone": "Does not repeat",
+  "taskRepeatDaily": "Every day",
+  "taskRepeatWeekly": "Every week",
+  "taskRepeatMonthly": "Every month",
+  "taskDailyShort": "Daily",
+  "taskWeeklyShort": "Weekly",
+  "taskMonthlyShort": "Monthly",
+  "taskNoDueDate": "No due date",
+  "taskNoTime": "No time (no notification)",
+  "taskListName": "List name",
+  "taskIcon": "Icon",
+  "taskCreate": "Create",
+  "khataIncoming": "Incoming",
+  "khataOutgoing": "Outgoing",
+  "khataExportPdf": "Export PDF",
+  "khataExportCsv": "Export CSV",
+  "khataBank": "Bank",
+  "summaryTitle": "Monthly summary",
+  "khataSearchEntries": "Search entries…",
+  "recurringTitle": "Recurring",
+  "khataShareWhatsApp": "Share via WhatsApp",
+  "vaultMove": "Move to Vault",
+  "vaultMoveHint": "Hide from normal view",
+  "vaultMoveUdhaarHint": "Hide from normal Udhaar view",
+  "bankSearch": "Search bank entries…",
+  "bankIn": "In",
+  "bankOut": "Out",
+  "bankAllBanks": "All banks",
+  "bankEmpty": "No bank transactions yet",
+  "bankNoMatch": "No matching transactions",
+  "bankAutoCaptured": "Auto-captured from bank notifications",
+  "entryDelete": "Delete entry",
+  "vaultUnlockReason": "Unlock your Vault to view private entries",
+  "vaultUnlock": "Unlock",
+  "vaultLock": "Lock vault",
+  "vaultTabContacts": "Contacts",
+  "vaultRemove": "Remove from Vault",
+  "vaultDeleteContact": "Delete contact",
+  "vaultDeleteContactQ": "Delete contact?",
+  "freqDaily": "Daily",
+  "freqWeekly": "Weekly",
+  "freqMonthly": "Monthly",
+  "freqYearly": "Yearly",
+  "summaryNet": "Net balance",
+  "summaryByCategory": "Spending by category",
+  "summaryNoExpenses": "No expenses this month",
+  "recurringEmpty": "No recurring entries",
+  "recurringEmptyHint": "Turn on \"Repeat\" when adding an expense or income",
+  "recurringStopQ": "Stop recurring?",
+  "recurringStopNote": "This will not delete past entries.",
+  "recurringStop": "Stop",
+  "expensePhotoTake": "Take a photo",
+  "expensePhotoGallery": "Choose from gallery",
+  "expenseSource": "Source",
+  "expenseRepeat": "Repeat",
+  "bankSyncTitle": "Bank sync",
+  "bankSyncAuto": "Auto-capture transactions",
+  "bankSyncChecking": "Checking…",
+  "bankSyncEnableHint": "Tap to enable — no login needed, works with all bank apps",
+  "bankSyncEnable": "Enable",
+  "bankSyncPaused": "Paused by Android — transactions are not being captured",
+  "bankSyncRestart": "Restart",
+  "bankSyncWaiting": "Active — waiting for the first bank alert",
+  "bankSyncLast": "Active — last bank alert {ago}",
+  "@bankSyncLast": {
+    "placeholders": {
+      "ago": { "type": "String" }
+    }
+  },
+  "bankSyncPending": "{count} waiting to be saved",
+  "@bankSyncPending": {
+    "placeholders": {
+      "count": { "type": "String" }
+    }
+  },
+  "bankSyncRestartHint": "Turn Saathi off and on again in Notification access",
+  "agoJustNow": "just now",
+  "agoMinutes": "{count} min ago",
+  "@agoMinutes": {
+    "placeholders": {
+      "count": { "type": "String" }
+    }
+  },
+  "agoHours": "{count} h ago",
+  "@agoHours": {
+    "placeholders": {
+      "count": { "type": "String" }
+    }
+  },
+  "agoDays": "{count} d ago",
+  "@agoDays": {
+    "placeholders": {
+      "count": { "type": "String" }
+    }
+  },
+  "ramadanMubarak": "Ramadan Mubarak",
+  "ramadanTimetable": "Ramadan timetable",
+  "ramadanLabel": "Ramadan",
+  "ramadanSehriEnded": "Sehri has ended",
+  "ramadanSehriEndsIn": "Sehri ends in {time}",
+  "@ramadanSehriEndsIn": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "ramadanStopEating": "Stop eating before Fajr",
+  "ramadanIftarIn": "Iftar in {time}",
+  "@ramadanIftarIn": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "ramadanKeepGoing": "Keep going! 💪",
+  "ramadanIftarTime": "Iftar time! 🎉",
+  "ramadanSehriIn": "Sehri in {time}",
+  "@ramadanSehriIn": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "ramadanEnjoy": "Enjoy your meal",
+  "ramadanAlhamdulillah": "Alhamdulillah",
+  "ramadanSehriEndsSuffix": " · Sehri ends",
+  "ramadanIftarSuffix": " · Iftar",
+  "imsakiyaTitle": "Ramadan timetable",
+  "imsakiyaShareFail": "Could not share the timetable",
+  "imsakiyaNoDates": "Could not compute Ramadan dates",
+  "imsakiyaShare": "Share as image",
+  "imsakiyaDay": "Day",
+  "imsakiyaDate": "Date",
+  "imsakiyaSehri": "Sehri ends",
+  "imsakiyaIftar": "Iftar",
+  "backupFailed": "Backup failed: {error}",
+  "@backupFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "backupNoAccess": "Could not access the selected file.",
+  "backupIncomplete": "This file is not a complete Saathi backup.",
+  "backupNotSaathi": "This file is not a Saathi backup.",
+  "backupNewer": "This backup is from a newer version of Saathi. Update the app first.",
+  "backupDamaged": "This backup file is damaged.",
+  "backupOlder": "an older backup",
+  "restoreConfirmTitle": "Restore backup?",
+  "restoreConfirmBody": "This replaces ALL current data with {when}.\n\nA safety copy of your current data is kept on this phone. Saathi will close afterwards; open it again to continue.",
+  "@restoreConfirmBody": {
+    "placeholders": {
+      "when": { "type": "String" }
+    }
+  },
+  "restoreButton": "Restore",
+  "restoreDoneTitle": "Backup restored",
+  "restoreDoneBody": "Saathi will close now. Open it again to see your data.",
+  "restoreFailedKept": "Restore failed: {error}. Close and reopen Saathi; a safety copy of your data was kept.",
+  "@restoreFailedKept": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "restoreFailedSafe": "Restore failed: {error}. Your data was not changed.",
+  "@restoreFailedSafe": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  }
 }

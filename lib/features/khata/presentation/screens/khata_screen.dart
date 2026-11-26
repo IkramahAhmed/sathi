@@ -11,6 +11,7 @@ import 'package:share_plus/share_plus.dart';
 import '../../../../app/providers.dart';
 import '../../../../core/pdf/pdf_generator.dart';
 import '../../../../core/storage/app_database.dart';
+import '../../../../core/storage/receipt_store.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/expense_category.dart';
 import '../../domain/entities/income_source.dart';
@@ -46,6 +47,7 @@ class _KhataScreenState extends ConsumerState<KhataScreen> {
       if (!mounted) return;
       final db = ref.read(appDatabaseProvider);
       runRecurringCheckWithDb(db.expensesDao, db.recurringExpensesDao);
+      ReceiptStore.migrateExisting(db);
     });
   }
 
@@ -67,10 +69,10 @@ class _KhataScreenState extends ConsumerState<KhataScreen> {
     return current.year == now.year && current.month == now.month;
   }
 
-  String _filterLabel(_TxFilter f) => switch (f) {
-        _TxFilter.all => 'All',
-        _TxFilter.incoming => 'Incoming',
-        _TxFilter.outgoing => 'Outgoing',
+  String _filterLabel(_TxFilter f, AppLocalizations l10n) => switch (f) {
+        _TxFilter.all => l10n.filterAll,
+        _TxFilter.incoming => l10n.khataIncoming,
+        _TxFilter.outgoing => l10n.khataOutgoing,
       };
 
   List<Expense> _applyFilter(List<Expense> all) => switch (_filter) {
@@ -121,12 +123,12 @@ class _KhataScreenState extends ConsumerState<KhataScreen> {
           children: [
             ListTile(
               leading: const Icon(Icons.picture_as_pdf_outlined),
-              title: const Text('Export PDF'),
+              title: Text(AppLocalizations.of(context).khataExportPdf),
               onTap: () { Navigator.pop(context); _exportPdf(month); },
             ),
             ListTile(
               leading: const Icon(Icons.table_chart_outlined),
-              title: const Text('Export CSV'),
+              title: Text(AppLocalizations.of(context).khataExportCsv),
               onTap: () { Navigator.pop(context); _exportCsv(expenses, month); },
             ),
           ],
@@ -142,6 +144,7 @@ class _KhataScreenState extends ConsumerState<KhataScreen> {
     final month = _month ?? DateTime(now.year, now.month);
     final monthLabel = DateFormat.yMMMM().format(month);
     final expensesAsync = ref.watch(monthExpensesProvider((month.year, month.month)));
+    final spendingAsync = ref.watch(monthSpendingProvider((month.year, month.month)));
     final budgets = ref.watch(budgetNotifierProvider);
     final scheme = Theme.of(context).colorScheme;
     final text = Theme.of(context).textTheme;
@@ -155,9 +158,9 @@ class _KhataScreenState extends ConsumerState<KhataScreen> {
             label: Text(l10n.khataTabExpenses),
             icon: const Icon(Icons.receipt_long_outlined),
           ),
-          const ButtonSegment(
+          ButtonSegment(
             value: _KhataTab.bank,
-            label: Text('Bank'),
+            label: Text(l10n.khataBank),
             icon: Icon(Icons.account_balance_outlined),
           ),
         ],
@@ -182,7 +185,7 @@ class _KhataScreenState extends ConsumerState<KhataScreen> {
                   ),
           ),
           IconButton(
-            tooltip: 'Monthly Summary',
+            tooltip: l10n.summaryTitle,
             icon: const Icon(Icons.bar_chart_outlined),
             onPressed: () => context.push(Routes.monthlySummary),
           ),
@@ -236,7 +239,7 @@ class _KhataScreenState extends ConsumerState<KhataScreen> {
                     padding: const EdgeInsets.only(right: 8),
                     child: FilterChip(
                       selected: _filter == f,
-                      label: Text(_filterLabel(f)),
+                      label: Text(_filterLabel(f, l10n)),
                       onSelected: (_) => setState(() => _filter = f),
                     ),
                   ),
@@ -250,7 +253,7 @@ class _KhataScreenState extends ConsumerState<KhataScreen> {
             child: TextField(
               controller: _khataSearchCtrl,
               decoration: InputDecoration(
-                hintText: 'Search entries…',
+                hintText: l10n.khataSearchEntries,
                 prefixIcon: const Icon(Icons.search, size: 20),
                 suffixIcon: _khataQuery.isNotEmpty
                     ? IconButton(
@@ -275,7 +278,7 @@ class _KhataScreenState extends ConsumerState<KhataScreen> {
           ),
 
           // Summary card — always based on full month, not filtered
-          expensesAsync.when(
+          spendingAsync.when(
             loading: () => const LinearProgressIndicator(),
             error: (_, __) => const SizedBox.shrink(),
             data: (entries) {
@@ -287,7 +290,7 @@ class _KhataScreenState extends ConsumerState<KhataScreen> {
 
           // Category chart (shown only for All / Outgoing filter)
           if (_filter == _TxFilter.all || _filter == _TxFilter.outgoing)
-            expensesAsync.when(
+            spendingAsync.when(
               loading: () => const SizedBox.shrink(),
               error: (_, __) => const SizedBox.shrink(),
               data: (entries) {
@@ -299,7 +302,7 @@ class _KhataScreenState extends ConsumerState<KhataScreen> {
 
           // Budget progress
           if (_filter == _TxFilter.all || _filter == _TxFilter.outgoing)
-            expensesAsync.when(
+            spendingAsync.when(
               loading: () => const SizedBox.shrink(),
               error: (_, __) => const SizedBox.shrink(),
               data: (entries) {
@@ -378,7 +381,7 @@ class _KhataScreenState extends ConsumerState<KhataScreen> {
             const Divider(height: 1),
             ListTile(
               leading: const Icon(Icons.repeat_outlined),
-              title: const Text('Recurring'),
+              title: Text(AppLocalizations.of(context).recurringTitle),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.of(context).push(
@@ -1068,7 +1071,7 @@ class _ExpenseTile extends StatelessWidget {
           children: [
             ListTile(
               leading: const Icon(Icons.share_outlined),
-              title: const Text('Share via WhatsApp'),
+              title: Text(AppLocalizations.of(context).khataShareWhatsApp),
               onTap: () {
                 Navigator.pop(context);
                 _shareWhatsApp(context);
@@ -1076,8 +1079,8 @@ class _ExpenseTile extends StatelessWidget {
             ),
             ListTile(
               leading: const Icon(Icons.lock_outlined),
-              title: const Text('Move to Vault'),
-              subtitle: const Text('Hide from normal view'),
+              title: Text(AppLocalizations.of(context).vaultMove),
+              subtitle: Text(AppLocalizations.of(context).vaultMoveHint),
               onTap: () {
                 Navigator.pop(context);
                 onMoveToVault(expense.id);
@@ -1093,7 +1096,8 @@ class _ExpenseTile extends StatelessWidget {
     final fmt = NumberFormat('#,##0', 'en');
     final isIncome = expense.type == 'income';
     final sign = isIncome ? '+' : '-';
-    final typeLabel = isIncome ? 'Income' : 'Expense';
+    final l10n = AppLocalizations.of(context);
+    final typeLabel = isIncome ? l10n.khataIncome : l10n.khataExpense;
     final note = expense.note.isNotEmpty ? '\n📝 ${expense.note}' : '';
     final text = '📅 ${expense.date}\n'
         '$typeLabel: ${sign}Rs ${fmt.format(expense.amount)}'
@@ -1182,7 +1186,7 @@ class _BankFeedState extends ConsumerState<_BankFeed> {
               child: TextField(
                 controller: _bankSearchCtrl,
                 decoration: InputDecoration(
-                  hintText: 'Search bank entries…',
+                  hintText: AppLocalizations.of(context).bankSearch,
                   prefixIcon: const Icon(Icons.search, size: 20),
                   suffixIcon: _bankQuery.isNotEmpty
                       ? IconButton(
@@ -1208,12 +1212,12 @@ class _BankFeedState extends ConsumerState<_BankFeed> {
             ),
             // ── Filter row 1: Direction ──────────────────────────
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
+              padding: EdgeInsets.fromLTRB(16, 4, 16, 0),
               child: SegmentedButton<_BankDirection>(
-                segments: const [
-                  ButtonSegment(value: _BankDirection.all,  label: Text('All')),
-                  ButtonSegment(value: _BankDirection.in_,  label: Text('In'),  icon: Icon(Icons.arrow_downward, size: 14)),
-                  ButtonSegment(value: _BankDirection.out,  label: Text('Out'), icon: Icon(Icons.arrow_upward,   size: 14)),
+                segments: [
+                  ButtonSegment(value: _BankDirection.all,  label: Text(AppLocalizations.of(context).filterAll)),
+                  ButtonSegment(value: _BankDirection.in_,  label: Text(AppLocalizations.of(context).bankIn),  icon: Icon(Icons.arrow_downward, size: 14)),
+                  ButtonSegment(value: _BankDirection.out,  label: Text(AppLocalizations.of(context).bankOut), icon: Icon(Icons.arrow_upward,   size: 14)),
                 ],
                 selected: {_direction},
                 onSelectionChanged: (s) => setState(() => _direction = s.first),
@@ -1230,7 +1234,7 @@ class _BankFeedState extends ConsumerState<_BankFeed> {
                     Padding(
                       padding: const EdgeInsets.only(right: 8),
                       child: FilterChip(
-                        label: const Text('All banks'),
+                        label: Text(AppLocalizations.of(context).bankAllBanks),
                         selected: _selectedBank == null,
                         onSelected: (_) => setState(() => _selectedBank = null),
                         visualDensity: VisualDensity.compact,
@@ -1261,12 +1265,12 @@ class _BankFeedState extends ConsumerState<_BankFeed> {
                           Icon(Icons.account_balance_outlined, size: 56, color: scheme.outlineVariant),
                           const SizedBox(height: 12),
                           Text(
-                            all.isEmpty ? 'No bank transactions yet' : 'No matching transactions',
+                            all.isEmpty ? AppLocalizations.of(context).bankEmpty : AppLocalizations.of(context).bankNoMatch,
                             style: text.bodyMedium?.copyWith(color: scheme.onSurfaceVariant),
                           ),
                           if (all.isEmpty) ...[
                             const SizedBox(height: 6),
-                            Text('Auto-captured from bank notifications',
+                            Text(AppLocalizations.of(context).bankAutoCaptured,
                                 style: text.bodySmall?.copyWith(color: scheme.outlineVariant)),
                           ],
                         ],
@@ -1288,16 +1292,16 @@ class _BankFeedState extends ConsumerState<_BankFeed> {
                           confirmDismiss: (_) => showDialog<bool>(
                             context: context,
                             builder: (ctx) => AlertDialog(
-                              title: const Text('Delete entry'),
+                              title: Text(AppLocalizations.of(context).entryDelete),
                               content: Text('$sign Rs ${fmt.format(e.amount)} — $bank'),
                               actions: [
                                 TextButton(
                                     onPressed: () => Navigator.pop(ctx, false),
-                                    child: const Text('Cancel')),
+                                    child: Text(AppLocalizations.of(context).cancel)),
                                 FilledButton(
                                   onPressed: () => Navigator.pop(ctx, true),
                                   style: FilledButton.styleFrom(backgroundColor: scheme.error),
-                                  child: const Text('Delete'),
+                                  child: Text(AppLocalizations.of(context).delete),
                                 ),
                               ],
                             ),

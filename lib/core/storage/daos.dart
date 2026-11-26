@@ -293,7 +293,7 @@ class QazaDao extends DatabaseAccessor<AppDatabase> with _$QazaDaoMixin {
 class ExpensesDao extends DatabaseAccessor<AppDatabase> with _$ExpensesDaoMixin {
   ExpensesDao(super.db);
 
-  Future<void> add(ExpensesCompanion entry) => into(expenses).insert(entry);
+  Future<int> add(ExpensesCompanion entry) => into(expenses).insert(entry);
 
   /// The same transaction often arrives twice — bank-app push and SMS — a few
   /// seconds or minutes apart, with different sender names. So the key ignores
@@ -363,6 +363,19 @@ class ExpensesDao extends DatabaseAccessor<AppDatabase> with _$ExpensesDaoMixin 
               (t) => OrderingTerm.desc(t.createdAt),
             ]))
           .watch();
+
+  /// Entries for a month from the given sources (`manual`, `bank`), for totals and budgets.
+  Stream<List<Expense>> watchMonthFrom(String yearMonth, List<String> sources) =>
+      (select(expenses)
+            ..where((t) => t.date.like('$yearMonth%') & t.source.isIn(sources))
+            ..orderBy([
+              (t) => OrderingTerm.desc(t.date),
+              (t) => OrderingTerm.desc(t.createdAt),
+            ]))
+          .watch();
+
+  Future<List<Expense>> getMonthFrom(String yearMonth, List<String> sources) =>
+      (select(expenses)..where((t) => t.date.like('$yearMonth%') & t.source.isIn(sources))).get();
 
   /// All entries for the given month as a one-shot Future (for PDF export).
   Future<List<Expense>> getMonth(String yearMonth) =>
@@ -614,4 +627,77 @@ class RecurringExpensesDao extends DatabaseAccessor<AppDatabase>
 
   Future<void> remove(int id) =>
       (delete(recurringExpenses)..where((t) => t.id.equals(id))).go();
+}
+
+@DriftAccessor(tables: [Accounts, Expenses])
+class AccountsDao extends DatabaseAccessor<AppDatabase> with _$AccountsDaoMixin {
+  AccountsDao(super.db);
+
+  Stream<List<Account>> watchAll() =>
+      (select(accounts)..orderBy([(t) => OrderingTerm.asc(t.id)])).watch();
+
+  Future<int> add(AccountsCompanion entry) => into(accounts).insert(entry);
+
+  Future<void> rename(int id, String name) =>
+      (update(accounts)..where((t) => t.id.equals(id))).write(AccountsCompanion(name: Value(name)));
+
+  /// Removes the account. Entries keep their amounts but lose the account link.
+  Future<void> remove(int id) async {
+    await (update(expenses)..where((t) => t.accountId.equals(id)))
+        .write(const ExpensesCompanion(accountId: Value(null)));
+    await (delete(accounts)..where((t) => t.id.equals(id))).go();
+  }
+
+  /// Opening balance plus income minus spending, for every account.
+  Stream<Map<int, double>> watchBalances() {
+    final rows = select(expenses)..where((t) => t.accountId.isNotNull() & t.source.isNotValue('vault'));
+    return rows.watch().asyncMap((entries) async {
+      final all = await select(accounts).get();
+      final balance = {for (final a in all) a.id: a.openingBalance};
+      for (final e in entries) {
+        final id = e.accountId!;
+        if (!balance.containsKey(id)) continue;
+        balance[id] = balance[id]! + (e.type == 'income' ? e.amount : -e.amount);
+      }
+      return balance;
+    });
+  }
+}
+
+@DriftAccessor(tables: [SavingsGoals])
+class SavingsGoalsDao extends DatabaseAccessor<AppDatabase> with _$SavingsGoalsDaoMixin {
+  SavingsGoalsDao(super.db);
+
+  Stream<List<SavingsGoal>> watchAll() =>
+      (select(savingsGoals)..orderBy([(t) => OrderingTerm.asc(t.id)])).watch();
+
+  Future<int> add(SavingsGoalsCompanion entry) => into(savingsGoals).insert(entry);
+
+  Future<void> addMoney(int id, double amount) => customUpdate(
+        'UPDATE savings_goals SET saved = MAX(0, saved + ?) WHERE id = ?',
+        variables: [Variable<double>(amount), Variable<int>(id)],
+        updates: {savingsGoals},
+      );
+
+  Future<void> updateGoal(int id, SavingsGoalsCompanion entry) =>
+      (update(savingsGoals)..where((t) => t.id.equals(id))).write(entry);
+
+  Future<void> remove(int id) => (delete(savingsGoals)..where((t) => t.id.equals(id))).go();
+}
+
+@DriftAccessor(tables: [FastLogs])
+class FastLogsDao extends DatabaseAccessor<AppDatabase> with _$FastLogsDaoMixin {
+  FastLogsDao(super.db);
+
+  Stream<List<FastLog>> watchAll() =>
+      (select(fastLogs)..orderBy([(t) => OrderingTerm.desc(t.date)])).watch();
+
+  /// Sets the status for [date]; a null status clears it.
+  Future<void> setStatus(String date, String? status) async {
+    if (status == null) {
+      await (delete(fastLogs)..where((t) => t.date.equals(date))).go();
+      return;
+    }
+    await into(fastLogs).insertOnConflictUpdate(FastLogsCompanion.insert(date: date, status: status));
+  }
 }

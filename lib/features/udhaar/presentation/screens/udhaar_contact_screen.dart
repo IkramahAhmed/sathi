@@ -10,6 +10,7 @@ import '../../../../core/pdf/pdf_generator.dart';
 import '../../../../core/storage/app_database.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/overdue.dart';
+import '../../domain/phone.dart';
 
 class UdhaarContactScreen extends ConsumerStatefulWidget {
   const UdhaarContactScreen({super.key, required this.contact});
@@ -84,13 +85,11 @@ class _UdhaarContactScreenState extends ConsumerState<UdhaarContactScreen> {
         ? l10n.udhaarWhatsAppLena(_contact.name, amount)
         : l10n.udhaarWhatsAppDena(_contact.name, amount);
 
-    // If phone saved, open WhatsApp directly; otherwise share
-    final phone = _contact.phone.trim();
-    if (phone.isNotEmpty) {
-      // Normalize: strip leading 0, prepend +92
-      final normalized = phone.startsWith('0') ? '92${phone.substring(1)}' : phone;
+    // If a usable phone is saved, open WhatsApp directly; otherwise share
+    final number = whatsAppNumber(_contact.phone);
+    if (number != null) {
       final uri = Uri.parse(
-          'https://wa.me/$normalized?text=${Uri.encodeComponent(message)}');
+          'https://wa.me/$number?text=${Uri.encodeComponent(message)}');
       if (await canLaunchUrl(uri)) {
         await launchUrl(uri, mode: LaunchMode.externalApplication);
         return;
@@ -556,10 +555,12 @@ class _AddEntrySheetState extends State<_AddEntrySheet> {
   String get _dateStr => _fmt(_date);
 
   Future<void> _pickDue() async {
+    final now = DateTime.now();
+    final initial = _due ?? now.add(const Duration(days: 7));
     final picked = await showDatePicker(
       context: context,
-      initialDate: _due ?? DateTime.now().add(const Duration(days: 7)),
-      firstDate: DateTime.now(),
+      initialDate: initial,
+      firstDate: initial.isBefore(now) ? initial : now,
       lastDate: DateTime(2100),
     );
     if (picked != null) setState(() => _due = picked);
@@ -584,7 +585,7 @@ class _AddEntrySheetState extends State<_AddEntrySheet> {
         amount: amount,
         note: _noteCtrl.text.trim(),
         date: _dateStr,
-        dueDate: widget.type == 'gave' && _due != null ? _fmt(_due!) : null,
+        dueDate: _due != null ? _fmt(_due!) : null,
       ),
     );
   }
@@ -648,18 +649,27 @@ class _AddEntrySheetState extends State<_AddEntrySheet> {
             trailing: TextButton(
                 onPressed: _pickDate, child: Text(l10n.udhaarChangeDate)),
           ),
-          if (isGave)
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const Icon(Icons.event_outlined),
-              title: Text(_due == null
-                  ? l10n.udhaarNoDueDate
-                  : '${l10n.udhaarDueOn}: ${DateFormat.yMMMd().format(_due!)}'),
-              trailing: TextButton(
-                onPressed: _pickDue,
-                child: Text(_due == null ? l10n.udhaarSetDueDate : l10n.udhaarChangeDate),
-              ),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const Icon(Icons.event_outlined),
+            title: Text(_due == null
+                ? l10n.udhaarNoDueDate
+                : '${l10n.udhaarDueOn}: ${DateFormat.yMMMd().format(_due!)}'),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (_due != null)
+                  IconButton(
+                    icon: const Icon(Icons.close, size: 18),
+                    onPressed: () => setState(() => _due = null),
+                  ),
+                TextButton(
+                  onPressed: _pickDue,
+                  child: Text(_due == null ? l10n.udhaarSetDueDate : l10n.udhaarChangeDate),
+                ),
+              ],
             ),
+          ),
           const SizedBox(height: 8),
           SizedBox(
             width: double.infinity,

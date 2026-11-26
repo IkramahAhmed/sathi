@@ -47,8 +47,9 @@ class ScheduledAlarm {
 /// Pure-Dart contract for scheduling local notifications. Shared later by the
 /// todo and khata features.
 abstract interface class NotificationScheduler {
-  /// Cancels every pending notification.
-  Future<void> cancelAll();
+  /// Cancels every pending prayer notification. Notifications owned by other
+  /// features (ids from `kFeatureNotificationIdStart`) are kept.
+  Future<void> cancelPrayerReminders();
 
   /// Cancels the notifications with these ids. Unknown ids are ignored.
   Future<void> cancel(Iterable<int> ids);

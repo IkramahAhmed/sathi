@@ -7,15 +7,15 @@ import 'tables.dart';
 part 'app_database.g.dart';
 
 @DriftDatabase(
-  tables: [PrayerLogs, SettingsHistory, PauseRanges, QazaBalance, QazaHistory, Expenses, UdhaarContacts, UdhaarEntries, TaskLists, Tasks, RecurringExpenses],
-  daos: [PrayerLogsDao, SettingsHistoryDao, PauseRangesDao, QazaDao, ExpensesDao, UdhaarDao, TaskListsDao, TasksDao, RecurringExpensesDao],
+  tables: [PrayerLogs, SettingsHistory, PauseRanges, QazaBalance, QazaHistory, Expenses, UdhaarContacts, UdhaarEntries, TaskLists, Tasks, RecurringExpenses, Accounts, SavingsGoals, FastLogs],
+  daos: [PrayerLogsDao, SettingsHistoryDao, PauseRangesDao, QazaDao, ExpensesDao, UdhaarDao, TaskListsDao, TasksDao, RecurringExpensesDao, AccountsDao, SavingsGoalsDao, FastLogsDao],
 )
 class AppDatabase extends _$AppDatabase {
   /// Opens the on-device SQLite file, or [executor] when given (tests).
   AppDatabase([QueryExecutor? executor]) : super(executor ?? driftDatabase(name: 'saathi'));
 
   @override
-  int get schemaVersion => 14;
+  int get schemaVersion => 16;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -76,6 +76,24 @@ class AppDatabase extends _$AppDatabase {
           }
           if (from < 14 && from >= 5) {
             await m.addColumn(udhaarContacts, udhaarContacts.source);
+          }
+          if (from < 15 && from >= 13) {
+            await m.addColumn(recurringExpenses, recurringExpenses.anchorDay);
+          }
+          if (from < 16) {
+            await m.createTable(accounts);
+            await m.createTable(savingsGoals);
+            await m.createTable(fastLogs);
+            if (from >= 9) {
+              await m.addColumn(tasks, tasks.remindBefore);
+              await m.addColumn(tasks, tasks.prayerAnchor);
+              await m.addColumn(tasks, tasks.prayerOffset);
+              await m.addColumn(tasks, tasks.amount);
+              await m.addColumn(tasks, tasks.billCategory);
+            }
+            if (from >= 4) {
+              await m.addColumn(expenses, expenses.accountId);
+            }
           }
         },
       );
