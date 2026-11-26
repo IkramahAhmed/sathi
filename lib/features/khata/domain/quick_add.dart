@@ -139,11 +139,14 @@ QuickEntry? parseQuickAdd(
   );
 }
 
+/// Words in any script, so a category named in Urdu matches too.
+final _words = RegExp(r'[\p{L}\p{N}]+', unicode: true);
+
 /// The user's own category whose name appears in [text] as a whole word, if any.
 String? _customMatch(String text, List<({String key, String name})> custom) {
-  final tokens = RegExp(r'[a-z0-9]+').allMatches(text).map((m) => m.group(0)!).toSet();
+  final tokens = _words.allMatches(text).map((m) => m.group(0)!).toSet();
   for (final c in custom) {
-    final words = RegExp(r'[a-z0-9]+').allMatches(c.name.toLowerCase()).map((m) => m.group(0)!).toList();
+    final words = _words.allMatches(c.name.toLowerCase()).map((m) => m.group(0)!).toList();
     if (words.isNotEmpty && words.every(tokens.contains)) return c.key;
   }
   return null;

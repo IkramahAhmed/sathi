@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../app/providers.dart';
 import '../../../../core/storage/app_database.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../domain/entities/expense_category.dart';
 import '../providers/khata_providers.dart';
 
 const _emojis = [
@@ -29,7 +30,9 @@ Future<String?> showCategoryEditor(
       .all
       .where((c) => c.key != 'c${existing?.id}')
       .map((c) => c.label(l10n).toLowerCase())
-      .toSet();
+      .toSet()
+    // The built-in names in English too, whatever language the app is in.
+    ..addAll(ExpenseCategory.values.map((c) => c.name));
 
   final ok = await showDialog<bool>(
     context: context,

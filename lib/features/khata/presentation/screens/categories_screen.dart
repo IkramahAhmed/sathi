@@ -62,7 +62,11 @@ class CategoriesScreen extends ConsumerWidget {
                               ],
                             ),
                           );
-                          if (ok == true) await ref.read(appDatabaseProvider).customCategoriesDao.remove(c.id);
+                          if (ok == true) {
+                            await ref.read(appDatabaseProvider).customCategoriesDao.remove(c.id);
+                            // Its budget goes too, so a later category with the same number starts clean.
+                            await ref.read(sharedPreferencesProvider).remove('khata_budget_c${c.id}');
+                          }
                         },
                       ),
                     ),

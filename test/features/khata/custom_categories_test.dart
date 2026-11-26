@@ -73,6 +73,14 @@ void main() {
       );
     });
 
+    test('matches a category named in Urdu', () {
+      const urdu = [(key: 'c7', name: 'راشن')];
+      final e = parseQuickAdd('2500 راشن', custom: urdu)!;
+      expect(e.categoryKey, 'c7');
+      expect(e.amount, 2500);
+      expect(parseQuickAdd('2500 chai', custom: urdu)!.categoryKey, 'food');
+    });
+
     test('still uses the built-in guess when no custom name matches, and never for income', () {
       expect(parseQuickAdd('250 chai', custom: custom)!.categoryKey, 'food');
       expect(
