@@ -223,6 +223,26 @@ void main() {
       );
     });
 
+    test(
+      'a very old file without a source column gets no vault contacts',
+      () async {
+        final live = await dbWithVault();
+        final old = File('${dir.path}/old.sqlite');
+        final db = sql.sqlite3.open(old.path);
+        db.execute(
+          'CREATE TABLE udhaar_contacts (id INTEGER PRIMARY KEY, name TEXT)',
+        );
+        db.execute(
+          'CREATE TABLE udhaar_entries (id INTEGER PRIMARY KEY, contact_id INTEGER, amount REAL)',
+        );
+        db.dispose();
+
+        BackupRestoreService.carryVault(from: live.path, into: old.path);
+
+        expect(count(old.path, 'SELECT COUNT(*) FROM udhaar_contacts'), 0);
+      },
+    );
+
     test('a database without a vault reports none', () async {
       expect(BackupRestoreService.hasVault((await saathiDb()).path), isFalse);
     });

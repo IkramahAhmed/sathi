@@ -185,7 +185,11 @@ class BackupRestoreService {
             [table],
           ).isNotEmpty;
 
-      if (both('udhaar_contacts') && both('udhaar_entries')) {
+      // Without a `source` column a copied vault contact would turn into a normal
+      // one and show up in the Udhaar list, so such an old file is left alone.
+      if (both('udhaar_contacts') &&
+          both('udhaar_entries') &&
+          _columns(db, 'udhaar_contacts').contains('source')) {
         final contactCols = common('udhaar_contacts');
         final entryCols = common(
           'udhaar_entries',
