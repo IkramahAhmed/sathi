@@ -25,6 +25,7 @@ void main() {
       'udhaar_overdue',
       'khata_alert',
       'task_reminder',
+      'weekly_review',
     ]);
     expect(ids.toSet().length, ids.length, reason: 'channel ids are unique');
   });

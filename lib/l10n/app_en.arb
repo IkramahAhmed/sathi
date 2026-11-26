@@ -1145,5 +1145,95 @@
     }
   },
   "categoryDeleteBody": "Entries in this category move to Other. No amount is lost.",
-  "categoriesManage": "Manage categories"
+  "categoriesManage": "Manage categories",
+  "reviewTitle": "Weekly review",
+  "reviewRange": "{from} – {to}",
+  "@reviewRange": {
+    "placeholders": {
+      "from": { "type": "String" },
+      "to": { "type": "String" }
+    }
+  },
+  "reviewSpent": "Spent Rs {amount}",
+  "@reviewSpent": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "reviewMoreThanBefore": "Rs {amount} more than the week before ({percent}%)",
+  "@reviewMoreThanBefore": {
+    "placeholders": {
+      "amount": { "type": "String" },
+      "percent": { "type": "String" }
+    }
+  },
+  "reviewLessThanBefore": "Rs {amount} less than the week before ({percent}%)",
+  "@reviewLessThanBefore": {
+    "placeholders": {
+      "amount": { "type": "String" },
+      "percent": { "type": "String" }
+    }
+  },
+  "reviewMoreNoPercent": "Rs {amount} more than the week before",
+  "@reviewMoreNoPercent": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "reviewSameAsBefore": "Same as the week before",
+  "reviewPrayers": "Prayers",
+  "reviewPrayed": "Prayed {done} of {total}",
+  "@reviewPrayed": {
+    "placeholders": {
+      "done": { "type": "String" },
+      "total": { "type": "String" }
+    }
+  },
+  "reviewTasksDone": "{count} finished",
+  "@reviewTasksDone": {
+    "placeholders": {
+      "count": { "type": "String" }
+    }
+  },
+  "reviewTasksOverdue": "{count} overdue",
+  "@reviewTasksOverdue": {
+    "placeholders": {
+      "count": { "type": "String" }
+    }
+  },
+  "reviewNoOverdue": "Nothing overdue 🎉",
+  "reviewFastsKept": "Kept {kept}, missed {missed}",
+  "@reviewFastsKept": {
+    "placeholders": {
+      "kept": { "type": "String" },
+      "missed": { "type": "String" }
+    }
+  },
+  "reviewDebts": "Money lent and owed",
+  "reviewOwedToMe": "Owed to you: Rs {amount}",
+  "@reviewOwedToMe": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "reviewIOwe": "You owe: Rs {amount}",
+  "@reviewIOwe": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "reviewEmpty": "Nothing recorded in this period yet. Use Saathi for a week and come back.",
+  "reviewNotifTitle": "Your weekly review is ready",
+  "reviewNotifBody": "Tap to see how your week went",
+  "reviewSettingSub": "A reminder to look back at your week",
+  "reviewSettingOn": "{day} at {time}",
+  "@reviewSettingOn": {
+    "placeholders": {
+      "day": { "type": "String" },
+      "time": { "type": "String" }
+    }
+  },
+  "reviewDay": "Day",
+  "reviewTime": "Time",
+  "reviewOpen": "Open the review"
 }

@@ -10,6 +10,7 @@ import '../core/backup/backup_restore_service.dart';
 import '../core/notifications/notification_tap_bus.dart';
 import '../core/services/notification_listener_provider.dart';
 import '../features/prayer/domain/usecases/handle_reminder_action.dart';
+import '../features/review/data/weekly_review_scheduler.dart';
 import '../features/tasks/data/task_reminders.dart';
 import '../features/tasks/presentation/task_providers.dart';
 import '../features/udhaar/background/udhaar_overdue_check.dart';
@@ -80,6 +81,10 @@ class _SaathiAppState extends ConsumerState<SaathiApp> with WidgetsBindingObserv
     db.markTablesUpdated([db.tasks]);
     unawaited(rescheduleAllTaskReminders(db, prayerTime: ref.read(prayerTimeResolverProvider)));
     unawaited(BackupRestoreService.autoBackupIfDue(db, ref.read(sharedPreferencesProvider)));
+    unawaited(applyWeeklyReview(
+      ref.read(sharedPreferencesProvider),
+      lookupAppLocalizations(localeFromTag(ref.read(currentSettingsProvider).localeTag)),
+    ));
     unawaited(ref.read(prayerActionsProvider).reconcileQaza());
     try {
       await ref.read(settingsControllerProvider.notifier).followIfMoved();
@@ -92,6 +97,12 @@ class _SaathiAppState extends ConsumerState<SaathiApp> with WidgetsBindingObserv
 
   /// Handles a tap on a notification or one of its buttons.
   Future<void> _onTap(NotificationTap tap) async {
+    // The weekly review reminder opens the review.
+    if (isWeeklyReviewPayload(tap.payload)) {
+      ref.read(routerProvider).push(Routes.review);
+      return;
+    }
+
     // Task reminders: Done / Snooze buttons, or a tap that opens the task list.
     if (taskIdFromPayload(tap.payload) != null) {
       await handleTaskNotificationAction(ref.read(appDatabaseProvider),

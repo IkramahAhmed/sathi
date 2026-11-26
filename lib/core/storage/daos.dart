@@ -374,6 +374,15 @@ class ExpensesDao extends DatabaseAccessor<AppDatabase> with _$ExpensesDaoMixin 
             ]))
           .watch();
 
+  /// Entries dated from [from] to [to] (both `yyyy-MM-dd`, inclusive) from the given sources.
+  Future<List<Expense>> getRange(String from, String to, List<String> sources) =>
+      (select(expenses)
+            ..where((t) =>
+                t.date.isBiggerOrEqualValue(from) &
+                t.date.isSmallerOrEqualValue(to) &
+                t.source.isIn(sources)))
+          .get();
+
   Future<List<Expense>> getMonthFrom(String yearMonth, List<String> sources) =>
       (select(expenses)..where((t) => t.date.like('$yearMonth%') & t.source.isIn(sources))).get();
 

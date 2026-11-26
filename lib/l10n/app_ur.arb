@@ -862,5 +862,95 @@
     }
   },
   "categoryDeleteBody": "اس قسم کے اندراجات \"دیگر\" میں چلے جائیں گے۔ کوئی رقم ضائع نہیں ہوگی۔",
-  "categoriesManage": "اقسام کا انتظام"
+  "categoriesManage": "اقسام کا انتظام",
+  "reviewTitle": "ہفتہ وار جائزہ",
+  "reviewRange": "{from} – {to}",
+  "@reviewRange": {
+    "placeholders": {
+      "from": { "type": "String" },
+      "to": { "type": "String" }
+    }
+  },
+  "reviewSpent": "Rs {amount} خرچ ہوئے",
+  "@reviewSpent": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "reviewMoreThanBefore": "پچھلے ہفتے سے Rs {amount} زیادہ ({percent}%)",
+  "@reviewMoreThanBefore": {
+    "placeholders": {
+      "amount": { "type": "String" },
+      "percent": { "type": "String" }
+    }
+  },
+  "reviewLessThanBefore": "پچھلے ہفتے سے Rs {amount} کم ({percent}%)",
+  "@reviewLessThanBefore": {
+    "placeholders": {
+      "amount": { "type": "String" },
+      "percent": { "type": "String" }
+    }
+  },
+  "reviewMoreNoPercent": "پچھلے ہفتے سے Rs {amount} زیادہ",
+  "@reviewMoreNoPercent": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "reviewSameAsBefore": "پچھلے ہفتے کے برابر",
+  "reviewPrayers": "نمازیں",
+  "reviewPrayed": "{total} میں سے {done} پڑھیں",
+  "@reviewPrayed": {
+    "placeholders": {
+      "done": { "type": "String" },
+      "total": { "type": "String" }
+    }
+  },
+  "reviewTasksDone": "{count} مکمل",
+  "@reviewTasksDone": {
+    "placeholders": {
+      "count": { "type": "String" }
+    }
+  },
+  "reviewTasksOverdue": "{count} تاخیر شدہ",
+  "@reviewTasksOverdue": {
+    "placeholders": {
+      "count": { "type": "String" }
+    }
+  },
+  "reviewNoOverdue": "کچھ تاخیر شدہ نہیں 🎉",
+  "reviewFastsKept": "رکھے {kept}، چھوٹے {missed}",
+  "@reviewFastsKept": {
+    "placeholders": {
+      "kept": { "type": "String" },
+      "missed": { "type": "String" }
+    }
+  },
+  "reviewDebts": "ادھار دیا اور لیا",
+  "reviewOwedToMe": "آپ کو ملنے ہیں: Rs {amount}",
+  "@reviewOwedToMe": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "reviewIOwe": "آپ کو دینے ہیں: Rs {amount}",
+  "@reviewIOwe": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "reviewEmpty": "اس مدت میں ابھی کچھ درج نہیں۔ ایک ہفتہ ساتھی استعمال کریں اور واپس آئیں۔",
+  "reviewNotifTitle": "آپ کا ہفتہ وار جائزہ تیار ہے",
+  "reviewNotifBody": "دیکھنے کے لیے ٹیپ کریں کہ آپ کا ہفتہ کیسا گزرا",
+  "reviewSettingSub": "اپنے ہفتے کو دیکھنے کی یاد دہانی",
+  "reviewSettingOn": "{day}، {time} بجے",
+  "@reviewSettingOn": {
+    "placeholders": {
+      "day": { "type": "String" },
+      "time": { "type": "String" }
+    }
+  },
+  "reviewDay": "دن",
+  "reviewTime": "وقت",
+  "reviewOpen": "جائزہ کھولیں"
 }

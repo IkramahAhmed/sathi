@@ -18,6 +18,7 @@ abstract final class NotificationChannels {
   static const String udhaarOverdue = 'udhaar_overdue';
   static const String khataAlert = 'khata_alert';
   static const String taskReminder = 'task_reminder';
+  static const String weeklyReview = 'weekly_review';
   static const String drawableIcon = 'ic_stat_saathi';
 
   /// Channels from earlier versions. They are deleted on start so they do not
@@ -130,6 +131,12 @@ abstract final class NotificationChannels {
           description: 'Reminds you when a task is due',
           importance: Importance.high,
           enableVibration: true,
+        ),
+        const AndroidNotificationChannel(
+          weeklyReview,
+          'Weekly review',
+          description: 'A weekly reminder to look back at your week',
+          importance: Importance.defaultImportance,
         ),
       ];
 

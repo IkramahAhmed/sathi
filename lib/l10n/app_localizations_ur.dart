@@ -2086,4 +2086,102 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get categoriesManage => 'اقسام کا انتظام';
+
+  @override
+  String get reviewTitle => 'ہفتہ وار جائزہ';
+
+  @override
+  String reviewRange(String from, String to) {
+    return '$from – $to';
+  }
+
+  @override
+  String reviewSpent(String amount) {
+    return 'Rs $amount خرچ ہوئے';
+  }
+
+  @override
+  String reviewMoreThanBefore(String amount, String percent) {
+    return 'پچھلے ہفتے سے Rs $amount زیادہ ($percent%)';
+  }
+
+  @override
+  String reviewLessThanBefore(String amount, String percent) {
+    return 'پچھلے ہفتے سے Rs $amount کم ($percent%)';
+  }
+
+  @override
+  String reviewMoreNoPercent(String amount) {
+    return 'پچھلے ہفتے سے Rs $amount زیادہ';
+  }
+
+  @override
+  String get reviewSameAsBefore => 'پچھلے ہفتے کے برابر';
+
+  @override
+  String get reviewPrayers => 'نمازیں';
+
+  @override
+  String reviewPrayed(String done, String total) {
+    return '$total میں سے $done پڑھیں';
+  }
+
+  @override
+  String reviewTasksDone(String count) {
+    return '$count مکمل';
+  }
+
+  @override
+  String reviewTasksOverdue(String count) {
+    return '$count تاخیر شدہ';
+  }
+
+  @override
+  String get reviewNoOverdue => 'کچھ تاخیر شدہ نہیں 🎉';
+
+  @override
+  String reviewFastsKept(String kept, String missed) {
+    return 'رکھے $kept، چھوٹے $missed';
+  }
+
+  @override
+  String get reviewDebts => 'ادھار دیا اور لیا';
+
+  @override
+  String reviewOwedToMe(String amount) {
+    return 'آپ کو ملنے ہیں: Rs $amount';
+  }
+
+  @override
+  String reviewIOwe(String amount) {
+    return 'آپ کو دینے ہیں: Rs $amount';
+  }
+
+  @override
+  String get reviewEmpty =>
+      'اس مدت میں ابھی کچھ درج نہیں۔ ایک ہفتہ ساتھی استعمال کریں اور واپس آئیں۔';
+
+  @override
+  String get reviewNotifTitle => 'آپ کا ہفتہ وار جائزہ تیار ہے';
+
+  @override
+  String get reviewNotifBody =>
+      'دیکھنے کے لیے ٹیپ کریں کہ آپ کا ہفتہ کیسا گزرا';
+
+  @override
+  String get reviewSettingSub => 'اپنے ہفتے کو دیکھنے کی یاد دہانی';
+
+  @override
+  String reviewSettingOn(String day, String time) {
+    return '$day، $time بجے';
+  }
+
+  @override
+  String get reviewDay => 'دن';
+
+  @override
+  String get reviewTime => 'وقت';
+
+  @override
+  String get reviewOpen => 'جائزہ کھولیں';
 }

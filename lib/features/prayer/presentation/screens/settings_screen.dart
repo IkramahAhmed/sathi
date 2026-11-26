@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart' show DateFormat;
 
 import '../../../../core/backup/backup_restore_service.dart';
+import '../../../review/data/weekly_review_scheduler.dart';
 import '../../../khata/presentation/providers/khata_providers.dart';
 
 import '../../../../app/providers.dart';
@@ -220,6 +221,7 @@ class SettingsScreen extends ConsumerWidget {
             onTap: () => context.push(Routes.oemGuide),
           ),
           const _BankSyncSection(),
+          const _WeeklyReviewSection(),
           const _DataBackupSection(),
           ListTile(
             key: const ValueKey('audio-credits'),
@@ -607,6 +609,79 @@ class _DataBackupSection extends ConsumerWidget {
           value: countBank,
           onChanged: (v) => ref.read(countBankProvider.notifier).set(v),
         ),
+      ],
+    );
+  }
+}
+
+// ── Weekly review ─────────────────────────────────────────────────────────────
+
+class _WeeklyReviewSection extends ConsumerStatefulWidget {
+  const _WeeklyReviewSection();
+
+  @override
+  ConsumerState<_WeeklyReviewSection> createState() => _WeeklyReviewSectionState();
+}
+
+class _WeeklyReviewSectionState extends ConsumerState<_WeeklyReviewSection> {
+  late ReviewReminder _reminder = ReviewReminder.load(ref.read(sharedPreferencesProvider));
+
+  Future<void> _update(ReviewReminder next) async {
+    final prefs = ref.read(sharedPreferencesProvider);
+    final l10n = AppLocalizations.of(context);
+    setState(() => _reminder = next);
+    await next.save(prefs);
+    await applyWeeklyReview(prefs, l10n);
+  }
+
+  /// Monday is 1 ... Sunday is 7; 23 Nov 2026 is a Monday.
+  String _dayName(int weekday, String locale) =>
+      DateFormat.EEEE(locale).format(DateTime(2026, 11, 22 + weekday));
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final locale = dateLocale(Localizations.localeOf(context));
+    final time = TimeOfDay(hour: _reminder.minutes ~/ 60, minute: _reminder.minutes % 60);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Divider(),
+        SwitchListTile(
+          secondary: const Icon(Icons.insights_outlined),
+          title: Text(l10n.reviewTitle),
+          subtitle: Text(_reminder.enabled
+              ? l10n.reviewSettingOn(_dayName(_reminder.weekday, locale), time.format(context))
+              : l10n.reviewSettingSub),
+          value: _reminder.enabled,
+          onChanged: (v) => _update(_reminder.copyWith(enabled: v)),
+        ),
+        if (_reminder.enabled) ...[
+          ListTile(
+            contentPadding: const EdgeInsets.only(left: 72, right: 16),
+            title: Text(l10n.reviewDay),
+            trailing: DropdownButton<int>(
+              value: _reminder.weekday,
+              underline: const SizedBox.shrink(),
+              items: [
+                for (var d = 1; d <= 7; d++) DropdownMenuItem(value: d, child: Text(_dayName(d, locale))),
+              ],
+              onChanged: (v) {
+                if (v != null) _update(_reminder.copyWith(weekday: v));
+              },
+            ),
+          ),
+          ListTile(
+            contentPadding: const EdgeInsets.only(left: 72, right: 16),
+            title: Text(l10n.reviewTime),
+            trailing: Text(time.format(context), style: Theme.of(context).textTheme.titleMedium),
+            onTap: () async {
+              final picked = await showTimePicker(context: context, initialTime: time);
+              if (picked != null) _update(_reminder.copyWith(minutes: picked.hour * 60 + picked.minute));
+            },
+          ),
+        ],
       ],
     );
   }

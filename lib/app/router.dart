@@ -20,6 +20,7 @@ import '../features/khata/presentation/screens/monthly_summary_screen.dart';
 import '../features/tasks/presentation/screens/tasks_screen.dart';
 import '../features/udhaar/presentation/screens/udhaar_list_screen.dart';
 import '../features/khata/presentation/screens/accounts_screen.dart';
+import '../features/review/presentation/weekly_review_screen.dart';
 import '../features/khata/presentation/screens/goals_screen.dart';
 import '../features/prayer/presentation/screens/roza_screen.dart';
 import '../features/vault/presentation/screens/vault_screen.dart';
@@ -48,6 +49,7 @@ abstract final class Routes {
   static const roza = '/roza';
   static const goals = '/goals';
   static const accounts = '/accounts';
+  static const review = '/review';
 }
 
 /// The first route to show. Overridden in `main()` once onboarding state is known.
@@ -75,6 +77,7 @@ GoRouter router(Ref ref) {
       GoRoute(path: Routes.roza, builder: (_, _) => const RozaScreen()),
       GoRoute(path: Routes.goals, builder: (_, _) => const GoalsScreen()),
       GoRoute(path: Routes.accounts, builder: (_, _) => const AccountsScreen()),
+      GoRoute(path: Routes.review, builder: (_, _) => const WeeklyReviewScreen()),
       GoRoute(path: Routes.settings, builder: (_, _) => const SettingsScreen()),
       GoRoute(
         path: Routes.verify,

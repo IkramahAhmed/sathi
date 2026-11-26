@@ -845,5 +845,95 @@
     }
   },
   "categoryDeleteBody": "Is category ki entries \"Other\" mein chali jayengi. Koi raqam zaya nahi hogi.",
-  "categoriesManage": "Categories manage karein"
+  "categoriesManage": "Categories manage karein",
+  "reviewTitle": "Haftawar jaiza",
+  "reviewRange": "{from} – {to}",
+  "@reviewRange": {
+    "placeholders": {
+      "from": { "type": "String" },
+      "to": { "type": "String" }
+    }
+  },
+  "reviewSpent": "Rs {amount} kharch hue",
+  "@reviewSpent": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "reviewMoreThanBefore": "Pichle hafte se Rs {amount} zyada ({percent}%)",
+  "@reviewMoreThanBefore": {
+    "placeholders": {
+      "amount": { "type": "String" },
+      "percent": { "type": "String" }
+    }
+  },
+  "reviewLessThanBefore": "Pichle hafte se Rs {amount} kam ({percent}%)",
+  "@reviewLessThanBefore": {
+    "placeholders": {
+      "amount": { "type": "String" },
+      "percent": { "type": "String" }
+    }
+  },
+  "reviewMoreNoPercent": "Pichle hafte se Rs {amount} zyada",
+  "@reviewMoreNoPercent": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "reviewSameAsBefore": "Pichle hafte ke barabar",
+  "reviewPrayers": "Namazein",
+  "reviewPrayed": "{total} mein se {done} parhein",
+  "@reviewPrayed": {
+    "placeholders": {
+      "done": { "type": "String" },
+      "total": { "type": "String" }
+    }
+  },
+  "reviewTasksDone": "{count} mukammal",
+  "@reviewTasksDone": {
+    "placeholders": {
+      "count": { "type": "String" }
+    }
+  },
+  "reviewTasksOverdue": "{count} overdue",
+  "@reviewTasksOverdue": {
+    "placeholders": {
+      "count": { "type": "String" }
+    }
+  },
+  "reviewNoOverdue": "Kuch overdue nahi 🎉",
+  "reviewFastsKept": "Rakhe {kept}, chhoote {missed}",
+  "@reviewFastsKept": {
+    "placeholders": {
+      "kept": { "type": "String" },
+      "missed": { "type": "String" }
+    }
+  },
+  "reviewDebts": "Udhaar diya aur liya",
+  "reviewOwedToMe": "Aap ko milne hain: Rs {amount}",
+  "@reviewOwedToMe": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "reviewIOwe": "Aap ko dene hain: Rs {amount}",
+  "@reviewIOwe": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "reviewEmpty": "Is muddat mein abhi kuch darj nahi. Ek hafta Saathi istemal karein aur wapas aayein.",
+  "reviewNotifTitle": "Aap ka haftawar jaiza tayar hai",
+  "reviewNotifBody": "Dekhne ke liye tap karein ke aap ka hafta kaisa guzra",
+  "reviewSettingSub": "Apne hafte ko dekhne ki yaad dehani",
+  "reviewSettingOn": "{day}, {time} baje",
+  "@reviewSettingOn": {
+    "placeholders": {
+      "day": { "type": "String" },
+      "time": { "type": "String" }
+    }
+  },
+  "reviewDay": "Din",
+  "reviewTime": "Waqt",
+  "reviewOpen": "Jaiza kholein"
 }

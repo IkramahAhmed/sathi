@@ -127,6 +127,11 @@ class DashboardScreen extends ConsumerWidget {
                 label: l10n.toolAccounts,
                 onTap: () => context.push(Routes.accounts),
               ),
+              _ToolTile(
+                icon: Icons.insights_outlined,
+                label: l10n.reviewTitle,
+                onTap: () => context.push(Routes.review),
+              ),
             ],
           ),
         ],

@@ -3818,6 +3818,150 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Manage categories'**
   String get categoriesManage;
+
+  /// No description provided for @reviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly review'**
+  String get reviewTitle;
+
+  /// No description provided for @reviewRange.
+  ///
+  /// In en, this message translates to:
+  /// **'{from} – {to}'**
+  String reviewRange(String from, String to);
+
+  /// No description provided for @reviewSpent.
+  ///
+  /// In en, this message translates to:
+  /// **'Spent Rs {amount}'**
+  String reviewSpent(String amount);
+
+  /// No description provided for @reviewMoreThanBefore.
+  ///
+  /// In en, this message translates to:
+  /// **'Rs {amount} more than the week before ({percent}%)'**
+  String reviewMoreThanBefore(String amount, String percent);
+
+  /// No description provided for @reviewLessThanBefore.
+  ///
+  /// In en, this message translates to:
+  /// **'Rs {amount} less than the week before ({percent}%)'**
+  String reviewLessThanBefore(String amount, String percent);
+
+  /// No description provided for @reviewMoreNoPercent.
+  ///
+  /// In en, this message translates to:
+  /// **'Rs {amount} more than the week before'**
+  String reviewMoreNoPercent(String amount);
+
+  /// No description provided for @reviewSameAsBefore.
+  ///
+  /// In en, this message translates to:
+  /// **'Same as the week before'**
+  String get reviewSameAsBefore;
+
+  /// No description provided for @reviewPrayers.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayers'**
+  String get reviewPrayers;
+
+  /// No description provided for @reviewPrayed.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayed {done} of {total}'**
+  String reviewPrayed(String done, String total);
+
+  /// No description provided for @reviewTasksDone.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} finished'**
+  String reviewTasksDone(String count);
+
+  /// No description provided for @reviewTasksOverdue.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} overdue'**
+  String reviewTasksOverdue(String count);
+
+  /// No description provided for @reviewNoOverdue.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing overdue 🎉'**
+  String get reviewNoOverdue;
+
+  /// No description provided for @reviewFastsKept.
+  ///
+  /// In en, this message translates to:
+  /// **'Kept {kept}, missed {missed}'**
+  String reviewFastsKept(String kept, String missed);
+
+  /// No description provided for @reviewDebts.
+  ///
+  /// In en, this message translates to:
+  /// **'Money lent and owed'**
+  String get reviewDebts;
+
+  /// No description provided for @reviewOwedToMe.
+  ///
+  /// In en, this message translates to:
+  /// **'Owed to you: Rs {amount}'**
+  String reviewOwedToMe(String amount);
+
+  /// No description provided for @reviewIOwe.
+  ///
+  /// In en, this message translates to:
+  /// **'You owe: Rs {amount}'**
+  String reviewIOwe(String amount);
+
+  /// No description provided for @reviewEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing recorded in this period yet. Use Saathi for a week and come back.'**
+  String get reviewEmpty;
+
+  /// No description provided for @reviewNotifTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your weekly review is ready'**
+  String get reviewNotifTitle;
+
+  /// No description provided for @reviewNotifBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to see how your week went'**
+  String get reviewNotifBody;
+
+  /// No description provided for @reviewSettingSub.
+  ///
+  /// In en, this message translates to:
+  /// **'A reminder to look back at your week'**
+  String get reviewSettingSub;
+
+  /// No description provided for @reviewSettingOn.
+  ///
+  /// In en, this message translates to:
+  /// **'{day} at {time}'**
+  String reviewSettingOn(String day, String time);
+
+  /// No description provided for @reviewDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Day'**
+  String get reviewDay;
+
+  /// No description provided for @reviewTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Time'**
+  String get reviewTime;
+
+  /// No description provided for @reviewOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the review'**
+  String get reviewOpen;
 }
 
 class _AppLocalizationsDelegate

@@ -2088,6 +2088,103 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get categoriesManage => 'Manage categories';
+
+  @override
+  String get reviewTitle => 'Weekly review';
+
+  @override
+  String reviewRange(String from, String to) {
+    return '$from – $to';
+  }
+
+  @override
+  String reviewSpent(String amount) {
+    return 'Spent Rs $amount';
+  }
+
+  @override
+  String reviewMoreThanBefore(String amount, String percent) {
+    return 'Rs $amount more than the week before ($percent%)';
+  }
+
+  @override
+  String reviewLessThanBefore(String amount, String percent) {
+    return 'Rs $amount less than the week before ($percent%)';
+  }
+
+  @override
+  String reviewMoreNoPercent(String amount) {
+    return 'Rs $amount more than the week before';
+  }
+
+  @override
+  String get reviewSameAsBefore => 'Same as the week before';
+
+  @override
+  String get reviewPrayers => 'Prayers';
+
+  @override
+  String reviewPrayed(String done, String total) {
+    return 'Prayed $done of $total';
+  }
+
+  @override
+  String reviewTasksDone(String count) {
+    return '$count finished';
+  }
+
+  @override
+  String reviewTasksOverdue(String count) {
+    return '$count overdue';
+  }
+
+  @override
+  String get reviewNoOverdue => 'Nothing overdue 🎉';
+
+  @override
+  String reviewFastsKept(String kept, String missed) {
+    return 'Kept $kept, missed $missed';
+  }
+
+  @override
+  String get reviewDebts => 'Money lent and owed';
+
+  @override
+  String reviewOwedToMe(String amount) {
+    return 'Owed to you: Rs $amount';
+  }
+
+  @override
+  String reviewIOwe(String amount) {
+    return 'You owe: Rs $amount';
+  }
+
+  @override
+  String get reviewEmpty =>
+      'Nothing recorded in this period yet. Use Saathi for a week and come back.';
+
+  @override
+  String get reviewNotifTitle => 'Your weekly review is ready';
+
+  @override
+  String get reviewNotifBody => 'Tap to see how your week went';
+
+  @override
+  String get reviewSettingSub => 'A reminder to look back at your week';
+
+  @override
+  String reviewSettingOn(String day, String time) {
+    return '$day at $time';
+  }
+
+  @override
+  String get reviewDay => 'Day';
+
+  @override
+  String get reviewTime => 'Time';
+
+  @override
+  String get reviewOpen => 'Open the review';
 }
 
 /// The translations for English, as used in Pakistan (`en_PK`).
@@ -4142,4 +4239,102 @@ class AppLocalizationsEnPk extends AppLocalizationsEn {
 
   @override
   String get categoriesManage => 'Categories manage karein';
+
+  @override
+  String get reviewTitle => 'Haftawar jaiza';
+
+  @override
+  String reviewRange(String from, String to) {
+    return '$from – $to';
+  }
+
+  @override
+  String reviewSpent(String amount) {
+    return 'Rs $amount kharch hue';
+  }
+
+  @override
+  String reviewMoreThanBefore(String amount, String percent) {
+    return 'Pichle hafte se Rs $amount zyada ($percent%)';
+  }
+
+  @override
+  String reviewLessThanBefore(String amount, String percent) {
+    return 'Pichle hafte se Rs $amount kam ($percent%)';
+  }
+
+  @override
+  String reviewMoreNoPercent(String amount) {
+    return 'Pichle hafte se Rs $amount zyada';
+  }
+
+  @override
+  String get reviewSameAsBefore => 'Pichle hafte ke barabar';
+
+  @override
+  String get reviewPrayers => 'Namazein';
+
+  @override
+  String reviewPrayed(String done, String total) {
+    return '$total mein se $done parhein';
+  }
+
+  @override
+  String reviewTasksDone(String count) {
+    return '$count mukammal';
+  }
+
+  @override
+  String reviewTasksOverdue(String count) {
+    return '$count overdue';
+  }
+
+  @override
+  String get reviewNoOverdue => 'Kuch overdue nahi 🎉';
+
+  @override
+  String reviewFastsKept(String kept, String missed) {
+    return 'Rakhe $kept, chhoote $missed';
+  }
+
+  @override
+  String get reviewDebts => 'Udhaar diya aur liya';
+
+  @override
+  String reviewOwedToMe(String amount) {
+    return 'Aap ko milne hain: Rs $amount';
+  }
+
+  @override
+  String reviewIOwe(String amount) {
+    return 'Aap ko dene hain: Rs $amount';
+  }
+
+  @override
+  String get reviewEmpty =>
+      'Is muddat mein abhi kuch darj nahi. Ek hafta Saathi istemal karein aur wapas aayein.';
+
+  @override
+  String get reviewNotifTitle => 'Aap ka haftawar jaiza tayar hai';
+
+  @override
+  String get reviewNotifBody =>
+      'Dekhne ke liye tap karein ke aap ka hafta kaisa guzra';
+
+  @override
+  String get reviewSettingSub => 'Apne hafte ko dekhne ki yaad dehani';
+
+  @override
+  String reviewSettingOn(String day, String time) {
+    return '$day, $time baje';
+  }
+
+  @override
+  String get reviewDay => 'Din';
+
+  @override
+  String get reviewTime => 'Waqt';
+
+  @override
+  String get reviewOpen => 'Jaiza kholein';
 }
