@@ -4,7 +4,8 @@ import 'package:intl/intl.dart';
 
 import '../../../../app/providers.dart';
 import '../../../../core/storage/app_database.dart';
-import '../../domain/entities/expense_category.dart';
+import '../../domain/entities/category.dart';
+import '../providers/khata_providers.dart';
 import '../../domain/entities/income_source.dart';
 import '../../../../l10n/app_localizations.dart';
 
@@ -58,6 +59,7 @@ class RecurringScreen extends ConsumerWidget {
             itemBuilder: (context, i) {
               final r = items[i];
               return _RecurringTile(
+                catalog: ref.watch(categoryCatalogProvider),
                 item: r,
                 fmt: fmt,
                 l10n: l10n,
@@ -77,12 +79,14 @@ class RecurringScreen extends ConsumerWidget {
 class _RecurringTile extends StatelessWidget {
   const _RecurringTile({
     required this.item,
+    required this.catalog,
     required this.fmt,
     required this.l10n,
     required this.onDelete,
   });
 
   final RecurringExpense item;
+  final CategoryCatalog catalog;
   final NumberFormat fmt;
   final AppLocalizations l10n;
   final VoidCallback onDelete;
@@ -95,9 +99,11 @@ class _RecurringTile extends StatelessWidget {
     final color = isIncome ? Colors.green.shade700 : scheme.error;
     final sign = isIncome ? '+' : '-';
 
-    final cat = isIncome ? null : ExpenseCategory.fromString(item.category);
+    final cat = isIncome ? null : catalog.resolve(item.category);
     final src = isIncome ? IncomeSource.fromString(item.category) : null;
-    final icon = isIncome ? src!.icon : cat!.icon;
+    final Widget icon = isIncome
+        ? Icon(src!.icon, size: 20, color: color)
+        : cat!.iconWidget(size: 20, color: color);
     final label = isIncome ? src!.label(l10n) : cat!.label(l10n);
 
     return Dismissible(
@@ -132,7 +138,7 @@ class _RecurringTile extends StatelessWidget {
       child: ListTile(
         leading: CircleAvatar(
           backgroundColor: color.withAlpha(28),
-          child: Icon(icon, size: 20, color: color),
+          child: icon,
         ),
         title: Text(
           '$sign Rs ${fmt.format(item.amount)}',

@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../l10n/app_localizations.dart';
-import '../../domain/entities/expense_category.dart';
+import 'categories_screen.dart';
 import '../providers/khata_providers.dart';
 
 class BudgetScreen extends ConsumerStatefulWidget {
@@ -14,19 +14,19 @@ class BudgetScreen extends ConsumerStatefulWidget {
 }
 
 class _BudgetScreenState extends ConsumerState<BudgetScreen> {
-  late final Map<ExpenseCategory, TextEditingController> _controllers;
+  final Map<String, TextEditingController> _controllers = {};
 
   @override
   void initState() {
     super.initState();
-    final current = ref.read(budgetNotifierProvider);
-    _controllers = {
-      for (final cat in ExpenseCategory.values)
-        cat: TextEditingController(
-          text: (current[cat] ?? 0) > 0 ? _fmt(current[cat]!) : '',
-        ),
-    };
   }
+
+  /// A field for [key], created on first use so categories added while this
+  /// screen is open get one too.
+  TextEditingController _controllerFor(String key) => _controllers.putIfAbsent(key, () {
+        final current = ref.read(budgetNotifierProvider)[key] ?? 0;
+        return TextEditingController(text: current > 0 ? _fmt(current) : '');
+      });
 
   @override
   void dispose() {
@@ -40,10 +40,10 @@ class _BudgetScreenState extends ConsumerState<BudgetScreen> {
       v == v.truncateToDouble() ? v.toInt().toString() : v.toStringAsFixed(2);
 
   Future<void> _save(AppLocalizations l10n) async {
-    final budgets = <ExpenseCategory, double>{};
-    for (final cat in ExpenseCategory.values) {
-      final raw = _controllers[cat]!.text.trim();
-      budgets[cat] = double.tryParse(raw) ?? 0;
+    final budgets = <String, double>{};
+    for (final cat in ref.read(categoryCatalogProvider).all) {
+      final raw = _controllerFor(cat.key).text.trim();
+      budgets[cat.key] = double.tryParse(raw) ?? 0;
     }
     await ref.read(budgetNotifierProvider.notifier).saveAll(budgets);
     if (mounted) {
@@ -64,6 +64,13 @@ class _BudgetScreenState extends ConsumerState<BudgetScreen> {
       appBar: AppBar(
         title: Text(l10n.khataBudget),
         actions: [
+          IconButton(
+            tooltip: l10n.categoriesManage,
+            icon: const Icon(Icons.label_outline),
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const CategoriesScreen()),
+            ),
+          ),
           TextButton(
             onPressed: () => _save(l10n),
             child: Text(l10n.done, style: TextStyle(color: scheme.primary, fontWeight: FontWeight.w700)),
@@ -77,7 +84,7 @@ class _BudgetScreenState extends ConsumerState<BudgetScreen> {
             padding: const EdgeInsets.fromLTRB(4, 8, 4, 16),
             child: Text(l10n.khataBudgetHint, style: text.bodySmall?.copyWith(color: scheme.onSurfaceVariant)),
           ),
-          for (final cat in ExpenseCategory.values)
+          for (final cat in ref.watch(categoryCatalogProvider).all)
             Padding(
               padding: const EdgeInsets.only(bottom: 12),
               child: Row(
@@ -85,7 +92,7 @@ class _BudgetScreenState extends ConsumerState<BudgetScreen> {
                   CircleAvatar(
                     radius: 18,
                     backgroundColor: scheme.secondaryContainer,
-                    child: Icon(cat.icon, size: 18, color: scheme.onSecondaryContainer),
+                    child: cat.iconWidget(size: 18, color: scheme.onSecondaryContainer),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -95,7 +102,7 @@ class _BudgetScreenState extends ConsumerState<BudgetScreen> {
                   SizedBox(
                     width: 110,
                     child: TextField(
-                      controller: _controllers[cat],
+                      controller: _controllerFor(cat.key),
                       keyboardType: const TextInputType.numberWithOptions(decimal: true),
                       inputFormatters: [
                         FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}')),

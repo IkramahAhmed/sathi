@@ -1,5 +1,4 @@
 import '../../../core/storage/app_database.dart';
-import 'entities/expense_category.dart';
 
 /// How spending this month compares with the month before.
 class MonthTrend {
@@ -8,8 +7,8 @@ class MonthTrend {
   final double current;
   final double previous;
 
-  /// The category whose spending grew the most, or null if none grew.
-  final ({ExpenseCategory category, double change})? biggestRise;
+  /// The category key whose spending grew the most, or null if none grew.
+  final ({String key, double change})? biggestRise;
 
   double get change => current - previous;
 
@@ -18,21 +17,20 @@ class MonthTrend {
 }
 
 MonthTrend compareMonths(List<Expense> current, List<Expense> previous) {
-  Map<ExpenseCategory, double> totals(List<Expense> entries) {
-    final result = <ExpenseCategory, double>{};
+  Map<String, double> totals(List<Expense> entries) {
+    final result = <String, double>{};
     for (final e in entries.where((e) => e.type != 'income')) {
-      final c = ExpenseCategory.fromString(e.category);
-      result[c] = (result[c] ?? 0) + e.amount;
+      result[e.category] = (result[e.category] ?? 0) + e.amount;
     }
     return result;
   }
 
   final now = totals(current);
   final before = totals(previous);
-  ({ExpenseCategory category, double change})? rise;
-  for (final c in ExpenseCategory.values) {
-    final delta = (now[c] ?? 0) - (before[c] ?? 0);
-    if (delta > 0 && (rise == null || delta > rise.change)) rise = (category: c, change: delta);
+  ({String key, double change})? rise;
+  for (final key in {...now.keys, ...before.keys}) {
+    final delta = (now[key] ?? 0) - (before[key] ?? 0);
+    if (delta > 0 && (rise == null || delta > rise.change)) rise = (key: key, change: delta);
   }
   return MonthTrend(
     current: now.values.fold(0.0, (a, b) => a + b),

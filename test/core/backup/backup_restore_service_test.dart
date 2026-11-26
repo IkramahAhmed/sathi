@@ -48,13 +48,13 @@ void main() {
 
   test('a real Saathi database passes validation', () async {
     final file = await saathiDb();
-    expect(BackupRestoreService.validateDatabase(file, 16), isNull);
+    expect(BackupRestoreService.validateDatabase(file, 17), isNull);
   });
 
   test('a backup from a newer app version is rejected', () async {
     final file = await saathiDb();
     expect(
-      BackupRestoreService.validateDatabase(file, 15),
+      BackupRestoreService.validateDatabase(file, 16),
       BackupProblem.newer,
     );
   });
@@ -66,7 +66,7 @@ void main() {
     other.execute('PRAGMA user_version = 3');
     other.close();
     expect(
-      BackupRestoreService.validateDatabase(file, 16),
+      BackupRestoreService.validateDatabase(file, 17),
       BackupProblem.notSaathi,
     );
   });
@@ -74,13 +74,13 @@ void main() {
   test('an empty SQLite file (version 0) is rejected', () {
     final file = File('${dir.path}/empty.sqlite');
     sql.sqlite3.open(file.path).close();
-    expect(BackupRestoreService.validateDatabase(file, 16), isNotNull);
+    expect(BackupRestoreService.validateDatabase(file, 17), isNotNull);
   });
 
   test('random bytes are rejected', () async {
     final file = File('${dir.path}/junk.sqlite')
       ..writeAsBytesSync(List.filled(4096, 7));
-    expect(BackupRestoreService.validateDatabase(file, 16), isNotNull);
+    expect(BackupRestoreService.validateDatabase(file, 17), isNotNull);
   });
 
   test(

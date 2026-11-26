@@ -1131,5 +1131,19 @@
       "error": { "type": "String" }
     }
   },
-  "khataIncludesBank": "Totals include bank transactions (see the Bank tab)"
+  "khataIncludesBank": "Totals include bank transactions (see the Bank tab)",
+  "categoryNew": "New category",
+  "categoryName": "Category name",
+  "categoryPickIcon": "Pick an icon",
+  "categoryNameTaken": "That name is already used",
+  "categoriesTitle": "My categories",
+  "categoriesEmpty": "No categories of your own yet. Add one, like Groceries or Mobile load.",
+  "categoryDeleteQ": "Delete \"{name}\"?",
+  "@categoryDeleteQ": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "categoryDeleteBody": "Entries in this category move to Other. No amount is lost.",
+  "categoriesManage": "Manage categories"
 }

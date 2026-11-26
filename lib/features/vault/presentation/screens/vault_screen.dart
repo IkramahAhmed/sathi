@@ -5,7 +5,7 @@ import 'package:local_auth/local_auth.dart';
 
 import '../../../../app/providers.dart';
 import '../../../../core/storage/app_database.dart';
-import '../../../khata/domain/entities/expense_category.dart';
+import '../../../khata/presentation/providers/khata_providers.dart';
 import '../../../khata/domain/entities/income_source.dart';
 import '../../../khata/presentation/screens/add_expense_screen.dart';
 import '../../../udhaar/presentation/screens/udhaar_contact_screen.dart';
@@ -256,9 +256,8 @@ class _VaultExpensesTab extends ConsumerWidget {
           itemBuilder: (ctx, i) {
             final e = items[i];
             final isIncome = e.type == 'income';
-            final cat = isIncome ? null : ExpenseCategory.fromString(e.category);
+            final cat = isIncome ? null : ref.watch(categoryCatalogProvider).resolve(e.category);
             final src = isIncome ? IncomeSource.fromString(e.category) : null;
-            final icon = isIncome ? src!.icon : cat!.icon;
             final label = isIncome ? src!.label(l10n) : cat!.label(l10n);
             final color = isIncome ? Colors.green.shade700 : scheme.error;
             final sign = isIncome ? '+' : '-';
@@ -266,7 +265,9 @@ class _VaultExpensesTab extends ConsumerWidget {
             return ListTile(
               leading: CircleAvatar(
                 backgroundColor: color.withAlpha(28),
-                child: Icon(icon, size: 20, color: color),
+                child: isIncome
+                    ? Icon(src!.icon, size: 20, color: color)
+                    : cat!.iconWidget(size: 20, color: color),
               ),
               title: Text(
                 '$sign Rs ${fmt.format(e.amount)}',

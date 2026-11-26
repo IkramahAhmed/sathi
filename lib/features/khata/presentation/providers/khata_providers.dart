@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../app/providers.dart';
 import '../../../../core/storage/app_database.dart';
-import '../../domain/entities/expense_category.dart';
+import '../../domain/entities/category.dart';
 
 /// All expenses for (year, month), newest first. Reacts to DB changes.
 final monthExpensesProvider =
@@ -40,25 +40,38 @@ final monthSpendingProvider =
       .watchMonthFrom(yearMonth, includeBank ? ['manual', 'bank'] : ['manual']);
 });
 
-/// Per-category monthly budget limits (0 = no limit). Persisted in SharedPreferences.
-class BudgetNotifier extends Notifier<Map<ExpenseCategory, double>> {
+/// The user's own categories, as saved.
+final customCategoriesProvider = StreamProvider<List<CustomCategory>>(
+    (ref) => ref.watch(appDatabaseProvider).customCategoriesDao.watchAll());
+
+/// Built-in and custom categories together. Use this to show or look up a category.
+final categoryCatalogProvider = Provider<CategoryCatalog>((ref) {
+  final rows = ref.watch(customCategoriesProvider).value ?? const <CustomCategory>[];
+  return CategoryCatalog([
+    for (final r in rows) Category.custom(id: r.id, name: r.name, emoji: r.emoji),
+  ]);
+});
+
+/// Per-category monthly budget limits by category key (0 = no limit). Persisted in
+/// SharedPreferences.
+class BudgetNotifier extends Notifier<Map<String, double>> {
   @override
-  Map<ExpenseCategory, double> build() {
+  Map<String, double> build() {
     final prefs = ref.watch(sharedPreferencesProvider);
+    final catalog = ref.watch(categoryCatalogProvider);
     return {
-      for (final cat in ExpenseCategory.values)
-        cat: prefs.getDouble('khata_budget_${cat.name}') ?? 0,
+      for (final cat in catalog.all) cat.key: prefs.getDouble('khata_budget_${cat.key}') ?? 0,
     };
   }
 
-  Future<void> saveAll(Map<ExpenseCategory, double> budgets) async {
+  Future<void> saveAll(Map<String, double> budgets) async {
     final prefs = ref.read(sharedPreferencesProvider);
     for (final entry in budgets.entries) {
-      await prefs.setDouble('khata_budget_${entry.key.name}', entry.value);
+      await prefs.setDouble('khata_budget_${entry.key}', entry.value);
     }
     state = Map.unmodifiable(budgets);
   }
 }
 
 final budgetNotifierProvider =
-    NotifierProvider<BudgetNotifier, Map<ExpenseCategory, double>>(BudgetNotifier.new);
+    NotifierProvider<BudgetNotifier, Map<String, double>>(BudgetNotifier.new);

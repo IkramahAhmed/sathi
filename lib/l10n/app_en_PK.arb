@@ -831,5 +831,19 @@
       "error": { "type": "String" }
     }
   },
-  "khataIncludesBank": "Totals mein bank transactions shamil hain (Bank tab dekhein)"
+  "khataIncludesBank": "Totals mein bank transactions shamil hain (Bank tab dekhein)",
+  "categoryNew": "Nayi category",
+  "categoryName": "Category ka naam",
+  "categoryPickIcon": "Icon chunein",
+  "categoryNameTaken": "Ye naam pehle se istemal ho raha hai",
+  "categoriesTitle": "Meri categories",
+  "categoriesEmpty": "Abhi aap ki apni koi category nahi. Ek add karein, jaise Raashan ya Mobile load.",
+  "categoryDeleteQ": "\"{name}\" delete karein?",
+  "@categoryDeleteQ": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "categoryDeleteBody": "Is category ki entries \"Other\" mein chali jayengi. Koi raqam zaya nahi hogi.",
+  "categoriesManage": "Categories manage karein"
 }

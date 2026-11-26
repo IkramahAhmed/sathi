@@ -74,6 +74,7 @@ class QuickEntry {
     required this.isIncome,
     required this.category,
     required this.incomeSource,
+    this.customKey,
   });
 
   final double amount;
@@ -82,8 +83,11 @@ class QuickEntry {
   final ExpenseCategory category;
   final IncomeSource incomeSource;
 
+  /// The key of one of the user's own categories when the text named it, else null.
+  final String? customKey;
+
   /// The category key stored in the database.
-  String get categoryKey => isIncome ? incomeSource.name : category.name;
+  String get categoryKey => isIncome ? incomeSource.name : (customKey ?? category.name);
 }
 
 final _number = RegExp(r'(\d[\d,]*(?:\.\d+)?)\s*(k|lac|lakh|lakhs)?(?![a-z0-9])');
@@ -92,7 +96,10 @@ const _incomeHints = {'salary', 'tankhwah', 'tankhah', 'income', 'bonus', 'freel
 
 /// Turns "250 chai", "chai 250", "rs 1,500 petrol", "5k grocery" or "+50000 salary"
 /// into an entry. Returns null when there is no amount.
-QuickEntry? parseQuickAdd(String input) {
+QuickEntry? parseQuickAdd(
+  String input, {
+  List<({String key, String name})> custom = const [],
+}) {
   final raw = input.trim();
   if (raw.isEmpty) return null;
   final lower = raw.toLowerCase();
@@ -128,5 +135,16 @@ QuickEntry? parseQuickAdd(String input) {
     isIncome: isIncome,
     category: guessExpenseCategory(lower),
     incomeSource: guessIncomeSource(lower),
+    customKey: isIncome ? null : _customMatch(lower, custom),
   );
+}
+
+/// The user's own category whose name appears in [text] as a whole word, if any.
+String? _customMatch(String text, List<({String key, String name})> custom) {
+  final tokens = RegExp(r'[a-z0-9]+').allMatches(text).map((m) => m.group(0)!).toSet();
+  for (final c in custom) {
+    final words = RegExp(r'[a-z0-9]+').allMatches(c.name.toLowerCase()).map((m) => m.group(0)!).toList();
+    if (words.isNotEmpty && words.every(tokens.contains)) return c.key;
+  }
+  return null;
 }

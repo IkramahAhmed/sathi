@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:saathi/core/storage/app_database.dart';
-import 'package:saathi/features/khata/domain/entities/expense_category.dart';
 import 'package:saathi/features/khata/domain/month_trend.dart';
 
 Expense e(double amount, String category, {String type = 'expense'}) => Expense(
@@ -24,7 +23,7 @@ void main() {
     expect(trend.previous, 43000);
     expect(trend.change, 4000);
     expect(trend.percent, closeTo(9.30, 0.01));
-    expect(trend.biggestRise?.category, ExpenseCategory.food);
+    expect(trend.biggestRise?.key, 'food');
     expect(trend.biggestRise?.change, 4000);
   });
 

@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../l10n/app_localizations.dart';
-import '../../domain/entities/expense_category.dart';
+import '../../domain/entities/category.dart';
 import '../../domain/month_trend.dart';
 import '../providers/khata_providers.dart';
 
@@ -53,9 +53,10 @@ class _MonthlySummaryScreenState extends ConsumerState<MonthlySummaryScreen> {
               .fold(0.0, (s, e) => s + e.amount);
           final net = income - expense;
 
-          final Map<ExpenseCategory, double> catTotals = {};
+          final catalog = ref.watch(categoryCatalogProvider);
+          final Map<Category, double> catTotals = {};
           for (final e in entries.where((e) => e.type != 'income')) {
-            final cat = ExpenseCategory.fromString(e.category);
+            final cat = catalog.resolve(e.category);
             catTotals[cat] = (catTotals[cat] ?? 0) + e.amount;
           }
 
@@ -132,6 +133,7 @@ class _MonthlySummaryScreenState extends ConsumerState<MonthlySummaryScreen> {
               ),
               const SizedBox(height: 10),
               _TrendCard(
+                labelFor: (key) => catalog.resolve(key).label(l10n),
                 trend: compareMonths(
                   entries,
                   ref.watch(monthSpendingProvider((_prevMonth.year, _prevMonth.month))).value ?? const [],
@@ -145,12 +147,12 @@ class _MonthlySummaryScreenState extends ConsumerState<MonthlySummaryScreen> {
                         fontWeight: FontWeight.w700,
                         color: scheme.onSurfaceVariant)),
                 const SizedBox(height: 12),
-                for (final cat in ExpenseCategory.values)
+                for (final cat in catalog.all)
                   if ((catTotals[cat] ?? 0) > 0)
                     _CategoryRow(
                       cat: cat,
                       spent: catTotals[cat]!,
-                      budget: budgets[cat] ?? 0,
+                      budget: budgets[cat.key] ?? 0,
                       total: expense,
                       l10n: l10n,
                       fmt: fmt,
@@ -231,7 +233,7 @@ class _CategoryRow extends StatelessWidget {
     required this.fmt,
   });
 
-  final ExpenseCategory cat;
+  final Category cat;
   final double spent;
   final double budget;
   final double total;
@@ -253,7 +255,7 @@ class _CategoryRow extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(cat.icon, size: 16, color: scheme.onSurfaceVariant),
+              cat.iconWidget(size: 16, color: scheme.onSurfaceVariant),
               const SizedBox(width: 6),
               Expanded(
                 child: Text(cat.label(l10n),
@@ -298,9 +300,10 @@ class _CategoryRow extends StatelessWidget {
 }
 
 class _TrendCard extends StatelessWidget {
-  const _TrendCard({required this.trend});
+  const _TrendCard({required this.trend, required this.labelFor});
 
   final MonthTrend trend;
+  final String Function(String key) labelFor;
 
   @override
   Widget build(BuildContext context) {
@@ -350,7 +353,7 @@ class _TrendCard extends StatelessWidget {
               const SizedBox(height: 6),
               Text(
                 l10n.trendBiggestRise(
-                  trend.biggestRise!.category.label(l10n),
+                  labelFor(trend.biggestRise!.key),
                   fmt.format(trend.biggestRise!.change),
                 ),
                 style: text.bodySmall?.copyWith(color: scheme.onSurfaceVariant),

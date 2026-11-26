@@ -3764,6 +3764,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Totals include bank transactions (see the Bank tab)'**
   String get khataIncludesBank;
+
+  /// No description provided for @categoryNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New category'**
+  String get categoryNew;
+
+  /// No description provided for @categoryName.
+  ///
+  /// In en, this message translates to:
+  /// **'Category name'**
+  String get categoryName;
+
+  /// No description provided for @categoryPickIcon.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick an icon'**
+  String get categoryPickIcon;
+
+  /// No description provided for @categoryNameTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'That name is already used'**
+  String get categoryNameTaken;
+
+  /// No description provided for @categoriesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'My categories'**
+  String get categoriesTitle;
+
+  /// No description provided for @categoriesEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No categories of your own yet. Add one, like Groceries or Mobile load.'**
+  String get categoriesEmpty;
+
+  /// No description provided for @categoryDeleteQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete \"{name}\"?'**
+  String categoryDeleteQ(String name);
+
+  /// No description provided for @categoryDeleteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Entries in this category move to Other. No amount is lost.'**
+  String get categoryDeleteBody;
+
+  /// No description provided for @categoriesManage.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage categories'**
+  String get categoriesManage;
 }
 
 class _AppLocalizationsDelegate

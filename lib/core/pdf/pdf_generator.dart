@@ -8,7 +8,6 @@ import 'package:share_plus/share_plus.dart';
 
 import '../../features/udhaar/domain/passbook.dart';
 import '../storage/app_database.dart';
-import '../../features/khata/domain/entities/expense_category.dart';
 import '../../features/khata/domain/entities/income_source.dart';
 
 final _fmt = NumberFormat('#,##0', 'en');
@@ -26,10 +25,14 @@ Future<List<int>> buildKhataPdfBytes(
   return doc.save();
 }
 
-Future<void> shareKhataPdf(List<Expense> entries, DateTime month) async {
+Future<void> shareKhataPdf(
+  List<Expense> entries,
+  DateTime month, {
+  String Function(String key)? categoryName,
+}) async {
   final fileLabel = DateFormat('yyyy-MM').format(month);
   final doc = pw.Document();
-  doc.addPage(_khataPdfPage(entries, month));
+  doc.addPage(_khataPdfPage(entries, month, categoryName));
   final dir = await getTemporaryDirectory();
   final file = File('${dir.path}/khata_$fileLabel.pdf');
   await file.writeAsBytes(await doc.save());
@@ -38,7 +41,11 @@ Future<void> shareKhataPdf(List<Expense> entries, DateTime month) async {
   ], subject: 'Khata – ${DateFormat.yMMMM().format(month)}');
 }
 
-pw.MultiPage _khataPdfPage(List<Expense> entries, DateTime month) {
+pw.MultiPage _khataPdfPage(
+  List<Expense> entries,
+  DateTime month, [
+  String Function(String key)? categoryName,
+]) {
   final monthLabel = DateFormat('MMMM yyyy').format(month);
   final totalIncome = entries
       .where((e) => e.type == 'income')
@@ -85,7 +92,7 @@ pw.MultiPage _khataPdfPage(List<Expense> entries, DateTime month) {
               e.date,
               e.type == 'income'
                   ? 'Income · ${IncomeSource.fromString(e.category).name}'
-                  : ExpenseCategory.fromString(e.category).name,
+                  : (categoryName ?? (k) => k)(e.category),
               (e.type == 'income' ? '+' : '-') + _rs(e.amount),
               e.note,
             ], e.type == 'income'),

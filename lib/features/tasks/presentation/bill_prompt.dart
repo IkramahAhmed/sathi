@@ -7,7 +7,6 @@ import '../../../app/providers.dart';
 import '../../../core/storage/app_database.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../khata/background/budget_check.dart';
-import '../../khata/domain/entities/expense_category.dart';
 import '../data/task_reminders.dart';
 
 /// After a bill task is ticked, offers to record its amount in the Khata.
@@ -32,10 +31,10 @@ Future<void> offerBillToKhata(BuildContext context, WidgetRef ref, Task task) as
   if (add != true) return;
 
   final now = DateTime.now();
-  final category = ExpenseCategory.fromString(task.billCategory ?? 'bills');
+  final categoryKey = task.billCategory ?? 'bills';
   await db.expensesDao.add(ExpensesCompanion.insert(
     amount: amount,
-    category: category.name,
+    category: categoryKey,
     note: Value(task.title),
     date: dateKey(now),
     createdAt: now.toUtc(),
@@ -43,7 +42,7 @@ Future<void> offerBillToKhata(BuildContext context, WidgetRef ref, Task task) as
   checkBudgetAndNotify(
     db: db,
     yearMonth: DateFormat('yyyy-MM').format(now),
-    category: category,
+    categoryKey: categoryKey,
     addedAmount: amount,
   );
   messenger.showSnackBar(SnackBar(content: Text(l10n.taskBillAdded)));

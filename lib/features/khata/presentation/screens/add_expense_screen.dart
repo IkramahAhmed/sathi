@@ -11,7 +11,9 @@ import '../../../../app/providers.dart';
 import '../../../../core/storage/app_database.dart';
 import '../../../../core/storage/receipt_store.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../providers/khata_providers.dart';
 import 'accounts_screen.dart' show accountsProvider;
+import 'category_dialog.dart';
 import '../../../khata/background/budget_check.dart';
 import '../../../khata/background/recurring_check.dart';
 import '../../../khata/domain/entities/expense_category.dart';
@@ -30,7 +32,7 @@ class AddExpenseScreen extends ConsumerStatefulWidget {
 class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
   late final TextEditingController _amountController;
   late final TextEditingController _noteController;
-  late ExpenseCategory _category;
+  late String _categoryKey;
   late IncomeSource _incomeSource;
   late DateTime _date;
   late bool _isIncome;
@@ -51,9 +53,7 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
     );
     _noteController = TextEditingController(text: e?.note ?? '');
     _isIncome = e?.type == 'income' || widget.startAsIncome;
-    _category = e != null && !_isIncome
-        ? ExpenseCategory.fromString(e.category)
-        : ExpenseCategory.food;
+    _categoryKey = e != null && !_isIncome ? e.category : ExpenseCategory.food.name;
     _incomeSource = e != null && _isIncome
         ? IncomeSource.fromString(e.category)
         : IncomeSource.salary;
@@ -80,7 +80,7 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
     setState(() => _saving = true);
     final dateStr =
         '${_date.year.toString().padLeft(4, '0')}-${_date.month.toString().padLeft(2, '0')}-${_date.day.toString().padLeft(2, '0')}';
-    final categoryStr = _isIncome ? _incomeSource.name : _category.name;
+    final categoryStr = _isIncome ? _incomeSource.name : _categoryKey;
     try {
       final dao = ref.read(appDatabaseProvider).expensesDao;
       final db = ref.read(appDatabaseProvider);
@@ -120,14 +120,14 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
         final old = widget.expense;
         final sameBucket = old != null &&
             old.type != 'income' &&
-            old.category == _category.name &&
+            old.category == _categoryKey &&
             old.date.startsWith(yearMonth);
         final added = sameBucket ? amount - old.amount : amount;
         if (added > 0) {
           checkBudgetAndNotify(
             db: db,
             yearMonth: yearMonth,
-            category: _category,
+            categoryKey: _categoryKey,
             addedAmount: added,
           );
         }
@@ -346,14 +346,22 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
                       ),
                   ]
                 : [
-                    for (final cat in ExpenseCategory.values)
+                    for (final cat in ref.watch(categoryCatalogProvider).all)
                       FilterChip(
-                        avatar: Icon(cat.icon, size: 16),
+                        avatar: cat.iconWidget(size: 16),
                         label: Text(cat.label(l10n)),
-                        selected: _category == cat,
+                        selected: _categoryKey == cat.key,
                         onSelected: (_) =>
-                            setState(() => _category = cat),
+                            setState(() => _categoryKey = cat.key),
                       ),
+                    ActionChip(
+                      avatar: const Icon(Icons.add, size: 16),
+                      label: Text(l10n.categoryNew),
+                      onPressed: () async {
+                        final key = await showCategoryEditor(context, ref);
+                        if (key != null && mounted) setState(() => _categoryKey = key);
+                      },
+                    ),
                   ],
           ),
 

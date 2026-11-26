@@ -259,3 +259,13 @@ class FastLogs extends Table {
         {date},
       ];
 }
+
+/// An expense category the user made. Entries store it as `c<id>`.
+class CustomCategories extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get name => text()();
+
+  /// A single emoji shown as the icon.
+  TextColumn get emoji => text().withDefault(const Constant('🏷️'))();
+  DateTimeColumn get createdAt => dateTime()();
+}

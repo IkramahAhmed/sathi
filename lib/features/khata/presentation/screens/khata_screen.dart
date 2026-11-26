@@ -13,7 +13,7 @@ import '../../../../core/pdf/pdf_generator.dart';
 import '../../../../core/storage/app_database.dart';
 import '../../../../core/storage/receipt_store.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../domain/entities/expense_category.dart';
+import '../../domain/entities/category.dart';
 import '../../domain/entities/income_source.dart';
 import '../providers/khata_providers.dart';
 import '../../../../app/router.dart';
@@ -93,10 +93,12 @@ class _KhataScreenState extends ConsumerState<KhataScreen> {
 
   Future<void> _exportCsv(List<Expense> expenses, DateTime month) async {
     final monthLabel = DateFormat('yyyy-MM').format(month);
+    final catalog = ref.read(categoryCatalogProvider);
     final csv = StringBuffer('Date,Type,Category,Amount (Rs.),Note\n');
     for (final e in expenses) {
       final note = e.note.replaceAll('"', '""');
-      csv.write('${e.date},${e.type},${e.category},${e.amount},"$note"\n');
+      final category = e.type == 'income' ? e.category : catalog.resolve(e.category).plainName;
+      csv.write('${e.date},${e.type},$category,${e.amount},"$note"\n');
     }
     final dir = await getTemporaryDirectory();
     final file = File('${dir.path}/khata_$monthLabel.csv');
@@ -111,7 +113,8 @@ class _KhataScreenState extends ConsumerState<KhataScreen> {
     final entries = await ref.read(appDatabaseProvider).expensesDao.getMonth(
           DateFormat('yyyy-MM').format(month),
         );
-    await shareKhataPdf(entries, month);
+    final catalog = ref.read(categoryCatalogProvider);
+    await shareKhataPdf(entries, month, categoryName: (key) => catalog.resolve(key).plainName);
   }
 
   void _showExportMenu(BuildContext context, List<Expense> expenses, DateTime month) {
@@ -302,7 +305,7 @@ class _KhataScreenState extends ConsumerState<KhataScreen> {
               loading: () => const SizedBox.shrink(),
               error: (_, __) => const SizedBox.shrink(),
               data: (entries) {
-                final catTotals = _categoryTotals(entries.where((e) => e.type != 'income').toList());
+                final catTotals = _categoryTotals(entries.where((e) => e.type != 'income').toList(), ref.watch(categoryCatalogProvider));
                 if (catTotals.isEmpty) return const SizedBox.shrink();
                 return _CategoryChartCard(totals: catTotals, l10n: l10n);
               },
@@ -317,7 +320,8 @@ class _KhataScreenState extends ConsumerState<KhataScreen> {
                 final hasBudget = budgets.values.any((v) => v > 0);
                 if (!hasBudget) return const SizedBox.shrink();
                 return _BudgetCard(
-                  totals: _categoryTotals(entries.where((e) => e.type != 'income').toList()),
+                  totals: _categoryTotals(entries.where((e) => e.type != 'income').toList(), ref.watch(categoryCatalogProvider)),
+                  catalog: ref.watch(categoryCatalogProvider),
                   budgets: budgets,
                   l10n: l10n,
                 );
@@ -334,6 +338,7 @@ class _KhataScreenState extends ConsumerState<KhataScreen> {
                 if (filtered.isEmpty) return _EmptyState(l10n: l10n, scheme: scheme, text: text);
                 return _ExpenseList(
                   expenses: filtered,
+                  catalog: ref.watch(categoryCatalogProvider),
                   l10n: l10n,
                   onDelete: (id) =>
                       ref.read(appDatabaseProvider).expensesDao.remove(id),
@@ -414,24 +419,14 @@ String _cleanNote(String note) {
   return note.replaceFirst(RegExp(r'^\[[^\]]+\]\s*'), '').trim();
 }
 
-Map<ExpenseCategory, double> _categoryTotals(List<Expense> expenses) {
-  final map = <ExpenseCategory, double>{};
+Map<Category, double> _categoryTotals(List<Expense> expenses, CategoryCatalog catalog) {
+  final map = <Category, double>{};
   for (final e in expenses) {
-    final cat = ExpenseCategory.fromString(e.category);
+    final cat = catalog.resolve(e.category);
     map[cat] = (map[cat] ?? 0) + e.amount;
   }
   return map;
 }
-
-Color _catColor(ExpenseCategory cat) => switch (cat) {
-      ExpenseCategory.food => const Color(0xFFFF8F00),
-      ExpenseCategory.transport => const Color(0xFF1565C0),
-      ExpenseCategory.rent => const Color(0xFF00695C),
-      ExpenseCategory.health => const Color(0xFFC62828),
-      ExpenseCategory.bills => const Color(0xFF6A1B9A),
-      ExpenseCategory.shopping => const Color(0xFFAD1457),
-      ExpenseCategory.other => const Color(0xFF546E7A),
-    };
 
 // ─── Summary card ────────────────────────────────────────────────────────────
 
@@ -559,14 +554,14 @@ class _SummaryCard extends StatelessWidget {
 class _CategoryChartCard extends StatelessWidget {
   const _CategoryChartCard({required this.totals, required this.l10n});
 
-  final Map<ExpenseCategory, double> totals;
+  final Map<Category, double> totals;
   final AppLocalizations l10n;
 
   @override
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
 
-    final sorted = ExpenseCategory.values
+    final sorted = totals.keys
         .where((c) => (totals[c] ?? 0) > 0)
         .toList()
       ..sort((a, b) => (totals[b] ?? 0).compareTo(totals[a] ?? 0));
@@ -607,7 +602,7 @@ class _ChartRow extends StatelessWidget {
     required this.l10n,
   });
 
-  final ExpenseCategory cat;
+  final Category cat;
   final double amount;
   final double maxAmount;
   final AppLocalizations l10n;
@@ -616,12 +611,12 @@ class _ChartRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final text = Theme.of(context).textTheme;
-    final color = _catColor(cat);
+    final color = cat.color;
     final formatted = NumberFormat('#,##0', 'en').format(amount);
 
     return Row(
       children: [
-        Icon(cat.icon, size: 14, color: color),
+        cat.iconWidget(size: 14, color: color),
         const SizedBox(width: 6),
         SizedBox(
           width: 62,
@@ -658,19 +653,21 @@ class _ChartRow extends StatelessWidget {
 class _BudgetCard extends StatelessWidget {
   const _BudgetCard({
     required this.totals,
+    required this.catalog,
     required this.budgets,
     required this.l10n,
   });
 
-  final Map<ExpenseCategory, double> totals;
-  final Map<ExpenseCategory, double> budgets;
+  final Map<Category, double> totals;
+  final CategoryCatalog catalog;
+  final Map<String, double> budgets;
   final AppLocalizations l10n;
 
   @override
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
     final catsWithBudget =
-        ExpenseCategory.values.where((c) => (budgets[c] ?? 0) > 0).toList();
+        catalog.all.where((c) => (budgets[c.key] ?? 0) > 0).toList();
     if (catsWithBudget.isEmpty) return const SizedBox.shrink();
 
     return Card(
@@ -687,7 +684,7 @@ class _BudgetCard extends StatelessWidget {
               _BudgetRow(
                 cat: cat,
                 spent: totals[cat] ?? 0,
-                limit: budgets[cat]!,
+                limit: budgets[cat.key]!,
                 l10n: l10n,
               ),
               const SizedBox(height: 10),
@@ -707,7 +704,7 @@ class _BudgetRow extends StatelessWidget {
     required this.l10n,
   });
 
-  final ExpenseCategory cat;
+  final Category cat;
   final double spent;
   final double limit;
   final AppLocalizations l10n;
@@ -718,7 +715,7 @@ class _BudgetRow extends StatelessWidget {
     final text = Theme.of(context).textTheme;
     final fraction = (spent / limit).clamp(0.0, 1.0);
     final isOver = spent > limit;
-    final color = isOver ? scheme.error : _catColor(cat);
+    final color = isOver ? scheme.error : cat.color;
     final spentFmt = NumberFormat('#,##0', 'en').format(spent);
     final limitFmt = NumberFormat('#,##0', 'en').format(limit);
 
@@ -727,7 +724,7 @@ class _BudgetRow extends StatelessWidget {
       children: [
         Row(
           children: [
-            Icon(cat.icon, size: 14, color: color),
+            cat.iconWidget(size: 14, color: color),
             const SizedBox(width: 6),
             Text(cat.label(l10n), style: text.labelMedium),
             const Spacer(),
@@ -798,12 +795,14 @@ class _EmptyState extends StatelessWidget {
 class _ExpenseList extends StatelessWidget {
   const _ExpenseList({
     required this.expenses,
+    required this.catalog,
     required this.l10n,
     required this.onDelete,
     required this.onMoveToVault,
   });
 
   final List<Expense> expenses;
+  final CategoryCatalog catalog;
   final AppLocalizations l10n;
   final Future<void> Function(int id) onDelete;
   final Future<void> Function(int id) onMoveToVault;
@@ -843,6 +842,7 @@ class _ExpenseList extends StatelessWidget {
             for (final expense in dayExpenses)
               _ExpenseTile(
                 expense: expense,
+                catalog: catalog,
                 l10n: l10n,
                 onDelete: onDelete,
                 onMoveToVault: onMoveToVault,
@@ -911,6 +911,7 @@ class _DayHeader extends StatelessWidget {
 class _ExpenseTile extends StatelessWidget {
   const _ExpenseTile({
     required this.expense,
+    required this.catalog,
     required this.l10n,
     required this.onDelete,
     required this.onMoveToVault,
@@ -918,6 +919,7 @@ class _ExpenseTile extends StatelessWidget {
   });
 
   final Expense expense;
+  final CategoryCatalog catalog;
   final AppLocalizations l10n;
   final Future<void> Function(int id) onDelete;
   final Future<void> Function(int id) onMoveToVault;
@@ -926,14 +928,13 @@ class _ExpenseTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isIncome = expense.type == 'income';
-    final cat = isIncome ? null : ExpenseCategory.fromString(expense.category);
+    final cat = isIncome ? null : catalog.resolve(expense.category);
     final src = isIncome ? IncomeSource.fromString(expense.category) : null;
     final scheme = Theme.of(context).colorScheme;
     final fmt = NumberFormat('#,##0', 'en');
     final formatted = fmt.format(expense.amount);
     final label = isIncome ? src!.label(l10n) : cat!.label(l10n);
-    final icon = isIncome ? src!.icon : cat!.icon;
-    final catColor = isIncome ? Colors.green.shade700 : _catColor(cat!);
+    final catColor = isIncome ? Colors.green.shade700 : cat!.color;
 
     return Dismissible(
       key: ValueKey(expense.id),
@@ -976,11 +977,10 @@ class _ExpenseTile extends StatelessWidget {
                   color: catColor.withAlpha(28),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(
-                  icon,
-                  size: 22,
-                  color: catColor,
-                ),
+                alignment: Alignment.center,
+                child: isIncome
+                    ? Icon(src!.icon, size: 22, color: catColor)
+                    : cat!.iconWidget(size: 22, color: catColor),
               ),
               const SizedBox(width: 12),
               // Category label + subtitle row

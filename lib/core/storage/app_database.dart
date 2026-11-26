@@ -7,15 +7,15 @@ import 'tables.dart';
 part 'app_database.g.dart';
 
 @DriftDatabase(
-  tables: [PrayerLogs, SettingsHistory, PauseRanges, QazaBalance, QazaHistory, Expenses, UdhaarContacts, UdhaarEntries, TaskLists, Tasks, RecurringExpenses, Accounts, SavingsGoals, FastLogs],
-  daos: [PrayerLogsDao, SettingsHistoryDao, PauseRangesDao, QazaDao, ExpensesDao, UdhaarDao, TaskListsDao, TasksDao, RecurringExpensesDao, AccountsDao, SavingsGoalsDao, FastLogsDao],
+  tables: [PrayerLogs, SettingsHistory, PauseRanges, QazaBalance, QazaHistory, Expenses, UdhaarContacts, UdhaarEntries, TaskLists, Tasks, RecurringExpenses, Accounts, SavingsGoals, FastLogs, CustomCategories],
+  daos: [PrayerLogsDao, SettingsHistoryDao, PauseRangesDao, QazaDao, ExpensesDao, UdhaarDao, TaskListsDao, TasksDao, RecurringExpensesDao, AccountsDao, SavingsGoalsDao, FastLogsDao, CustomCategoriesDao],
 )
 class AppDatabase extends _$AppDatabase {
   /// Opens the on-device SQLite file, or [executor] when given (tests).
   AppDatabase([QueryExecutor? executor]) : super(executor ?? driftDatabase(name: 'saathi'));
 
   @override
-  int get schemaVersion => 16;
+  int get schemaVersion => 17;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -94,6 +94,9 @@ class AppDatabase extends _$AppDatabase {
             if (from >= 4) {
               await m.addColumn(expenses, expenses.accountId);
             }
+          }
+          if (from < 17) {
+            await m.createTable(customCategories);
           }
         },
       );

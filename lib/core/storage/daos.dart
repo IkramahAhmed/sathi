@@ -702,3 +702,30 @@ class FastLogsDao extends DatabaseAccessor<AppDatabase> with _$FastLogsDaoMixin 
     }
   }
 }
+
+@DriftAccessor(tables: [CustomCategories, Expenses, RecurringExpenses, Tasks])
+class CustomCategoriesDao extends DatabaseAccessor<AppDatabase> with _$CustomCategoriesDaoMixin {
+  CustomCategoriesDao(super.db);
+
+  Stream<List<CustomCategory>> watchAll() =>
+      (select(customCategories)..orderBy([(t) => OrderingTerm.asc(t.id)])).watch();
+
+  Future<int> add(CustomCategoriesCompanion entry) => into(customCategories).insert(entry);
+
+  Future<void> updateCategory(int id, {required String name, required String emoji}) =>
+      (update(customCategories)..where((t) => t.id.equals(id)))
+          .write(CustomCategoriesCompanion(name: Value(name), emoji: Value(emoji)));
+
+  /// Deletes the category. Entries, recurring rules and bill tasks that used it
+  /// move to Other, so no amount is ever lost.
+  Future<void> remove(int id) => transaction(() async {
+        final key = 'c$id';
+        await (update(expenses)..where((t) => t.category.equals(key)))
+            .write(const ExpensesCompanion(category: Value('other')));
+        await (update(recurringExpenses)..where((t) => t.category.equals(key)))
+            .write(const RecurringExpensesCompanion(category: Value('other')));
+        await (update(tasks)..where((t) => t.billCategory.equals(key)))
+            .write(const TasksCompanion(billCategory: Value('other')));
+        await (delete(customCategories)..where((t) => t.id.equals(id))).go();
+      });
+}

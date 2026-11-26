@@ -848,5 +848,19 @@
       "error": { "type": "String" }
     }
   },
-  "khataIncludesBank": "مجموعوں میں بینک لین دین شامل ہیں (بینک ٹیب دیکھیں)"
+  "khataIncludesBank": "مجموعوں میں بینک لین دین شامل ہیں (بینک ٹیب دیکھیں)",
+  "categoryNew": "نئی قسم",
+  "categoryName": "قسم کا نام",
+  "categoryPickIcon": "آئیکن چنیں",
+  "categoryNameTaken": "یہ نام پہلے سے استعمال ہو رہا ہے",
+  "categoriesTitle": "میری اقسام",
+  "categoriesEmpty": "ابھی آپ کی اپنی کوئی قسم نہیں۔ ایک شامل کریں، جیسے راشن یا موبائل لوڈ۔",
+  "categoryDeleteQ": "\"{name}\" حذف کریں؟",
+  "@categoryDeleteQ": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "categoryDeleteBody": "اس قسم کے اندراجات \"دیگر\" میں چلے جائیں گے۔ کوئی رقم ضائع نہیں ہوگی۔",
+  "categoriesManage": "اقسام کا انتظام"
 }

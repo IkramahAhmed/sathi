@@ -2057,6 +2057,37 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get khataIncludesBank =>
       'Totals include bank transactions (see the Bank tab)';
+
+  @override
+  String get categoryNew => 'New category';
+
+  @override
+  String get categoryName => 'Category name';
+
+  @override
+  String get categoryPickIcon => 'Pick an icon';
+
+  @override
+  String get categoryNameTaken => 'That name is already used';
+
+  @override
+  String get categoriesTitle => 'My categories';
+
+  @override
+  String get categoriesEmpty =>
+      'No categories of your own yet. Add one, like Groceries or Mobile load.';
+
+  @override
+  String categoryDeleteQ(String name) {
+    return 'Delete \"$name\"?';
+  }
+
+  @override
+  String get categoryDeleteBody =>
+      'Entries in this category move to Other. No amount is lost.';
+
+  @override
+  String get categoriesManage => 'Manage categories';
 }
 
 /// The translations for English, as used in Pakistan (`en_PK`).
@@ -4080,4 +4111,35 @@ class AppLocalizationsEnPk extends AppLocalizationsEn {
   @override
   String get khataIncludesBank =>
       'Totals mein bank transactions shamil hain (Bank tab dekhein)';
+
+  @override
+  String get categoryNew => 'Nayi category';
+
+  @override
+  String get categoryName => 'Category ka naam';
+
+  @override
+  String get categoryPickIcon => 'Icon chunein';
+
+  @override
+  String get categoryNameTaken => 'Ye naam pehle se istemal ho raha hai';
+
+  @override
+  String get categoriesTitle => 'Meri categories';
+
+  @override
+  String get categoriesEmpty =>
+      'Abhi aap ki apni koi category nahi. Ek add karein, jaise Raashan ya Mobile load.';
+
+  @override
+  String categoryDeleteQ(String name) {
+    return '\"$name\" delete karein?';
+  }
+
+  @override
+  String get categoryDeleteBody =>
+      'Is category ki entries \"Other\" mein chali jayengi. Koi raqam zaya nahi hogi.';
+
+  @override
+  String get categoriesManage => 'Categories manage karein';
 }

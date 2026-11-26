@@ -2055,4 +2055,35 @@ class AppLocalizationsUr extends AppLocalizations {
   @override
   String get khataIncludesBank =>
       'مجموعوں میں بینک لین دین شامل ہیں (بینک ٹیب دیکھیں)';
+
+  @override
+  String get categoryNew => 'نئی قسم';
+
+  @override
+  String get categoryName => 'قسم کا نام';
+
+  @override
+  String get categoryPickIcon => 'آئیکن چنیں';
+
+  @override
+  String get categoryNameTaken => 'یہ نام پہلے سے استعمال ہو رہا ہے';
+
+  @override
+  String get categoriesTitle => 'میری اقسام';
+
+  @override
+  String get categoriesEmpty =>
+      'ابھی آپ کی اپنی کوئی قسم نہیں۔ ایک شامل کریں، جیسے راشن یا موبائل لوڈ۔';
+
+  @override
+  String categoryDeleteQ(String name) {
+    return '\"$name\" حذف کریں؟';
+  }
+
+  @override
+  String get categoryDeleteBody =>
+      'اس قسم کے اندراجات \"دیگر\" میں چلے جائیں گے۔ کوئی رقم ضائع نہیں ہوگی۔';
+
+  @override
+  String get categoriesManage => 'اقسام کا انتظام';
 }

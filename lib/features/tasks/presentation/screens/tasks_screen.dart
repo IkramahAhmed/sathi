@@ -8,7 +8,7 @@ import 'package:intl/intl.dart';
 import '../../../../app/providers.dart';
 import '../../../../core/storage/app_database.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../khata/domain/entities/expense_category.dart';
+import '../../../khata/presentation/providers/khata_providers.dart';
 import '../../../prayer/domain/entities/prayer_name.dart';
 import '../../../prayer/presentation/l10n_helpers.dart';
 import '../../data/task_reminders.dart';
@@ -694,7 +694,7 @@ class _TaskDialogState extends ConsumerState<_TaskDialog> {
   int _prayerOffset = 0;
   int _remindBefore = 0;
   late final TextEditingController _amount;
-  ExpenseCategory _billCategory = ExpenseCategory.bills;
+  String _billCategory = 'bills';
 
   @override
   void initState() {
@@ -708,7 +708,7 @@ class _TaskDialogState extends ConsumerState<_TaskDialog> {
     _amount = TextEditingController(
       text: e?.amount == null ? '' : e!.amount!.toStringAsFixed(e.amount! % 1 == 0 ? 0 : 2),
     );
-    _billCategory = ExpenseCategory.fromString(e?.billCategory ?? 'bills');
+    _billCategory = e?.billCategory ?? 'bills';
     _priority = e?.priority ?? 'normal';
     _recurrence = e?.recurrence ?? 'none';
     // For new tasks, pre-select current list filter; for edits keep existing.
@@ -994,15 +994,17 @@ class _TaskDialogState extends ConsumerState<_TaskDialog> {
                   if ((double.tryParse(_amount.text) ?? 0) > 0) ...[
                     const SizedBox(width: 8),
                     Expanded(
-                      child: DropdownButtonFormField<ExpenseCategory>(
-                        initialValue: _billCategory,
+                      child: DropdownButtonFormField<String>(
+                        initialValue: ref.read(categoryCatalogProvider).all.any((c) => c.key == _billCategory)
+                            ? _billCategory
+                            : 'bills',
                         isExpanded: true,
                         decoration: const InputDecoration(isDense: true, border: OutlineInputBorder()),
                         items: [
-                          for (final c in ExpenseCategory.values)
-                            DropdownMenuItem(value: c, child: Text(c.label(l10n))),
+                          for (final c in ref.watch(categoryCatalogProvider).all)
+                            DropdownMenuItem(value: c.key, child: Text(c.label(l10n))),
                         ],
-                        onChanged: (v) => setState(() => _billCategory = v ?? ExpenseCategory.bills),
+                        onChanged: (v) => setState(() => _billCategory = v ?? 'bills'),
                       ),
                     ),
                   ],
@@ -1055,7 +1057,7 @@ class _TaskDialogState extends ConsumerState<_TaskDialog> {
                     prayerAnchor: Value(_prayerAnchor),
                     prayerOffset: Value(_prayerOffset),
                     amount: Value(_billAmount),
-                    billCategory: Value(_billAmount == null ? null : _billCategory.name),
+                    billCategory: Value(_billAmount == null ? null : _billCategory),
                     priority: Value(_priority),
                     recurrence: Value(_recurrence),
                     isCompleted: Value(e.isCompleted),
@@ -1072,7 +1074,7 @@ class _TaskDialogState extends ConsumerState<_TaskDialog> {
                     prayerAnchor: Value(_prayerAnchor),
                     prayerOffset: Value(_prayerOffset),
                     amount: Value(_billAmount),
-                    billCategory: Value(_billAmount == null ? null : _billCategory.name),
+                    billCategory: Value(_billAmount == null ? null : _billCategory),
                     priority: Value(_priority),
                     recurrence: Value(_recurrence),
                     createdAt: DateTime.now().toUtc(),

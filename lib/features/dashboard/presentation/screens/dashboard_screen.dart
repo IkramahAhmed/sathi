@@ -10,7 +10,6 @@ import '../../../../core/backup/backup_restore_service.dart';
 import '../../../../core/storage/app_database.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../khata/background/budget_check.dart';
-import '../../../khata/domain/entities/expense_category.dart';
 import '../../../khata/domain/quick_add.dart';
 import '../../../khata/presentation/providers/khata_providers.dart';
 import '../../../prayer/domain/entities/prayer_name.dart';
@@ -155,13 +154,21 @@ class _QuickAddCardState extends ConsumerState<_QuickAddCard> {
     super.dispose();
   }
 
-  String _categoryLabel(QuickEntry e, AppLocalizations l10n) =>
-      e.isIncome ? e.incomeSource.label(l10n) : e.category.label(l10n);
+  String _categoryLabel(QuickEntry e, AppLocalizations l10n) => e.isIncome
+      ? e.incomeSource.label(l10n)
+      : ref.read(categoryCatalogProvider).resolve(e.categoryKey).label(l10n);
+
+  QuickEntry? _parse(String text) => parseQuickAdd(
+        text,
+        custom: [
+          for (final c in ref.read(categoryCatalogProvider).custom) (key: c.key, name: c.customName ?? ''),
+        ],
+      );
 
   Future<void> _submit() async {
     final l10n = AppLocalizations.of(context);
     final messenger = ScaffoldMessenger.of(context);
-    final entry = parseQuickAdd(_controller.text);
+    final entry = _parse(_controller.text);
     if (entry == null) {
       messenger.showSnackBar(SnackBar(content: Text(l10n.todayQuickAddNeedAmount)));
       return;
@@ -180,7 +187,7 @@ class _QuickAddCardState extends ConsumerState<_QuickAddCard> {
       checkBudgetAndNotify(
         db: db,
         yearMonth: DateFormat('yyyy-MM').format(now),
-        category: entry.category,
+        categoryKey: entry.categoryKey,
         addedAmount: entry.amount,
       );
     }
@@ -203,7 +210,7 @@ class _QuickAddCardState extends ConsumerState<_QuickAddCard> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
-    final entry = parseQuickAdd(_controller.text);
+    final entry = _parse(_controller.text);
 
     return Card(
       margin: EdgeInsets.zero,
@@ -458,10 +465,11 @@ class _MoneyCard extends ConsumerWidget {
     final month = spent.fold(0.0, (s, e) => s + e.amount);
     final today = spent.where((e) => e.date == todayStr).fold(0.0, (s, e) => s + e.amount);
 
-    final budgeted = ExpenseCategory.values.where((c) => (budgets[c] ?? 0) > 0).toSet();
-    final totalBudget = budgeted.fold(0.0, (s, c) => s + budgets[c]!);
+    final catalog = ref.watch(categoryCatalogProvider);
+    final budgeted = catalog.all.where((c) => (budgets[c.key] ?? 0) > 0).map((c) => c.key).toSet();
+    final totalBudget = budgeted.fold(0.0, (s, key) => s + budgets[key]!);
     final budgetedSpend = spent
-        .where((e) => budgeted.contains(ExpenseCategory.fromString(e.category)))
+        .where((e) => budgeted.contains(catalog.resolve(e.category).key))
         .fold(0.0, (s, e) => s + e.amount);
     final left = totalBudget - budgetedSpend;
 
@@ -571,7 +579,7 @@ class _ComingUpCard extends ConsumerWidget {
           onTap: () => context.go(Routes.khata),
           leading: Icon(Icons.repeat, color: scheme.primary),
           title: Text(l10n.todayRecurring(
-            r.note.isNotEmpty ? r.note : ExpenseCategory.fromString(r.category).label(l10n),
+            r.note.isNotEmpty ? r.note : ref.watch(categoryCatalogProvider).resolve(r.category).label(l10n),
             fmt.format(r.amount),
             DateFormat.MMMd().format(DateTime.parse(r.nextDue)),
           )),

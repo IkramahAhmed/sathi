@@ -10,7 +10,6 @@ import '../notifications/local_notification_scheduler.dart';
 import '../notifications/notification_channels.dart';
 import '../storage/app_database.dart';
 import '../../features/khata/background/budget_check.dart';
-import '../../features/khata/domain/entities/expense_category.dart';
 import 'notification_capture_service.dart';
 
 part 'notification_listener_provider.g.dart';
@@ -45,7 +44,7 @@ Future<void> _drainOnce(AppDatabase db) async {
       unawaited(checkBudgetAndNotify(
         db: db,
         yearMonth: ym,
-        category: ExpenseCategory.fromString(category),
+        categoryKey: category,
         addedAmount: tx.amount,
       ));
     }

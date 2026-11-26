@@ -165,3 +165,32 @@ class FastLogsDaoManager {
   $$FastLogsTableTableManager get fastLogs =>
       $$FastLogsTableTableManager(_db.attachedDatabase, _db.fastLogs);
 }
+
+mixin _$CustomCategoriesDaoMixin on DatabaseAccessor<AppDatabase> {
+  $CustomCategoriesTable get customCategories =>
+      attachedDatabase.customCategories;
+  $ExpensesTable get expenses => attachedDatabase.expenses;
+  $RecurringExpensesTable get recurringExpenses =>
+      attachedDatabase.recurringExpenses;
+  $TasksTable get tasks => attachedDatabase.tasks;
+  CustomCategoriesDaoManager get managers => CustomCategoriesDaoManager(this);
+}
+
+class CustomCategoriesDaoManager {
+  final _$CustomCategoriesDaoMixin _db;
+  CustomCategoriesDaoManager(this._db);
+  $$CustomCategoriesTableTableManager get customCategories =>
+      $$CustomCategoriesTableTableManager(
+        _db.attachedDatabase,
+        _db.customCategories,
+      );
+  $$ExpensesTableTableManager get expenses =>
+      $$ExpensesTableTableManager(_db.attachedDatabase, _db.expenses);
+  $$RecurringExpensesTableTableManager get recurringExpenses =>
+      $$RecurringExpensesTableTableManager(
+        _db.attachedDatabase,
+        _db.recurringExpenses,
+      );
+  $$TasksTableTableManager get tasks =>
+      $$TasksTableTableManager(_db.attachedDatabase, _db.tasks);
+}
