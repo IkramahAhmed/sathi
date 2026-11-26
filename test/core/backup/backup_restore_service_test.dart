@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:drift/drift.dart' show Value;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:saathi/core/backup/backup_restore_service.dart';
@@ -111,5 +112,119 @@ void main() {
     final text = File('${dir.path}/notes.txt')
       ..writeAsStringSync('hello world, not a backup');
     expect(await BackupRestoreService.readBackup(text), isNull);
+  });
+
+  group('private vault', () {
+    Future<File> dbWithVault() async {
+      final file = File('${dir.path}/vault.sqlite');
+      final db = AppDatabase(NativeDatabase(file));
+      final now = DateTime.utc(2026, 11, 1);
+      await db.expensesDao.add(
+        ExpensesCompanion.insert(
+          amount: 100,
+          category: 'food',
+          date: '2026-11-01',
+          note: const Value('lunch'),
+          createdAt: now,
+        ),
+      );
+      await db.expensesDao.add(
+        ExpensesCompanion.insert(
+          amount: 999,
+          category: 'other',
+          date: '2026-11-01',
+          note: const Value('SECRETGIFT'),
+          source: const Value('vault'),
+          createdAt: now,
+        ),
+      );
+      final open = await db.udhaarDao.addContact(
+        UdhaarContactsCompanion.insert(name: 'Ali', createdAt: now),
+      );
+      final hidden = await db.udhaarDao.addContact(
+        UdhaarContactsCompanion.insert(
+          name: 'SECRETFRIEND',
+          createdAt: now,
+          source: const Value('vault'),
+        ),
+      );
+      for (final id in [open, hidden]) {
+        await db.udhaarDao.addEntry(
+          UdhaarEntriesCompanion.insert(
+            contactId: id,
+            amount: 50,
+            type: 'gave',
+            date: '2026-11-01',
+            createdAt: now,
+          ),
+        );
+      }
+      await db.close();
+      return file;
+    }
+
+    int count(String path, String sqlText) {
+      final db = sql.sqlite3.open(path);
+      try {
+        return db.select(sqlText).first.values.first as int;
+      } finally {
+        db.dispose();
+      }
+    }
+
+    test('stripping removes vault rows and leaves the rest', () async {
+      final file = await dbWithVault();
+      expect(BackupRestoreService.hasVault(file.path), isTrue);
+      BackupRestoreService.stripVault(file.path);
+
+      expect(BackupRestoreService.hasVault(file.path), isFalse);
+      expect(count(file.path, 'SELECT COUNT(*) FROM expenses'), 1);
+      expect(count(file.path, 'SELECT COUNT(*) FROM udhaar_contacts'), 1);
+      expect(count(file.path, 'SELECT COUNT(*) FROM udhaar_entries'), 1);
+      final text = String.fromCharCodes(file.readAsBytesSync());
+      expect(text.contains('SECRETGIFT'), isFalse);
+      expect(text.contains('SECRETFRIEND'), isFalse);
+      expect(text.contains('lunch'), isTrue);
+    });
+
+    test('a restore keeps the vault that is on the phone', () async {
+      final live = await dbWithVault();
+      final backup = File('${dir.path}/backup.sqlite');
+      live.copySync(backup.path);
+      BackupRestoreService.stripVault(backup.path);
+
+      BackupRestoreService.carryVault(from: live.path, into: backup.path);
+
+      expect(count(backup.path, 'SELECT COUNT(*) FROM expenses'), 2);
+      expect(
+        count(
+          backup.path,
+          "SELECT COUNT(*) FROM expenses WHERE source = 'vault'",
+        ),
+        1,
+      );
+      expect(count(backup.path, 'SELECT COUNT(*) FROM udhaar_contacts'), 2);
+      // Every ledger entry still points at a contact that exists.
+      expect(
+        count(
+          backup.path,
+          'SELECT COUNT(*) FROM udhaar_entries e JOIN udhaar_contacts c '
+          'ON c.id = e.contact_id',
+        ),
+        2,
+      );
+      expect(
+        count(
+          backup.path,
+          'SELECT COUNT(*) FROM udhaar_entries e JOIN udhaar_contacts c '
+          "ON c.id = e.contact_id WHERE c.name = 'SECRETFRIEND'",
+        ),
+        1,
+      );
+    });
+
+    test('a database without a vault reports none', () async {
+      expect(BackupRestoreService.hasVault((await saathiDb()).path), isFalse);
+    });
   });
 }

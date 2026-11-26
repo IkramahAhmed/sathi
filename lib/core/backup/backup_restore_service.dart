@@ -98,6 +98,141 @@ class BackupRestoreService {
     }
   }
 
+  // ── Private vault ───────────────────────────────────────────────────────
+  // Backups never contain the vault, so a shared file can't show private items.
+  // Restoring keeps the vault that is already on the phone.
+
+  static Set<String> _columns(sql.Database db, String table) => {
+    for (final r in db.select('PRAGMA table_info($table)')) r['name'] as String,
+  };
+
+  static bool _hasTable(sql.Database db, String table) => db.select(
+    'SELECT 1 FROM sqlite_master WHERE type = ? AND name = ?',
+    ['table', table],
+  ).isNotEmpty;
+
+  /// True when the database file has any vault entry or vault contact.
+  @visibleForTesting
+  static bool hasVault(String path) {
+    final db = sql.sqlite3.open(path, mode: sql.OpenMode.readOnly);
+    try {
+      for (final table in ['expenses', 'udhaar_contacts']) {
+        if (_hasTable(db, table) &&
+            _columns(db, table).contains('source') &&
+            db.select('SELECT 1 FROM $table WHERE source = ? LIMIT 1', [
+              'vault',
+            ]).isNotEmpty) {
+          return true;
+        }
+      }
+      return false;
+    } finally {
+      db.dispose();
+    }
+  }
+
+  /// Deletes every vault entry and vault contact (with their ledger entries) from
+  /// the database file, then compacts it so the deleted text is gone from the file.
+  @visibleForTesting
+  static void stripVault(String path) {
+    final db = sql.sqlite3.open(path);
+    try {
+      if (_hasTable(db, 'udhaar_contacts') &&
+          _columns(db, 'udhaar_contacts').contains('source')) {
+        if (_hasTable(db, 'udhaar_entries')) {
+          db.execute(
+            "DELETE FROM udhaar_entries WHERE contact_id IN "
+            "(SELECT id FROM udhaar_contacts WHERE source = 'vault')",
+          );
+        }
+        db.execute("DELETE FROM udhaar_contacts WHERE source = 'vault'");
+      }
+      if (_hasTable(db, 'expenses') &&
+          _columns(db, 'expenses').contains('source')) {
+        db.execute("DELETE FROM expenses WHERE source = 'vault'");
+      }
+      db.execute('VACUUM');
+    } finally {
+      db.dispose();
+    }
+  }
+
+  /// Copies the vault rows of the database at [from] into the one at [into].
+  /// New ids are given, and each ledger entry follows its contact. Columns the
+  /// older [into] file does not have yet are skipped.
+  @visibleForTesting
+  static void carryVault({required String from, required String into}) {
+    final db = sql.sqlite3.open(into);
+    try {
+      db.execute('ATTACH DATABASE ? AS live', [from]);
+      db.execute('BEGIN');
+
+      List<String> common(String table, {List<String> without = const ['id']}) {
+        final live = {
+          for (final r in db.select('PRAGMA live.table_info($table)'))
+            r['name'] as String,
+        };
+        return [
+          for (final c in _columns(db, table))
+            if (live.contains(c) && !without.contains(c)) c,
+        ];
+      }
+
+      bool both(String table) =>
+          _hasTable(db, table) &&
+          db.select(
+            "SELECT 1 FROM live.sqlite_master WHERE type = 'table' AND name = ?",
+            [table],
+          ).isNotEmpty;
+
+      if (both('udhaar_contacts') && both('udhaar_entries')) {
+        final contactCols = common('udhaar_contacts');
+        final entryCols = common(
+          'udhaar_entries',
+          without: ['id', 'contact_id'],
+        );
+        final names = contactCols.join(', ');
+        final oldContacts = db.select(
+          "SELECT id FROM live.udhaar_contacts WHERE source = 'vault'",
+        );
+        for (final row in oldContacts) {
+          final oldId = row['id'] as int;
+          db.execute(
+            'INSERT INTO udhaar_contacts ($names) SELECT $names '
+            'FROM live.udhaar_contacts WHERE id = ?',
+            [oldId],
+          );
+          final newId = db.lastInsertRowId;
+          if (entryCols.isEmpty) continue;
+          final cols = entryCols.join(', ');
+          db.execute(
+            'INSERT INTO udhaar_entries (contact_id, $cols) '
+            'SELECT ?, $cols FROM live.udhaar_entries WHERE contact_id = ?',
+            [newId, oldId],
+          );
+        }
+      }
+
+      if (both('expenses') && _columns(db, 'expenses').contains('source')) {
+        final cols = common('expenses').join(', ');
+        db.execute(
+          'INSERT INTO expenses ($cols) SELECT $cols '
+          "FROM live.expenses WHERE source = 'vault'",
+        );
+      }
+
+      db.execute('COMMIT');
+      db.execute('DETACH DATABASE live');
+    } catch (_) {
+      try {
+        db.execute('ROLLBACK');
+      } catch (_) {}
+      rethrow;
+    } finally {
+      db.dispose();
+    }
+  }
+
   // ── Backup ──────────────────────────────────────────────────────────────
 
   /// Writes a complete backup (database, settings, receipt photos) to [dest].
@@ -111,11 +246,14 @@ class BackupRestoreService {
     final tmp = await getTemporaryDirectory();
     final snapshot = '${tmp.path}/saathi_snapshot.sqlite';
     await _snapshot(db, snapshot);
+    stripVault(snapshot);
 
     final receipts = <({String path, String name, int len})>[];
-    final rows = await (db.select(
+    final withReceipts = await (db.select(
       db.expenses,
     )..where((t) => t.receiptPath.isNotNull())).get();
+    // Vault receipts stay out of backups too.
+    final rows = withReceipts.where((e) => e.source != 'vault');
     var i = 0;
     for (final row in rows) {
       final f = File(row.receiptPath!);
@@ -175,7 +313,10 @@ class BackupRestoreService {
       await Share.shareXFiles([
         XFile(dest.path, mimeType: 'application/octet-stream'),
       ], subject: 'Saathi backup $date');
-      await prefs.setInt('last_export_at', DateTime.now().millisecondsSinceEpoch);
+      await prefs.setInt(
+        'last_export_at',
+        DateTime.now().millisecondsSinceEpoch,
+      );
     } catch (error) {
       _say(context, AppLocalizations.of(context).backupFailed('$error'));
     }
@@ -197,7 +338,10 @@ class BackupRestoreService {
   /// Saves a backup inside the app once a week and keeps the last few. It
   /// protects against mistakes and damage; sharing a copy off the phone is
   /// still what protects against losing the phone. Safe to call often.
-  static Future<void> autoBackupIfDue(AppDatabase db, SharedPreferences prefs) async {
+  static Future<void> autoBackupIfDue(
+    AppDatabase db,
+    SharedPreferences prefs,
+  ) async {
     try {
       final now = DateTime.now();
       final last = prefs.getInt(_autoKey);
@@ -206,7 +350,8 @@ class BackupRestoreService {
         return;
       }
       final dir = await _autoDir();
-      final name = 'saathi_auto_${DateFormat('yyyy-MM-dd_HHmm').format(now)}.saathi';
+      final name =
+          'saathi_auto_${DateFormat('yyyy-MM-dd_HHmm').format(now)}.saathi';
       final dest = File('${dir.path}/$name');
       await _writeBackup(db, prefs, dest);
       await prefs.setInt(_autoKey, now.millisecondsSinceEpoch);
@@ -380,7 +525,6 @@ class BackupRestoreService {
     SharedPreferences prefs,
     File source,
   ) async {
-
     final docs = await getApplicationDocumentsDirectory();
     final staged = File('${docs.path}/saathi.restore.tmp');
     var touchedLive = false;
@@ -398,14 +542,11 @@ class BackupRestoreService {
         await staged.delete();
         if (!context.mounted) return;
         final l10n = AppLocalizations.of(context);
-        _say(
-          context,
-          switch (problem) {
-            BackupProblem.newer => l10n.backupNewer,
-            BackupProblem.damaged => l10n.backupDamaged,
-            BackupProblem.notSaathi => l10n.backupNotSaathi,
-          },
-        );
+        _say(context, switch (problem) {
+          BackupProblem.newer => l10n.backupNewer,
+          BackupProblem.damaged => l10n.backupDamaged,
+          BackupProblem.notSaathi => l10n.backupNotSaathi,
+        });
         return;
       }
 
@@ -476,6 +617,13 @@ class BackupRestoreService {
         } finally {
           edit.close();
         }
+      }
+
+      // The backup has no vault; keep the one on this phone.
+      final safety = '${docs.path}/saathi_before_restore.bak';
+      if (hasVault(safety)) {
+        stripVault(staged.path);
+        carryVault(from: safety, into: staged.path);
       }
 
       final live = await _livePath(db);
