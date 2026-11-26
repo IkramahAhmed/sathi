@@ -87,7 +87,7 @@ class QuickEntry {
 }
 
 final _number = RegExp(r'(\d[\d,]*(?:\.\d+)?)\s*(k|lac|lakh|lakhs)?(?![a-z0-9])');
-final _currency = RegExp(r'\b(rs|rs\.|pkr|rupees|rupay|rupaye)\b|₨');
+final _currency = RegExp(r'\b(rs\.?|pkr|rupees|rupay|rupaye)(?![a-z])|₨');
 const _incomeHints = {'salary', 'tankhwah', 'tankhah', 'income', 'bonus', 'freelance', 'received', 'mila', 'mili', 'commission', 'eidi'};
 
 /// Turns "250 chai", "chai 250", "rs 1,500 petrol", "5k grocery" or "+50000 salary"

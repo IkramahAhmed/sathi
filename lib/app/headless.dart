@@ -17,6 +17,7 @@ import '../features/prayer/data/reminders/drift_reminder_state.dart';
 import '../features/prayer/data/reminders/reminder_mute_store.dart';
 import '../features/prayer/data/repositories/prayer_repository_impl.dart';
 import '../features/prayer/data/repositories/settings_repository_impl.dart';
+import '../features/prayer/domain/entities/prayer_name.dart';
 import '../features/prayer/domain/usecases/handle_reminder_action.dart';
 import '../features/prayer/domain/usecases/schedule_upcoming_azans.dart';
 import '../features/prayer/domain/usecases/sync_native_state.dart';
@@ -79,7 +80,12 @@ Future<void> notificationBackgroundHandler(NotificationResponse response) async 
   await prefs.reload();
   final db = AppDatabase();
   try {
-    if (await handleTaskNotificationAction(db, actionId: response.actionId, payload: response.payload)) {
+    final taskSettings = await SettingsRepositoryImpl(SettingsLocalDataSource(prefs)).load();
+    PrayerTimeResolver resolver = (date, prayer) {
+      final name = PrayerName.values.where((p) => p.name == prayer).firstOrNull;
+      return name == null ? null : const AdhanCalculator().compute(date, taskSettings).times[name];
+    };
+    if (await handleTaskNotificationAction(db, actionId: response.actionId, payload: response.payload, prayerTime: resolver)) {
       appLog.info('Background task action ${response.actionId}');
       return;
     }

@@ -43,7 +43,8 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
       if (!mounted) return;
       // Close any entry opened from the vault, so it is not still on screen when
       // the app comes back.
-      Navigator.of(context).popUntil((route) => route.isFirst);
+      final vaultRoute = ModalRoute.of(context);
+      Navigator.of(context).popUntil((route) => route == vaultRoute || route.isFirst);
       setState(() { _unlocked = false; _error = null; });
     }
   }

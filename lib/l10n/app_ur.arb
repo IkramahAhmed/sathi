@@ -847,5 +847,6 @@
     "placeholders": {
       "error": { "type": "String" }
     }
-  }
+  },
+  "khataIncludesBank": "مجموعوں میں بینک لین دین شامل ہیں (بینک ٹیب دیکھیں)"
 }

@@ -626,9 +626,9 @@ class _TaskTile extends ConsumerWidget {
           onChanged: (_) async {
             final db = ref.read(appDatabaseProvider);
             if (task.isCompleted) {
-              await reopenTask(db, task);
+              await reopenTask(db, task, prayerTime: ref.read(prayerTimeResolverProvider));
             } else {
-              await completeTask(db, task);
+              await completeTask(db, task, prayerTime: ref.read(prayerTimeResolverProvider));
               if (context.mounted) await offerBillToKhata(context, ref, task);
             }
           },

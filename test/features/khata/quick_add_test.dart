@@ -21,6 +21,11 @@ void main() {
       expect(parseQuickAdd('PKR 800 bijli bill')!.category, ExpenseCategory.bills);
     });
 
+    test('a dot after rs does not leak into the note', () {
+      expect(parseQuickAdd('rs. 1,500 petrol')!.note, 'Petrol');
+      expect(parseQuickAdd('Rs.300 chai')!.note, 'Chai');
+    });
+
     test('with several numbers the biggest is the amount', () {
       final e = parseQuickAdd('3 samosa 150')!;
       expect(e.amount, 150);

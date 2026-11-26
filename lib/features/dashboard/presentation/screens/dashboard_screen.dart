@@ -19,6 +19,7 @@ import '../../../prayer/presentation/providers/prayer_providers.dart';
 import '../../../prayer/presentation/providers/tracker_providers.dart';
 import '../../../tasks/data/task_reminders.dart';
 import '../../../tasks/presentation/bill_prompt.dart';
+import '../../../tasks/presentation/task_providers.dart';
 import '../../../udhaar/domain/dues.dart';
 
 // ── Data ──────────────────────────────────────────────────────────────────────
@@ -408,7 +409,8 @@ class _TasksCard extends ConsumerWidget {
                         shape: const CircleBorder(),
                         value: false,
                         onChanged: (_) async {
-                          await completeTask(ref.read(appDatabaseProvider), task);
+                          await completeTask(ref.read(appDatabaseProvider), task,
+                              prayerTime: ref.read(prayerTimeResolverProvider));
                           if (context.mounted) await offerBillToKhata(context, ref, task);
                         },
                       ),

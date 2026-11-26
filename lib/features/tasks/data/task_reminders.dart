@@ -209,7 +209,12 @@ Future<void> rescheduleAllTaskReminders(
 }
 
 /// Marks [task] done, stops its reminder, and creates the next copy if it repeats.
-Future<void> completeTask(AppDatabase db, Task task, {DateTime? now}) async {
+Future<void> completeTask(
+  AppDatabase db,
+  Task task, {
+  DateTime? now,
+  PrayerTimeResolver? prayerTime,
+}) async {
   final dao = db.tasksDao;
   await dao.completeTask(task.id);
   await cancelTaskReminder(task.id);
@@ -238,12 +243,17 @@ Future<void> completeTask(AppDatabase db, Task task, {DateTime? now}) async {
     ),
   );
   final saved = await dao.getTask(newId);
-  if (saved != null) await scheduleTaskReminder(saved);
+  if (saved != null) await scheduleTaskReminder(saved, prayerTime: prayerTime);
 }
 
 /// Reopens [task]. For a repeating task, the copy that finishing it created is
 /// removed again so the list does not end up with two.
-Future<void> reopenTask(AppDatabase db, Task task, {DateTime? now}) async {
+Future<void> reopenTask(
+  AppDatabase db,
+  Task task, {
+  DateTime? now,
+  PrayerTimeResolver? prayerTime,
+}) async {
   final dao = db.tasksDao;
   if (task.recurrence != 'none' && task.completedAt != null) {
     final completed = task.completedAt!.toLocal();
@@ -266,7 +276,7 @@ Future<void> reopenTask(AppDatabase db, Task task, {DateTime? now}) async {
   }
   await dao.reopenTask(task.id);
   final saved = await dao.getTask(task.id);
-  if (saved != null) await scheduleTaskReminder(saved);
+  if (saved != null) await scheduleTaskReminder(saved, prayerTime: prayerTime);
 }
 
 /// Handles a tap on a task notification's button. Returns true when it was one.
@@ -275,6 +285,7 @@ Future<bool> handleTaskNotificationAction(
   AppDatabase db, {
   required String? actionId,
   required String? payload,
+  PrayerTimeResolver? prayerTime,
 }) async {
   final id = taskIdFromPayload(payload);
   if (id == null) return false;
@@ -283,7 +294,7 @@ Future<bool> handleTaskNotificationAction(
 
   switch (actionId) {
     case kTaskActionDone:
-      if (!task.isCompleted) await completeTask(db, task);
+      if (!task.isCompleted) await completeTask(db, task, prayerTime: prayerTime);
     case kTaskActionSnooze:
       if (!task.isCompleted)
         await _show(await _plugin(), task, DateTime.now().add(kTaskSnooze));

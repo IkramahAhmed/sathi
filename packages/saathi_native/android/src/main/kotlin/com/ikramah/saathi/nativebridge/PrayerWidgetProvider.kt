@@ -36,6 +36,26 @@ class PrayerWidgetProvider : AppWidgetProvider() {
             val ids = manager.getAppWidgetIds(ComponentName(context, PrayerWidgetProvider::class.java))
             if (ids.isNotEmpty()) render(context, manager, ids)
             PrayerTimesWidgetProvider.refresh(context)
+            scheduleNext(context)
+        }
+
+        /**
+         * Schedules the redraw after the next prayer, whichever prayer widget is placed.
+         * Without this the five-prayer widget would never advance on its own when the
+         * countdown widget is not on the home screen.
+         */
+        fun scheduleNext(context: Context) {
+            val data = try { WidgetStore.load(context)?.let { JSONObject(it) } } catch (e: Exception) { null }
+            val entries = data?.optJSONArray("entries")
+            val now = System.currentTimeMillis()
+            var next: Long? = null
+            if (entries != null) {
+                for (i in 0 until entries.length()) {
+                    val at = entries.getJSONObject(i).getLong("at")
+                    if (at > now) { next = at; break }
+                }
+            }
+            scheduleRefresh(context, next)
         }
 
         private fun render(context: Context, manager: AppWidgetManager, ids: IntArray) {

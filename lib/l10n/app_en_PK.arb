@@ -830,5 +830,6 @@
     "placeholders": {
       "error": { "type": "String" }
     }
-  }
+  },
+  "khataIncludesBank": "Totals mein bank transactions shamil hain (Bank tab dekhein)"
 }

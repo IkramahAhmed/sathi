@@ -648,20 +648,17 @@ class AccountsDao extends DatabaseAccessor<AppDatabase> with _$AccountsDaoMixin 
     await (delete(accounts)..where((t) => t.id.equals(id))).go();
   }
 
-  /// Opening balance plus income minus spending, for every account.
-  Stream<Map<int, double>> watchBalances() {
-    final rows = select(expenses)..where((t) => t.accountId.isNotNull() & t.source.isNotValue('vault'));
-    return rows.watch().asyncMap((entries) async {
-      final all = await select(accounts).get();
-      final balance = {for (final a in all) a.id: a.openingBalance};
-      for (final e in entries) {
-        final id = e.accountId!;
-        if (!balance.containsKey(id)) continue;
-        balance[id] = balance[id]! + (e.type == 'income' ? e.amount : -e.amount);
-      }
-      return balance;
-    });
-  }
+  /// Opening balance plus income minus spending, for every account. Follows both
+  /// the accounts and the entries, so editing an opening balance updates it too.
+  Stream<Map<int, double>> watchBalances() => customSelect(
+        'SELECT a.id AS id, a.opening_balance + COALESCE(SUM(CASE WHEN e.type = \'income\' '
+        'THEN e.amount ELSE -e.amount END), 0) AS balance '
+        'FROM accounts a LEFT JOIN expenses e ON e.account_id = a.id AND e.source != \'vault\' '
+        'GROUP BY a.id',
+        readsFrom: {accounts, expenses},
+      ).watch().map((rows) => {
+            for (final r in rows) r.read<int>('id'): r.read<double>('balance'),
+          });
 }
 
 @DriftAccessor(tables: [SavingsGoals])
@@ -698,6 +695,10 @@ class FastLogsDao extends DatabaseAccessor<AppDatabase> with _$FastLogsDaoMixin 
       await (delete(fastLogs)..where((t) => t.date.equals(date))).go();
       return;
     }
-    await into(fastLogs).insertOnConflictUpdate(FastLogsCompanion.insert(date: date, status: status));
+    final updated = await (update(fastLogs)..where((t) => t.date.equals(date)))
+        .write(FastLogsCompanion(status: Value(status)));
+    if (updated == 0) {
+      await into(fastLogs).insert(FastLogsCompanion.insert(date: date, status: status));
+    }
   }
 }

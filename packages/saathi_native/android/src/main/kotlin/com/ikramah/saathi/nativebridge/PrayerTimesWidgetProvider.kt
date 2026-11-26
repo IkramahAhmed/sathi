@@ -15,6 +15,7 @@ import android.widget.RemoteViews
 class PrayerTimesWidgetProvider : AppWidgetProvider() {
     override fun onUpdate(context: Context, manager: AppWidgetManager, ids: IntArray) {
         render(context, manager, ids)
+        PrayerWidgetProvider.scheduleNext(context)
     }
 
     companion object {

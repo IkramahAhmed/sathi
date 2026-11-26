@@ -2053,6 +2053,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String restoreFailedSafe(String error) {
     return 'Restore failed: $error. Your data was not changed.';
   }
+
+  @override
+  String get khataIncludesBank =>
+      'Totals include bank transactions (see the Bank tab)';
 }
 
 /// The translations for English, as used in Pakistan (`en_PK`).
@@ -4072,4 +4076,8 @@ class AppLocalizationsEnPk extends AppLocalizationsEn {
   String restoreFailedSafe(String error) {
     return 'Restore nakam: $error. Aap ka data tabdeel nahi hua.';
   }
+
+  @override
+  String get khataIncludesBank =>
+      'Totals mein bank transactions shamil hain (Bank tab dekhein)';
 }

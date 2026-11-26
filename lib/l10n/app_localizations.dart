@@ -3758,6 +3758,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Restore failed: {error}. Your data was not changed.'**
   String restoreFailedSafe(String error);
+
+  /// No description provided for @khataIncludesBank.
+  ///
+  /// In en, this message translates to:
+  /// **'Totals include bank transactions (see the Bank tab)'**
+  String get khataIncludesBank;
 }
 
 class _AppLocalizationsDelegate

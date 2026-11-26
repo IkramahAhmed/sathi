@@ -95,7 +95,9 @@ class _SaathiAppState extends ConsumerState<SaathiApp> with WidgetsBindingObserv
     // Task reminders: Done / Snooze buttons, or a tap that opens the task list.
     if (taskIdFromPayload(tap.payload) != null) {
       await handleTaskNotificationAction(ref.read(appDatabaseProvider),
-          actionId: tap.actionId, payload: tap.payload);
+          actionId: tap.actionId,
+          payload: tap.payload,
+          prayerTime: ref.read(prayerTimeResolverProvider));
       if (tap.actionId == null) ref.read(routerProvider).go(Routes.tasks);
       return;
     }

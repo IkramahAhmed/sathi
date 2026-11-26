@@ -1130,5 +1130,6 @@
     "placeholders": {
       "error": { "type": "String" }
     }
-  }
+  },
+  "khataIncludesBank": "Totals include bank transactions (see the Bank tab)"
 }

@@ -284,7 +284,15 @@ class _KhataScreenState extends ConsumerState<KhataScreen> {
             data: (entries) {
               final income = entries.where((e) => e.type == 'income').fold(0.0, (s, e) => s + e.amount);
               final expense = entries.where((e) => e.type != 'income').fold(0.0, (s, e) => s + e.amount);
-              return _SummaryCard(income: income, expense: expense, scheme: scheme, text: text, l10n: l10n);
+              final card = _SummaryCard(income: income, expense: expense, scheme: scheme, text: text, l10n: l10n);
+              if (!entries.any((e) => e.source == 'bank')) return card;
+              return Column(children: [
+                card,
+                Padding(
+                  padding: const EdgeInsets.only(top: 2),
+                  child: Text(l10n.khataIncludesBank, style: text.labelSmall?.copyWith(color: scheme.onSurfaceVariant)),
+                ),
+              ]);
             },
           ),
 

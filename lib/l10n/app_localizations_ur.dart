@@ -2051,4 +2051,8 @@ class AppLocalizationsUr extends AppLocalizations {
   String restoreFailedSafe(String error) {
     return 'بحالی ناکام: $error۔ آپ کا ڈیٹا تبدیل نہیں ہوا۔';
   }
+
+  @override
+  String get khataIncludesBank =>
+      'مجموعوں میں بینک لین دین شامل ہیں (بینک ٹیب دیکھیں)';
 }
