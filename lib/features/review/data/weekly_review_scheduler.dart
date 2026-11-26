@@ -71,12 +71,24 @@ bool isWeeklyReviewPayload(String? payload) {
 ///
 /// The text is fixed ("your review is ready"); the numbers are worked out live when
 /// the review opens, so they are never out of date.
-Future<void> applyWeeklyReview(SharedPreferences prefs, AppLocalizations l10n) async {
+///
+/// With [onlyIfMissing] an alarm that is already waiting is left alone, so opening
+/// the app just after the due time cannot cancel a reminder Android is about to
+/// deliver a little late.
+Future<void> applyWeeklyReview(
+  SharedPreferences prefs,
+  AppLocalizations l10n, {
+  bool onlyIfMissing = false,
+}) async {
   final plugin = FlutterLocalNotificationsPlugin();
   await LocalNotificationScheduler.initialize(plugin);
-  await plugin.cancel(id: kWeeklyReviewNotifId);
-
   final reminder = ReviewReminder.load(prefs);
+
+  if (onlyIfMissing && reminder.enabled) {
+    final pending = await plugin.pendingNotificationRequests();
+    if (pending.any((p) => p.id == kWeeklyReviewNotifId)) return;
+  }
+  await plugin.cancel(id: kWeeklyReviewNotifId);
   if (!reminder.enabled) return;
 
   final at = nextWeeklyOccurrence(DateTime.now(), reminder.weekday, reminder.minutes);

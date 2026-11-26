@@ -84,6 +84,7 @@ class _SaathiAppState extends ConsumerState<SaathiApp> with WidgetsBindingObserv
     unawaited(applyWeeklyReview(
       ref.read(sharedPreferencesProvider),
       lookupAppLocalizations(localeFromTag(ref.read(currentSettingsProvider).localeTag)),
+      onlyIfMissing: true,
     ));
     unawaited(ref.read(prayerActionsProvider).reconcileQaza());
     try {
